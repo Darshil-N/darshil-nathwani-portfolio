@@ -1,14 +1,14 @@
-
 import React from 'react';
 import { Book } from 'lucide-react';
 
 const Education = () => {
   return (
     <section id="education" className="bg-dark py-20">
-      <div className="section-container">
-        <h2 className="section-title">Education</h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold text-white text-center mb-2">Education</h2>
+        <div className="w-24 h-1 bg-purple mx-auto rounded-full mb-12"></div>
         
-        <div className="max-w-3xl animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
+        <div className="max-w-3xl mx-auto animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
           <div className="gradient-border p-6">
             <div className="flex items-start">
               <div className="mr-4">

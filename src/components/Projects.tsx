@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Github } from 'lucide-react';
 
@@ -59,8 +58,9 @@ const Projects = () => {
 
   return (
     <section id="projects" className="bg-dark-secondary py-20">
-      <div className="section-container">
-        <h2 className="section-title">Projects</h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold text-white text-center mb-2">Projects</h2>
+        <div className="w-24 h-1 bg-purple mx-auto rounded-full mb-12"></div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, index) => (
