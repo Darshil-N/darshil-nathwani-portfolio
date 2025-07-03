@@ -36,6 +36,7 @@ const RoutesWithTransition = () => {
             <ProjectsPage />
           </motion.div>
         } />
+        {/* REMOVE AchievementsPage route */}
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={
           <motion.div

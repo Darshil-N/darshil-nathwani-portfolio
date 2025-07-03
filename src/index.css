@@ -83,12 +83,12 @@
   }
   
   .section-title {
-    @apply text-3xl md:text-4xl font-bold mb-8 text-white relative inline-block;
+    @apply text-3xl md:text-4xl font-bold mb-8 text-white relative block mx-auto;
   }
   
   .section-title::after {
     content: '';
-    @apply absolute -bottom-2 left-0 h-1 w-2/3 bg-purple rounded-full;
+    @apply absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-2/3 bg-purple rounded-full;
   }
 
   .gradient-border {
@@ -163,7 +163,7 @@
 .animate-hero-gradient {
   background: linear-gradient(120deg, #181A2A, #231942, #2B2250, #6E3CBC, #181A2A);
   background-size: 300% 300%;
-  animation: hero-gradient 18s ease-in-out infinite;
+  animation: hero-gradient 8s ease-in-out infinite;
   opacity: 0.85;
 }
 
@@ -178,10 +178,10 @@
   100% { transform: translateY(0) scaleX(1); opacity: 0.6; }
 }
 .animate-aurora1 {
-  animation: aurora1 18s ease-in-out infinite;
+  animation: aurora1 8s ease-in-out infinite;
 }
 .animate-aurora2 {
-  animation: aurora2 22s ease-in-out infinite;
+  animation: aurora2 10s ease-in-out infinite;
 }
 
 .section-hidden {

@@ -1,26 +1,29 @@
-
 import React from 'react';
+import Section from './ui/Section';
 
 const ExploringSection = () => {
-  const exploring = ["Gemini AI", "Streamlit", "Computer Vision", "API Development", "Deployment on Cloud"];
+  const exploring = ["Gemini AI", "Pytorch", "Scikit-learn", "TensorFlow", "Deployment on Cloud","Deep Learning","Hugging Face","Prompt Engineering","NLP","MongoDB","Embeded Systems","Generative AI","MLops","TensorFlow","SQL"];
 
   return (
-    <section className="bg-dark py-20">
+    <Section id="exploring" className="bg-dark-secondary py-20">
       <div className="section-container">
-        <h2 className="section-title">Currently Exploring</h2>
+        <div className="flex justify-center">
+          <h2 className="section-title text-center block mx-auto">Currently Exploring</h2>
+        </div>
         
-        <div className="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
+        <div className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto mt-8">
           {exploring.map((item, index) => (
             <div 
               key={index}
-              className="px-6 py-4 bg-dark-secondary border border-purple/20 rounded-lg hover:border-purple/50 transition-all duration-300"
+              className="px-8 py-5 bg-dark border border-purple/30 rounded-xl shadow-lg hover:shadow-purple/30 hover:border-purple/60 transition-all duration-300 animate-slide-up opacity-0 flex items-center justify-center min-w-[180px] min-h-[60px]"
+              style={{ animationDelay: `${0.1 + index * 0.05}s` }}
             >
-              <span className="text-white font-medium">{item}</span>
+              <span className="text-white font-semibold text-lg tracking-wide">{item}</span>
             </div>
           ))}
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

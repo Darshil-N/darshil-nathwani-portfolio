@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Github, Download } from 'lucide-react';
 
@@ -26,13 +25,9 @@ const Footer = () => {
             </a>
             
             <a 
-              href="#" 
+              href="/resume/Minimalist White and Grey Professional Resume.pdf"
+              download="Darshil_Nathwani_Resume.pdf"
               className="flex items-center text-gray-300 hover:text-purple transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                // This would be replaced with the actual download link
-                alert("Resume download triggered");
-              }}
             >
               <Download className="mr-2" size={20} />
               Download Resume

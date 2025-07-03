@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import About from '../components/About';
@@ -10,9 +10,12 @@ import ExploringSection from '../components/ExploringSection';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import { Link, useLocation } from 'react-router-dom';
+import Spline from '@splinetool/react-spline';
 
 const Index = () => {
   const location = useLocation();
+  const [showContent, setShowContent] = useState(true);
+
   useEffect(() => {
     if (location.state && location.state.scrollTo) {
       const section = document.getElementById(location.state.scrollTo);
@@ -54,20 +57,14 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-dark">
+    <div className="flex flex-col min-h-screen bg-dark relative overflow-hidden">
       <Navbar />
       <main>
-        <Hero>
-          <Link to="/projects">
-            <button className="bg-purple hover:bg-purple-light text-white px-8 py-3 rounded-md transition-all duration-300 font-medium text-lg mt-8">
-              View Projects
-            </button>
-          </Link>
-        </Hero>
+        <Hero />
         <About />
         <Skills />
-        <Education />
         <SoftSkills />
+        <Education />
         <ExploringSection />
         <Contact />
       </main>

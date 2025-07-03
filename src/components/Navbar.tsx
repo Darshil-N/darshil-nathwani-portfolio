@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+const sectionIds = ['about', 'projects', 'skills', 'education', 'exploring', 'contact'];
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('about');
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -15,9 +18,23 @@ const Navbar = () => {
       } else {
         setIsScrolled(false);
       }
+      // Highlight logic
+      let found = false;
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sectionIds[i]);
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= 120) {
+            setActiveSection(sectionIds[i]);
+            found = true;
+            break;
+          }
+        }
+      }
+      if (!found) setActiveSection('about');
     };
-
     window.addEventListener("scroll", handleScroll);
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -88,14 +105,14 @@ const Navbar = () => {
           
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-8">
-              <button onClick={() => handleSectionNav('about')} className="text-gray-300 hover:text-purple transition-colors duration-300">About</button>
-              <button onClick={() => handleSectionNav('skills')} className="text-gray-300 hover:text-purple transition-colors duration-300">Skills</button>
-              <Link to="/projects" className="text-gray-300 hover:text-purple transition-colors duration-300">
+              <button onClick={() => handleSectionNav('about')} className={`transition-colors duration-300 ${activeSection === 'about' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>About</button>
+              <Link to="/projects" className={`transition-colors duration-300 ${activeSection === 'projects' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>
                 Projects
               </Link>
-              <button onClick={() => handleSectionNav('education')} className="text-gray-300 hover:text-purple transition-colors duration-300">Education</button>
-              <button onClick={() => handleSectionNav('softskills')} className="text-gray-300 hover:text-purple transition-colors duration-300">Soft Skills</button>
-              <button onClick={() => handleSectionNav('contact')} className="text-gray-300 hover:text-purple transition-colors duration-300">Contact</button>
+              <button onClick={() => handleSectionNav('skills')} className={`transition-colors duration-300 ${activeSection === 'skills' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Skills</button>
+              <button onClick={() => handleSectionNav('education')} className={`transition-colors duration-300 ${activeSection === 'education' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Education</button>
+              <button onClick={() => handleSectionNav('exploring')} className={`transition-colors duration-300 ${activeSection === 'exploring' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Exploring</button>
+              <button onClick={() => handleSectionNav('contact')} className={`transition-colors duration-300 ${activeSection === 'contact' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Contact</button>
               <a 
                 href="#" 
                 className="bg-purple hover:bg-purple-light text-white px-5 py-2 rounded-md transition-colors duration-300 font-medium"
@@ -121,12 +138,12 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-dark-secondary border-t border-purple/10 mt-4">
           <div className="px-4 pt-2 pb-3 space-y-3">
-            <button onClick={() => handleSectionNav('about')} className="block text-gray-300 hover:text-purple w-full text-left py-2 transition-colors duration-300">About</button>
-            <button onClick={() => handleSectionNav('skills')} className="block text-gray-300 hover:text-purple w-full text-left py-2 transition-colors duration-300">Skills</button>
-            <Link to="/projects" className="block text-gray-300 hover:text-purple w-full text-left py-2 transition-colors duration-300">Projects</Link>
-            <button onClick={() => handleSectionNav('education')} className="block text-gray-300 hover:text-purple w-full text-left py-2 transition-colors duration-300">Education</button>
-            <button onClick={() => handleSectionNav('softskills')} className="block text-gray-300 hover:text-purple w-full text-left py-2 transition-colors duration-300">Soft Skills</button>
-            <button onClick={() => handleSectionNav('contact')} className="block text-gray-300 hover:text-purple w-full text-left py-2 transition-colors duration-300">Contact</button>
+            <button onClick={() => handleSectionNav('about')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'about' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>About</button>
+            <Link to="/projects" className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'projects' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Projects</Link>
+            <button onClick={() => handleSectionNav('skills')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'skills' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Skills</button>
+            <button onClick={() => handleSectionNav('education')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'education' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Education</button>
+            <button onClick={() => handleSectionNav('exploring')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'exploring' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Exploring</button>
+            <button onClick={() => handleSectionNav('contact')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'contact' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Contact</button>
             <a 
               href="#" 
               className="block bg-purple hover:bg-purple-light text-white px-4 py-2 rounded-md transition-colors duration-300 font-medium w-full text-center my-4"

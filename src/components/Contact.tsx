@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
-import { Github, Mail } from 'lucide-react';
+import { Github, Mail, Linkedin } from 'lucide-react';
+import Section from './ui/Section';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -36,38 +36,50 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="bg-dark-secondary py-20">
+    <Section id="contact" className="bg-dark py-12 md:py-20">
       <div className="section-container">
-        <h2 className="section-title">Get In Touch</h2>
+        <div className="flex justify-center">
+          <h2 className="section-title text-center block mx-auto mt-15 mb-10">Get In Touch</h2>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
+          <div className="animate-slide-up opacity-0" style={{ animationDelay: '0.1s' }}>
             <h3 className="text-2xl font-semibold text-white mb-4">Contact Me</h3>
             <p className="text-gray-400 mb-6">
               Have a question or want to work together? Feel free to reach out to me using the form or connect with me via GitHub.
             </p>
             
-            <div className="flex items-center mb-6">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-6">
               <a 
                 href="https://github.com/Anonymous-7777" 
-                className="gradient-border p-4 flex items-center hover:border-purple transition-all duration-300"
+                className="gradient-border p-4 flex items-center hover:border-purple transition-all duration-300 animate-slide-up opacity-0"
+                style={{ animationDelay: '0.1s' }}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Github className="text-purple mr-3" size={24} />
                 <span className="text-white">GitHub</span>
               </a>
-              
-              <div className="gradient-border p-4 flex items-center ml-4">
+              <a
+                href="https://www.linkedin.com/in/darshil-nathwani-bba698307?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+                className="gradient-border p-4 flex items-center md:ml-4 hover:border-purple transition-all duration-300 animate-slide-up opacity-0"
+                style={{ animationDelay: '0.15s' }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Linkedin className="text-purple mr-3" size={24} />
+                <span className="text-white">LinkedIn</span>
+              </a>
+              <div className="gradient-border p-4 flex items-center md:ml-4 animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
                 <Mail className="text-purple mr-3" size={24} />
                 <span className="text-white">Email Me</span>
               </div>
             </div>
           </div>
           
-          <div className="gradient-border p-6 animate-slide-up opacity-0" style={{ animationDelay: '0.4s' }}>
+          <div className="gradient-border p-6 animate-slide-up opacity-0" style={{ animationDelay: '0.3s' }}>
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
+              <div className="mb-4 animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
                 <label htmlFor="name" className="block text-white mb-2">Name</label>
                 <input
                   type="text"
@@ -80,7 +92,7 @@ const Contact = () => {
                 />
               </div>
               
-              <div className="mb-4">
+              <div className="mb-4 animate-slide-up opacity-0" style={{ animationDelay: '0.25s' }}>
                 <label htmlFor="email" className="block text-white mb-2">Email</label>
                 <input
                   type="email"
@@ -93,7 +105,7 @@ const Contact = () => {
                 />
               </div>
               
-              <div className="mb-4">
+              <div className="mb-4 animate-slide-up opacity-0" style={{ animationDelay: '0.3s' }}>
                 <label htmlFor="message" className="block text-white mb-2">Message</label>
                 <textarea
                   id="message"
@@ -109,7 +121,8 @@ const Contact = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-purple hover:bg-purple-light text-white py-3 rounded-md transition-colors duration-300 font-medium disabled:opacity-70"
+                className="w-full bg-purple hover:bg-purple-light text-white py-3 rounded-md transition-colors duration-300 font-medium disabled:opacity-70 animate-slide-up opacity-0"
+                style={{ animationDelay: '0.35s' }}
               >
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
@@ -123,7 +136,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 
