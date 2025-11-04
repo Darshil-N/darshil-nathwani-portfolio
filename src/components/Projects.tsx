@@ -239,7 +239,7 @@ const Projects = () => {
         "Multi-platform development coordinating mobile app and web dashboard"
       ],
       github: "https://github.com/Darshil-N/Raahi",
-      logo: "https://raw.githubusercontent.com/Anonymous-7777/Raahi/main/Logo.png",
+      logo: "https://raw.githubusercontent.com/Darshil-N/Raahi/main/Logo.png",
       liveDemo: "https://raahi-eta.vercel.app/",
       isNew: true,
       category: 'mobile'
@@ -297,35 +297,35 @@ const Projects = () => {
       title: "Single and 2 Player Rock-Paper-Scissors Game",
       description: "Built in C++ with live score tracking for both single-player (AI) and two-player modes.",
       techStack: ["C++"],
-      github: "https://github.com/Anonymous-7777/Games",
+      github: "https://github.com/Darshil-N/Games",
       category: 'dsa'
     },
     {
       title: "ATM Module",
       description: "Simulates ATM operations including user authentication, balance inquiry, deposits, and PIN changes.",
       techStack: ["C++"],
-      github: "https://github.com/Anonymous-7777/Atm_module",
+      github: "https://github.com/Darshil-N/Atm_module",
       category: 'dsa'
     },
     {
       title: "GST Report Generator",
       description: "Automates GST calculations and report generation for annual tax summaries.",
       techStack: ["C++"],
-      github: "https://github.com/Anonymous-7777/GST_Report_Generator",
+      github: "https://github.com/Darshil-N/GST_Report_Generator",
       category: 'dsa'
     },
     {
       title: "IPL Auction System",
       description: "Simulates an IPL auction with budget tracking and team/player selection features.",
       techStack: ["C++"],
-      github: "https://github.com/Anonymous-7777/IPL_AUCTION",
+      github: "https://github.com/Darshil-N/IPL_AUCTION",
       category: 'dsa'
     },
     {
       title: "Stock Trading Simulator",
       description: "Simulates a stock exchange where players trade stocks with real-time fluctuations and leaderboard.",
       techStack: ["C++"],
-      github: "https://github.com/Anonymous-7777/Stock_Market_Sim",
+      github: "https://github.com/Darshil-N/Stock_Market_Sim",
       category: 'dsa'
     },
     {
@@ -339,7 +339,7 @@ const Projects = () => {
       description: "Using no code tools and prompts able to create this websites",
       techStack: ["Github", "Spline", "Lovable AI","Cursor"],
       category: 'web',
-      github: "https://github.com/Anonymous-7777/darshil-nathwani-portfolio"
+      github: "https://github.com/Darshil-N/darshil-nathwani-portfolio"
     },
     {
       title: "Live Trash Detector",
@@ -449,6 +449,9 @@ const Projects = () => {
                         src={project.logo} 
                         alt={`${project.title} logo`}
                         className="w-8 h-8 object-contain rounded"
+                        loading="lazy"
+                        width="32"
+                        height="32"
                       />
                     ) : (
                       <div className="w-8 h-8 rounded bg-purple/20 flex items-center justify-center">
@@ -510,6 +513,9 @@ const Projects = () => {
                           src={selectedProject.logo} 
                           alt={`${selectedProject.title} logo`}
                           className="w-10 h-10 object-contain"
+                          loading="lazy"
+                          width="40"
+                          height="40"
                         />
                       ) : (
                         <div className="w-10 h-10 rounded bg-purple/20 flex items-center justify-center">

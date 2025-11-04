@@ -5,6 +5,7 @@ import About from '../components/About';
 import Skills from '../components/Skills';
 import Projects from '../components/Projects';
 import Education from '../components/Education';
+import Achievements from '../components/Achievements';
 import SoftSkills from '../components/SoftSkills';
 import ExploringSection from '../components/ExploringSection';
 import Contact from '../components/Contact';
@@ -50,7 +51,7 @@ const Index = () => {
     handleScrollAnimations();
     
     // Add scroll event listener
-    window.addEventListener('scroll', handleScrollAnimations);
+    window.addEventListener('scroll', handleScrollAnimations, { passive: true });
     
     // Clean up
     return () => window.removeEventListener('scroll', handleScrollAnimations);
@@ -65,6 +66,7 @@ const Index = () => {
         <Skills />
         <SoftSkills />
         <Education />
+        <Achievements />
         <ExploringSection />
         <Contact />
       </main>

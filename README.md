@@ -293,7 +293,7 @@ This portfolio was built by **Darshil Nathwani**, an Engineering Student passion
 
 ## 📞 Get in Touch
 
-- **GitHub**: [Anonymous-7777](https://github.com/Anonymous-7777)
+- **GitHub**: [Darshil-N](https://github.com/Darshil-N)
 - **LinkedIn**: [Darshil Nathwani](https://www.linkedin.com/in/darshil-nathwani-bba698307)
 - **Email**: Available through the contact form on the website
 

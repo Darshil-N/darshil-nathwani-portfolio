@@ -15,7 +15,7 @@ const Footer = () => {
           
           <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
             <a 
-              href="https://github.com/Anonymous-7777" 
+              href="https://github.com/Darshil-N" 
               className="flex items-center text-gray-300 hover:text-purple transition-colors"
               target="_blank"
               rel="noopener noreferrer"

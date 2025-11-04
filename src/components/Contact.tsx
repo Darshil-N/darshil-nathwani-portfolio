@@ -22,17 +22,24 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
+    // Create mailto link with form data
+    const subject = encodeURIComponent(`Portfolio Contact: ${formData.name}`);
+    const body = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`);
+    const mailtoLink = `mailto:darshilnathwani7@gmail.com?subject=${subject}&body=${body}`;
+    
+    // Open default email client
+    window.location.href = mailtoLink;
+    
     setTimeout(() => {
       setIsSubmitting(false);
-      setSubmitMessage('Thanks for your message! I\'ll get back to you soon.');
+      setSubmitMessage('Opening your email client... Please send the email to complete your message.');
       setFormData({ name: '', email: '', message: '' });
       
-      // Clear success message after 5 seconds
+      // Clear success message after 7 seconds
       setTimeout(() => {
         setSubmitMessage('');
-      }, 5000);
-    }, 1500);
+      }, 7000);
+    }, 1000);
   };
 
   return (
@@ -46,13 +53,13 @@ const Contact = () => {
           <div className="animate-slide-up opacity-0" style={{ animationDelay: '0.1s' }}>
             <h3 className="text-2xl font-semibold text-white mb-4">Contact Me</h3>
             <p className="text-gray-400 mb-6">
-              Have a question or want to work together? Feel free to reach out to me using the form or connect with me via GitHub.
+              Have a question or want to work together? Feel free to reach out to me using the form below or connect with me directly through these platforms.
             </p>
             
             <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-6">
               <a 
-                href="https://github.com/Anonymous-7777" 
-                className="gradient-border p-4 flex items-center hover:border-purple transition-all duration-300 animate-slide-up opacity-0"
+                href="https://github.com/Darshil-N" 
+                className="gradient-border p-4 flex items-center hover:border-purple hover:scale-105 transition-all duration-300 animate-slide-up opacity-0"
                 style={{ animationDelay: '0.1s' }}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -61,8 +68,8 @@ const Contact = () => {
                 <span className="text-white">GitHub</span>
               </a>
               <a
-                href="https://www.linkedin.com/in/darshil-nathwani-bba698307?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
-                className="gradient-border p-4 flex items-center md:ml-4 hover:border-purple transition-all duration-300 animate-slide-up opacity-0"
+                href="https://www.linkedin.com/in/darshil-nathwani-bba698307"
+                className="gradient-border p-4 flex items-center hover:border-purple hover:scale-105 transition-all duration-300 animate-slide-up opacity-0"
                 style={{ animationDelay: '0.15s' }}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -70,14 +77,23 @@ const Contact = () => {
                 <Linkedin className="text-purple mr-3" size={24} />
                 <span className="text-white">LinkedIn</span>
               </a>
-              <div className="gradient-border p-4 flex items-center md:ml-4 animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
+              <a 
+                href="mailto:darshilnathwani7@gmail.com"
+                className="gradient-border p-4 flex items-center hover:border-purple hover:scale-105 transition-all duration-300 animate-slide-up opacity-0" 
+                style={{ animationDelay: '0.2s' }}
+              >
                 <Mail className="text-purple mr-3" size={24} />
                 <span className="text-white">Email Me</span>
-              </div>
+              </a>
             </div>
           </div>
           
           <div className="gradient-border p-6 animate-slide-up opacity-0" style={{ animationDelay: '0.3s' }}>
+            <div className="mb-4 text-center">
+              <p className="text-gray-400 text-sm">
+                ✉️ Form will open your email client with pre-filled content
+              </p>
+            </div>
             <form onSubmit={handleSubmit}>
               <div className="mb-4 animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
                 <label htmlFor="name" className="block text-white mb-2">Name</label>

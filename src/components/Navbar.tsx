@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const sectionIds = ['about', 'projects', 'skills', 'education', 'exploring', 'contact'];
+const sectionIds = ['about', 'projects', 'skills', 'education', 'achievements', 'exploring', 'contact'];
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,7 +33,7 @@ const Navbar = () => {
       }
       if (!found) setActiveSection('about');
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -85,8 +85,12 @@ const Navbar = () => {
               <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple transition-transform duration-300 group-hover:scale-150 group-hover:z-50">
                 <img 
                   src="/Images/darshil.jpg" 
-                  alt="Darshil Nathwani" 
+                  alt="Darshil Nathwani profile picture" 
                   className="w-full h-full object-cover"
+                  loading="eager"
+                  width="40"
+                  height="40"
+                  decoding="async"
                 />
               </div>
               {/* Optional: Add a tooltip that appears on hover */}
@@ -111,6 +115,7 @@ const Navbar = () => {
               </Link>
               <button onClick={() => handleSectionNav('skills')} className={`transition-colors duration-300 ${activeSection === 'skills' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Skills</button>
               <button onClick={() => handleSectionNav('education')} className={`transition-colors duration-300 ${activeSection === 'education' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Education</button>
+              <button onClick={() => handleSectionNav('achievements')} className={`transition-colors duration-300 ${activeSection === 'achievements' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Achievements</button>
               <button onClick={() => handleSectionNav('exploring')} className={`transition-colors duration-300 ${activeSection === 'exploring' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Exploring</button>
               <button onClick={() => handleSectionNav('contact')} className={`transition-colors duration-300 ${activeSection === 'contact' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Contact</button>
               <a 
@@ -127,7 +132,12 @@ const Navbar = () => {
           </div>
           
           <div className="md:hidden">
-            <button onClick={toggleMenu} className="text-white">
+            <button 
+              onClick={toggleMenu} 
+              className="text-white"
+              aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isMenuOpen}
+            >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
@@ -142,6 +152,7 @@ const Navbar = () => {
             <Link to="/projects" className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'projects' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Projects</Link>
             <button onClick={() => handleSectionNav('skills')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'skills' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Skills</button>
             <button onClick={() => handleSectionNav('education')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'education' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Education</button>
+            <button onClick={() => handleSectionNav('achievements')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'achievements' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Achievements</button>
             <button onClick={() => handleSectionNav('exploring')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'exploring' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Exploring</button>
             <button onClick={() => handleSectionNav('contact')} className={`block w-full text-left py-2 transition-colors duration-300 ${activeSection === 'contact' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Contact</button>
             <a 

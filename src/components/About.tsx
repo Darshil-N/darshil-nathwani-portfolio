@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cloud, Eye, X, ArrowLeft, ArrowBigLeft, ArrowBigRight } from 'lucide-react';
+import { Brain, Smartphone, Eye, Globe, Zap, X, ArrowBigLeft, ArrowBigRight } from 'lucide-react';
 import Section from './ui/Section';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -7,15 +7,17 @@ import { AnimatePresence, motion } from 'framer-motion';
 function Typewriter({ text, start, speed = 22, className = '' }: { text: string; start: boolean; speed?: number; className?: string }) {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
-    if (!start) {
+    if (!start || !text) {
       setDisplayed('');
       return;
     }
     setDisplayed('');
     let i = 0;
     const interval = setInterval(() => {
-      setDisplayed((prev) => prev + text[i]);
-      i++;
+      if (i < text.length) {
+        setDisplayed((prev) => prev + (text[i] || ''));
+        i++;
+      }
       if (i >= text.length) clearInterval(interval);
     }, speed);
     return () => clearInterval(interval);
@@ -25,40 +27,48 @@ function Typewriter({ text, start, speed = 22, className = '' }: { text: string;
 
 const aboutCards = [
   {
+    icon: <Brain className="text-purple" size={28} />, 
+    title: 'Artificial Intelligence', 
+    desc: 'Building intelligent systems with ML & NLP',
+    brief: 'I specialize in developing machine learning models and natural language processing systems that can understand context and make intelligent predictions. My expertise spans across neural networks, deep learning, and creating AI solutions that adapt and learn from data to solve complex real-world challenges.',
+    link: '/projects'
+  },
+  {
+    icon: <Smartphone className="text-purple" size={28} />, 
+    title: 'Mobile Development', 
+    desc: 'Native Android apps with modern architecture',
+    brief: 'I build native Android applications using modern development practices with Kotlin and Jetpack Compose. My focus is on creating intuitive user experiences while integrating advanced technologies like blockchain, real-time communication, and cloud services for comprehensive mobile solutions.',
+    link: '/projects'
+  },
+  {
     icon: <Eye className="text-purple" size={28} />, 
     title: 'Computer Vision', 
-    desc: 'Turning images into intelligence',
-    brief: 'Teaching computers to see and think Using this Projects.',
+    desc: 'Teaching machines to see and understand',
+    brief: 'I develop computer vision systems that can analyze images, detect objects, recognize faces, and interpret visual patterns. Using frameworks like YOLO and OpenCV, I create applications that bridge the gap between human visual perception and machine understanding through advanced image processing techniques.',
     link: '/projects'
   },
   {
-    icon: <span className="text-purple font-bold text-xl">DSA</span>, 
-    title: 'DSA', 
-    desc: 'Sharpening Algorithms & Logic with C++',
-    brief: 'Shaping clarity from simplicity Using this projects.',
+    icon: <Globe className="text-purple" size={28} />, 
+    title: 'Web Development', 
+    desc: 'Full-stack applications with modern tech',
+    brief: 'I have created full-stack web applications using React, TypeScript, and Node.js, focusing on responsive design and seamless user experiences. My approach emphasizes clean architecture, performance optimization, and building interfaces that make complex functionality accessible and intuitive for end users.',
     link: '/projects'
   },
   {
-    icon: <span className="text-purple font-bold text-xl">ML</span>, 
-    title: 'Machine Learning', 
-    desc: 'Training models to see patterns humans miss',
-    brief: 'Training models that see what the human eye misses using this projects.',
-    link: '/projects'
-  },
-  {
-    icon: <Eye className="text-purple" size={28} />, 
-    title: 'Data Interpretation', 
-    desc: 'Turning images into intelligence',
-    brief: 'Reading between the lines using this projects.',
+    icon: <Zap className="text-purple" size={28} />, 
+    title: 'Data Structures & Algorithms', 
+    desc: 'Optimizing performance with efficient code',
+    brief: 'I have a strong foundation in computer science fundamentals, implementing efficient algorithms and data structures in C++. My focus is on writing optimized code that scales well, understanding time and space complexity, and applying algorithmic thinking to solve challenging computational problems.',
     link: '/projects'
   },
 ];
 
 const aboutCategoryMap: Record<string, string> = {
+  'Artificial Intelligence': 'ai',
+  'Mobile Development': 'mobile',
   'Computer Vision': 'cv',
-  'DSA': 'dsa',
-  'Machine Learning': 'ml',
-  'Data Interpretation': 'data',
+  'Web Development': 'web',
+  'Data Structures & Algorithms': 'dsa',
 };
 
 const About = () => {
@@ -73,7 +83,7 @@ const About = () => {
       <div className="max-w-4xl mx-auto relative min-h-[420px] flex items-center justify-center">
         <div className="animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
           <p className="text-gray-300 text-lg leading-relaxed mb-12 text-center">
-            I'm passionate about artificial intelligence, machine learning, and modern C++ development. I enjoy exploring how intelligent systems can be designed to solve real-world problems efficiently and creatively. With a growing interest in combining software and systems thinking, I strive to build solutions that are both practical and forward-looking. I value continuous learning and am always eager to expand my skill set through hands-on work with emerging technologies.
+            I'm an AI/ML engineer who believes technology should make life better, not more complicated. My journey started with curiosity about how machines could learn and think, and has evolved into building practical AI solutions that solve real problems. Whether it's creating an intelligent interview coach that helps people land their dream jobs, or developing fraud detection systems that protect financial institutions, I focus on making AI accessible and impactful. I'm driven by the challenge of turning complex algorithms into user-friendly applications that people actually want to use.
           </p>
           {/* Expanded card view */}
           <AnimatePresence mode="wait">
