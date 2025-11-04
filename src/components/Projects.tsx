@@ -20,16 +20,50 @@ interface Project {
   logo?: string;
   isNew?: boolean;
   inDevelopment?: boolean;
-  category: 'cv' | 'dsa' | 'ml' | 'data' | 'oth';
+  category: 'ai' | 'mobile' | 'cv' | 'web' | 'dsa';
 }
 
 const categories = [
+  { key: 'ai', label: 'AI & Machine Learning' },
+  { key: 'mobile', label: 'Mobile & Full-Stack' },
   { key: 'cv', label: 'Computer Vision' },
-  { key: 'dsa', label: 'DSA' },
-  { key: 'ml', label: 'Machine Learning' },
-  { key: 'data', label: 'Data Interpretation' },
-  { key: 'oth', label: 'Other' },
+  { key: 'web', label: 'Web Development' },
+  { key: 'dsa', label: 'DSA & Algorithms' },
 ];
+
+// Function to get default logo based on project category and type
+const getDefaultLogo = (project: Project) => {
+  // AI/ML Projects
+  if (project.category === 'ai') {
+    return <Brain className="w-6 h-6 text-purple" />;
+  }
+  
+  // Mobile/Full-Stack Projects  
+  if (project.category === 'mobile') {
+    if (project.techStack.includes('Android') || project.techStack.includes('Kotlin')) {
+      return <SiAndroid className="w-6 h-6 text-green-500" />;
+    }
+    return <Globe className="w-6 h-6 text-purple" />;
+  }
+  
+  // Computer Vision Projects
+  if (project.category === 'cv') {
+    return <Eye className="w-6 h-6 text-purple" />;
+  }
+  
+  // Web Development Projects
+  if (project.category === 'web') {
+    return <Globe className="w-6 h-6 text-purple" />;
+  }
+  
+  // DSA/Algorithm Projects
+  if (project.category === 'dsa') {
+    return <Terminal className="w-6 h-6 text-purple" />;
+  }
+  
+  // Default fallback
+  return <Code2 className="w-6 h-6 text-purple" />;
+};
 
 // Tech stack icons mapping
 const techStackIcons: Record<string, React.ReactNode> = {
@@ -131,7 +165,7 @@ const Projects = () => {
       ],
       github: "https://github.com/Darshil-N/Siddhi-Ai",
       logo: "https://raw.githubusercontent.com/Darshil-N/Siddhi-Ai/main/Siddhi_Logo.png",
-      category: 'ml'
+      category: 'ai'
     },
     {
       title: "Kara-AI: Multi-Modal Interview Coach",
@@ -169,7 +203,7 @@ const Projects = () => {
       github: "https://github.com/Darshil-N/Kara-Ai",
       logo: "https://github.com/Darshil-N/Kara-Ai/blob/fd9e28527c1cf10665cc3bbb3c3e17c8d583cb21/Kara_Ai_Logo.png",
       isNew: true,
-      category: 'ml'
+      category: 'ai'
     },
     {
       title: "Raahi: Smart Tourist Safety Platform",
@@ -208,7 +242,7 @@ const Projects = () => {
       logo: "https://raw.githubusercontent.com/Anonymous-7777/Raahi/main/Logo.png",
       liveDemo: "https://raahi-eta.vercel.app/",
       isNew: true,
-      category: 'oth'
+      category: 'mobile'
     },
     {
       title: "AI Resource Suggestion Chatbot",
@@ -232,7 +266,7 @@ const Projects = () => {
         "Vector databases and semantic search",
         "Conversational AI design patterns"
       ],
-      category: 'ml'
+      category: 'ai'
     },
     {
       title: "Automatic Trash Sorter",
@@ -298,13 +332,13 @@ const Projects = () => {
       title: "Capturing Live Footage of Trash",
       description: "Using OpenCV the live photage of trash is sent to Live trash Detector. This is using numpy and panda to interpret the input and output for proper detection",
       techStack: ["Python", "OpenCV", "Camera Module","Numpy"],
-      category: 'data'
+      category: 'cv'
     },
     {
       title: "Portfolio Website",
       description: "Using no code tools and prompts able to create this websites",
       techStack: ["Github", "Spline", "Lovable AI","Cursor"],
-      category: 'oth',
+      category: 'web',
       github: "https://github.com/Anonymous-7777/darshil-nathwani-portfolio"
     },
     {
@@ -321,30 +355,81 @@ const Projects = () => {
   }, [selectedCategory, projects]);
 
   return (
-    <section id="projects" className="bg-dark-secondary py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-white text-center mb-2">Projects</h2>
-        <div className="w-24 h-1 bg-purple mx-auto rounded-full mb-12"></div>
-        {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-4 mb-10">
+    <section id="projects" className="relative py-24 overflow-hidden">
+      {/* Modern Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark-secondary to-dark"></div>
+      
+      {/* Animated mesh gradient */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-mesh animate-mesh opacity-30"></div>
+      </div>
+      
+      {/* Floating geometric shapes */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Large background shapes */}
+        <div className="absolute top-10 -left-10 w-72 h-72 rounded-full bg-gradient-to-r from-purple/20 via-purple/10 to-transparent blur-3xl animate-slow-spin"></div>
+        <div className="absolute -top-10 right-10 w-96 h-96 rounded-full bg-gradient-to-l from-purple-light/15 via-purple-light/5 to-transparent blur-3xl animate-slow-spin-reverse"></div>
+        <div className="absolute bottom-10 left-1/3 w-80 h-80 rounded-full bg-gradient-to-t from-purple/15 via-purple/8 to-transparent blur-3xl animate-slow-spin" style={{animationDelay: '3s'}}></div>
+        
+        {/* Structured floating cards - mimicking project cards */}
+        <div className="absolute top-20 left-1/4 w-48 h-32 bg-dark-secondary/60 rounded-xl rotate-3 animate-float-slow border border-purple/30 backdrop-blur-sm"></div>
+        <div className="absolute top-1/3 right-1/4 w-40 h-28 bg-dark/80 rounded-xl -rotate-2 animate-float-medium border border-purple/40 backdrop-blur-sm" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-1/3 left-1/6 w-44 h-30 bg-dark-secondary/70 rounded-xl rotate-1 animate-float-fast border border-purple/35 backdrop-blur-sm" style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-20 right-1/3 w-36 h-26 bg-dark/85 rounded-xl -rotate-1 animate-float-slow border border-purple/30 backdrop-blur-sm" style={{animationDelay: '4s'}}></div>
+        
+        {/* Medium project card shapes */}
+        <div className="absolute top-16 right-16 w-52 h-24 bg-dark-secondary/50 rounded-xl rotate-2 animate-float-medium border border-purple/25 backdrop-blur-sm" style={{animationDelay: '0.5s'}}></div>
+        <div className="absolute top-2/3 left-10 w-32 h-36 bg-dark/75 rounded-xl -rotate-3 animate-float-slow border border-purple/35 backdrop-blur-sm" style={{animationDelay: '3s'}}></div>
+        <div className="absolute bottom-1/4 left-2/3 w-38 h-28 bg-dark-secondary/65 rounded-xl rotate-2 animate-float-fast border border-purple/30 backdrop-blur-sm" style={{animationDelay: '1.5s'}}></div>
+        <div className="absolute top-1/2 left-1/3 w-30 h-34 bg-dark/70 rounded-xl -rotate-1 animate-float-medium border border-purple/40 backdrop-blur-sm" style={{animationDelay: '2.5s'}}></div>
+        
+        {/* Small UI element shapes */}
+        <div className="absolute top-32 left-1/2 w-20 h-16 bg-dark-secondary/80 rounded-lg rotate-6 animate-float-fast border border-purple/50" style={{animationDelay: '2.2s'}}></div>
+        <div className="absolute bottom-32 right-1/2 w-24 h-18 bg-dark/90 rounded-lg -rotate-4 animate-float-medium border border-purple/45" style={{animationDelay: '3.8s'}}></div>
+        <div className="absolute top-3/4 right-1/4 w-16 h-20 bg-dark-secondary/75 rounded-lg rotate-5 animate-float-slow border border-purple/35" style={{animationDelay: '0.3s'}}></div>
+        <div className="absolute bottom-1/4 left-1/4 w-28 h-14 bg-dark/85 rounded-lg -rotate-3 animate-float-fast border border-purple/40" style={{animationDelay: '4.8s'}}></div>
+        
+        {/* Subtle connecting lines */}
+        <div className="absolute top-1/4 left-1/4 w-px h-32 bg-gradient-to-b from-transparent via-purple/30 to-transparent animate-pulse"></div>
+        <div className="absolute top-1/2 right-1/4 w-40 h-px bg-gradient-to-r from-transparent via-purple/30 to-transparent animate-pulse" style={{animationDelay: '1.5s'}}></div>
+        <div className="absolute bottom-1/3 left-1/2 w-px h-24 bg-gradient-to-b from-transparent via-purple-light/30 to-transparent animate-pulse" style={{animationDelay: '3s'}}></div>
+      </div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Featured Projects
+          </h2>
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-6">
+            A showcase of my technical expertise across AI, mobile development, and full-stack applications
+          </p>
+          <div className="w-24 h-1 bg-gradient-to-r from-purple via-purple-light to-purple mx-auto rounded-full"></div>
+        </div>
+        {/* Category Filter */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <button
+            className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 text-sm ${
+              !selectedCategory 
+                ? 'bg-purple text-white shadow-lg shadow-purple/25' 
+                : 'bg-dark border border-purple/30 text-purple hover:bg-purple/10 hover:border-purple/50'
+            }`}
+            onClick={() => navigate("/projects")}
+          >
+            All Projects
+          </button>
           {categories.map(cat => (
             <button
               key={cat.key}
-              className={`px-5 py-2 rounded-full font-semibold border transition-all duration-200 text-sm
-                ${selectedCategory === cat.key ? 'bg-purple text-white border-purple shadow-lg' : 'bg-dark-secondary text-purple border-purple/40 hover:bg-purple/10'}`}
+              className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 text-sm ${
+                selectedCategory === cat.key 
+                  ? 'bg-purple text-white shadow-lg shadow-purple/25' 
+                  : 'bg-dark border border-purple/30 text-purple hover:bg-purple/10 hover:border-purple/50'
+              }`}
               onClick={() => navigate(`?category=${cat.key}`)}
             >
               {cat.label}
             </button>
           ))}
-          {selectedCategory && (
-            <button
-              className="ml-2 px-4 py-2 rounded-full border border-gray-700 text-gray-300 hover:bg-gray-800 transition-all duration-200 text-xs"
-              onClick={() => navigate("/projects")}
-            >
-              Show All
-            </button>
-          )}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.length === 0 ? (
@@ -358,7 +443,20 @@ const Projects = () => {
                 onClick={() => openProjectModal(project)}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <h3 className="text-xl font-semibold text-white">{project.title}</h3>
+                  <div className="flex items-center gap-3">
+                    {project.logo ? (
+                      <img 
+                        src={project.logo} 
+                        alt={`${project.title} logo`}
+                        className="w-8 h-8 object-contain rounded"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded bg-purple/20 flex items-center justify-center">
+                        {getDefaultLogo(project)}
+                      </div>
+                    )}
+                    <h3 className="text-xl font-semibold text-white">{project.title}</h3>
+                  </div>
                   <div className="flex items-center space-x-2">
                     {project.isNew && (
                       <span className="bg-purple text-white text-xs px-2 py-1 rounded-full">NEW</span>
@@ -407,12 +505,16 @@ const Projects = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <DialogTitle className="text-2xl font-bold text-white mb-2 flex items-center gap-3">
-                      {selectedProject.logo && (
+                      {selectedProject.logo ? (
                         <img 
                           src={selectedProject.logo} 
                           alt={`${selectedProject.title} logo`}
                           className="w-10 h-10 object-contain"
                         />
+                      ) : (
+                        <div className="w-10 h-10 rounded bg-purple/20 flex items-center justify-center">
+                          {getDefaultLogo(selectedProject)}
+                        </div>
                       )}
                       {selectedProject.title}
                       <div className="flex items-center space-x-2">
@@ -431,31 +533,36 @@ const Projects = () => {
                 </div>
               </DialogHeader>
 
-              <div className="space-y-6 mt-6">
+              <div className="space-y-8 mt-8">
                 {/* Detailed Description */}
                 {selectedProject.detailedDescription && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                      <Lightbulb className="text-purple" size={20} />
+                  <div className="bg-gray-900/30 border border-gray-800 rounded-xl p-6">
+                    <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
+                      <div className="p-2 bg-purple/20 rounded-lg">
+                        <Lightbulb className="text-purple" size={20} />
+                      </div>
                       Project Overview
                     </h3>
-                    <p className="text-gray-300 leading-relaxed">
+                    <p className="text-gray-300 leading-relaxed text-base">
                       {selectedProject.detailedDescription}
                     </p>
                   </div>
                 )}
 
-
-
                 {/* Tech Stack */}
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <Settings className="text-purple" size={20} />
+                <div className="bg-gray-900/30 border border-gray-800 rounded-xl p-6">
+                  <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-3">
+                    <div className="p-2 bg-purple/20 rounded-lg">
+                      <Settings className="text-purple" size={20} />
+                    </div>
                     Technology Stack
+                    <span className="text-sm text-gray-400 font-normal">
+                      ({selectedProject.techStack.length} technologies)
+                    </span>
                   </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {selectedProject.techStack.map((tech, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 bg-gray-900/50 border border-gray-800 rounded-lg hover:border-purple/40 transition-colors">
+                      <div key={index} className="flex items-center gap-3 p-4 bg-dark border border-gray-700 rounded-lg hover:border-purple/40 hover:bg-gray-800/50 transition-all duration-300">
                         {techStackIcons[tech] || <Code2 className="text-purple" size={24} />}
                         <span className="text-sm text-white font-medium">{tech}</span>
                       </div>
@@ -465,19 +572,24 @@ const Projects = () => {
 
                 {/* Features */}
                 {selectedProject.features && selectedProject.features.length > 0 && (
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                      <Target className="text-purple" size={20} />
+                  <div className="bg-gray-900/30 border border-gray-800 rounded-xl p-6">
+                    <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-3">
+                      <div className="p-2 bg-purple/20 rounded-lg">
+                        <Target className="text-purple" size={20} />
+                      </div>
                       Key Features
+                      <span className="text-sm text-gray-400 font-normal">
+                        ({selectedProject.features.length} highlights)
+                      </span>
                     </h3>
-                    <ul className="space-y-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {selectedProject.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-3 text-gray-300">
-                          <div className="w-2 h-2 bg-purple rounded-full mt-2 flex-shrink-0"></div>
-                          {feature}
-                        </li>
+                        <div key={index} className="flex items-start gap-3 p-3 bg-dark/50 border border-gray-700 rounded-lg">
+                          <div className="w-2 h-2 bg-gradient-to-r from-purple to-purple-light rounded-full mt-2 flex-shrink-0"></div>
+                          <span className="text-gray-300 text-sm leading-relaxed">{feature}</span>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 )}
 
@@ -485,74 +597,81 @@ const Projects = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Challenges */}
                   {selectedProject.challenges && selectedProject.challenges.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                        <Target className="text-purple" size={20} />
+                    <div className="bg-red-900/10 border border-red-800/30 rounded-xl p-6">
+                      <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-3">
+                        <div className="p-2 bg-red-500/20 rounded-lg">
+                          <Target className="text-red-400" size={20} />
+                        </div>
                         Challenges Overcome
                       </h3>
-                      <ul className="space-y-2">
+                      <div className="space-y-3">
                         {selectedProject.challenges.map((challenge, index) => (
-                          <li key={index} className="flex items-start gap-3 text-gray-300">
-                            <div className="w-2 h-2 bg-purple rounded-full mt-2 flex-shrink-0"></div>
-                            {challenge}
-                          </li>
+                          <div key={index} className="flex items-start gap-3 p-3 bg-red-900/20 border border-red-800/30 rounded-lg">
+                            <div className="w-2 h-2 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                            <span className="text-gray-300 text-sm leading-relaxed">{challenge}</span>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
 
                   {/* Learnings */}
                   {selectedProject.learnings && selectedProject.learnings.length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                        <Lightbulb className="text-purple-light" size={20} />
+                    <div className="bg-green-900/10 border border-green-800/30 rounded-xl p-6">
+                      <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-3">
+                        <div className="p-2 bg-green-500/20 rounded-lg">
+                          <Lightbulb className="text-green-400" size={20} />
+                        </div>
                         Key Learnings
                       </h3>
-                      <ul className="space-y-2">
+                      <div className="space-y-3">
                         {selectedProject.learnings.map((learning, index) => (
-                          <li key={index} className="flex items-start gap-3 text-gray-300">
-                            <div className="w-2 h-2 bg-purple-light rounded-full mt-2 flex-shrink-0"></div>
-                            {learning}
-                          </li>
+                          <div key={index} className="flex items-start gap-3 p-3 bg-green-900/20 border border-green-800/30 rounded-lg">
+                            <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                            <span className="text-gray-300 text-sm leading-relaxed">{learning}</span>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <Separator className="bg-purple/20" />
+                <Separator className="bg-gradient-to-r from-transparent via-purple/30 to-transparent" />
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap gap-4">
-                  {selectedProject.github && (
-                    <Button asChild className="bg-purple hover:bg-purple-light text-white border-none">
-                      <a 
-                        href={selectedProject.github} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        <Github size={18} />
-                        View Source Code
-                      </a>
+                <div className="bg-gray-900/30 border border-gray-800 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4">Explore This Project</h4>
+                  <div className="flex flex-wrap gap-4">
+                    {selectedProject.github && (
+                      <Button asChild className="bg-gradient-to-r from-purple to-purple-light hover:from-purple-light hover:to-purple text-white border-none shadow-lg shadow-purple/25 transition-all duration-300">
+                        <a 
+                          href={selectedProject.github} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <Github size={18} />
+                          View Source Code
+                        </a>
+                      </Button>
+                    )}
+                    {selectedProject.liveDemo && (
+                      <Button asChild className="bg-transparent border-2 border-purple text-purple hover:bg-purple hover:text-white shadow-lg hover:shadow-purple/25 transition-all duration-300">
+                        <a 
+                          href={selectedProject.liveDemo} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <ExternalLink size={18} />
+                          Live Demo
+                        </a>
+                      </Button>
+                    )}
+                    <Button variant="outline" onClick={closeModal} className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-gray-500 transition-all duration-300">
+                      Close Details
                     </Button>
-                  )}
-                  {selectedProject.liveDemo && (
-                    <Button asChild className="bg-transparent border border-purple text-purple hover:bg-purple hover:text-white">
-                      <a 
-                        href={selectedProject.liveDemo} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        <ExternalLink size={18} />
-                        Live Demo
-                      </a>
-                    </Button>
-                  )}
-                  <Button variant="outline" onClick={closeModal} className="border-gray-600 text-gray-300 hover:bg-purple/10 hover:border-purple">
-                    Close
-                  </Button>
+                  </div>
                 </div>
               </div>
             </>
