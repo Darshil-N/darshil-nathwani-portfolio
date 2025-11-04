@@ -4,7 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect, lazy, Suspense, useState } from 'react';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 
 // Lazy load pages for code splitting
 const Index = lazy(() => import('./pages/Index'));
@@ -70,6 +72,38 @@ function ScrollToTop() {
 }
 
 const App = () => {
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Hidden admin shortcut: Ctrl+Alt+L
+      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        setShowAdminLogin(true);
+      }
+      
+      // ESC to close any admin modal
+      if (e.key === 'Escape') {
+        setShowAdminLogin(false);
+        setShowAdminDashboard(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleAdminLogin = () => {
+    setShowAdminLogin(false);
+    setShowAdminDashboard(true);
+  };
+
+  const handleAdminClose = () => {
+    setShowAdminLogin(false);
+    setShowAdminDashboard(false);
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -79,6 +113,17 @@ const App = () => {
           <ScrollToTop />
           <RoutesWithTransition />
         </BrowserRouter>
+        
+        {/* Admin System */}
+        <AdminLogin 
+          isOpen={showAdminLogin}
+          onClose={() => setShowAdminLogin(false)}
+          onLogin={handleAdminLogin}
+        />
+        <AdminDashboard 
+          isOpen={showAdminDashboard}
+          onClose={handleAdminClose}
+        />
       </TooltipProvider>
     </QueryClientProvider>
   );
