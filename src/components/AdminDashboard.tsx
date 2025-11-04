@@ -17,13 +17,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose }) => {
   const [projectForm, setProjectForm] = useState<ProjectData>({
     title: '',
     description: '',
-    longDescription: '',
-    technologies: [],
-    category: 'Web Development',
+    detailedDescription: '',
+    techStack: [],
+    category: 'web',
     github: '',
-    live: '',
+    liveDemo: '',
     logo: '',
-    images: []
+    features: [],
+    challenges: [],
+    learnings: [],
+    isNew: true
   });
 
   // Achievement form state
@@ -42,7 +45,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose }) => {
     }
   });
 
-  const projectCategories = ['Web Development', 'AI/ML', 'Mobile', 'Desktop', 'Data Science'];
+  const projectCategories = [
+    { label: 'Web Development', value: 'web' },
+    { label: 'AI/ML', value: 'ai' },
+    { label: 'Mobile', value: 'mobile' },
+    { label: 'Computer Vision', value: 'cv' },
+    { label: 'DSA & Algorithms', value: 'dsa' }
+  ];
   const achievementCategories = ['hackathon', 'leadership', 'academic', 'professional'];
 
   const showMessage = (type: 'success' | 'error', text: string) => {
@@ -69,7 +78,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose }) => {
   };
 
   const handleAddProject = async () => {
-    if (!projectForm.title || !projectForm.description || !projectForm.longDescription) {
+    if (!projectForm.title || !projectForm.description || !projectForm.detailedDescription) {
       showMessage('error', 'Please fill in all required fields');
       return;
     }
@@ -89,13 +98,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose }) => {
       setProjectForm({
         title: '',
         description: '',
-        longDescription: '',
-        technologies: [],
-        category: 'Web Development',
+        detailedDescription: '',
+        techStack: [],
+        category: 'web',
         github: '',
-        live: '',
+        liveDemo: '',
         logo: '',
-        images: []
+        features: [],
+        challenges: [],
+        learnings: [],
+        isNew: true
       });
     } catch (error) {
       showMessage('error', `Failed to add project: ${error}`);
@@ -229,11 +241,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose }) => {
                   </label>
                   <select
                     value={projectForm.category}
-                    onChange={(e) => setProjectForm({ ...projectForm, category: e.target.value })}
+                    onChange={(e) => setProjectForm({ ...projectForm, category: e.target.value as ProjectData['category'] })}
                     className="w-full px-4 py-3 bg-dark-secondary border border-gray-600 rounded-lg text-white focus:border-purple focus:outline-none"
                   >
                     {projectCategories.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <option key={cat.value} value={cat.value}>{cat.label}</option>
                     ))}
                   </select>
                 </div>
@@ -256,8 +268,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose }) => {
                     Long Description *
                   </label>
                   <textarea
-                    value={projectForm.longDescription}
-                    onChange={(e) => setProjectForm({ ...projectForm, longDescription: e.target.value })}
+                    value={projectForm.detailedDescription}
+                    onChange={(e) => setProjectForm({ ...projectForm, detailedDescription: e.target.value })}
                     rows={4}
                     className="w-full px-4 py-3 bg-dark-secondary border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple focus:outline-none"
                     placeholder="Detailed description of the project, its features, and impact..."
@@ -270,8 +282,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose }) => {
                   </label>
                   <input
                     type="text"
-                    value={projectForm.technologies.join(', ')}
-                    onChange={(e) => handleArrayInput(e.target.value, (arr) => setProjectForm({ ...projectForm, technologies: arr }))}
+                    value={projectForm.techStack.join(', ')}
+                    onChange={(e) => handleArrayInput(e.target.value, (arr) => setProjectForm({ ...projectForm, techStack: arr }))}
                     className="w-full px-4 py-3 bg-dark-secondary border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple focus:outline-none"
                     placeholder="React, TypeScript, Python, OpenAI"
                   />
@@ -309,11 +321,62 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose }) => {
                   </label>
                   <input
                     type="text"
-                    value={projectForm.live}
-                    onChange={(e) => setProjectForm({ ...projectForm, live: e.target.value })}
+                    value={projectForm.liveDemo}
+                    onChange={(e) => setProjectForm({ ...projectForm, liveDemo: e.target.value })}
                     className="w-full px-4 py-3 bg-dark-secondary border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple focus:outline-none"
                     placeholder="https://your-project.vercel.app"
                   />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Key Features (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={projectForm.features?.join(', ') || ''}
+                    onChange={(e) => handleArrayInput(e.target.value, (arr) => setProjectForm({ ...projectForm, features: arr }))}
+                    className="w-full px-4 py-3 bg-dark-secondary border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple focus:outline-none"
+                    placeholder="Real-time chat, AI integration, Voice commands"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Challenges Faced (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={projectForm.challenges?.join(', ') || ''}
+                    onChange={(e) => handleArrayInput(e.target.value, (arr) => setProjectForm({ ...projectForm, challenges: arr }))}
+                    className="w-full px-4 py-3 bg-dark-secondary border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple focus:outline-none"
+                    placeholder="API rate limiting, Complex state management, Performance optimization"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Key Learnings (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={projectForm.learnings?.join(', ') || ''}
+                    onChange={(e) => handleArrayInput(e.target.value, (arr) => setProjectForm({ ...projectForm, learnings: arr }))}
+                    className="w-full px-4 py-3 bg-dark-secondary border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-purple focus:outline-none"
+                    placeholder="Advanced React patterns, API design, User experience principles"
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center gap-2 text-sm text-gray-300">
+                    <input
+                      type="checkbox"
+                      checked={projectForm.isNew || false}
+                      onChange={(e) => setProjectForm({ ...projectForm, isNew: e.target.checked })}
+                      className="w-4 h-4 bg-dark-secondary border border-gray-600 rounded focus:ring-purple focus:ring-2"
+                    />
+                    Mark as New Project
+                  </label>
                 </div>
               </div>
 

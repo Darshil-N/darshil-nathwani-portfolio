@@ -3,13 +3,16 @@
 export interface ProjectData {
   title: string;
   description: string;
-  longDescription: string;
-  technologies: string[];
-  category: string;
+  detailedDescription: string;
+  techStack: string[];
+  category: 'ai' | 'mobile' | 'cv' | 'web' | 'dsa';
   github?: string;
-  live?: string;
+  liveDemo?: string;
   logo?: string;
-  images?: string[];
+  features?: string[];
+  challenges?: string[];
+  learnings?: string[];
+  isNew?: boolean;
 }
 
 export interface AchievementData {
@@ -142,10 +145,9 @@ class GitHubService {
   private generateProjectCode(project: ProjectData): string {
     return `    {
       title: "${project.title}",
-      description: "${project.description}",
-      longDescription: "${project.longDescription}",
-      technologies: [${project.technologies.map(tech => `"${tech}"`).join(', ')}],
-      category: "${project.category}",${project.github ? `\n      github: "${project.github}",` : ''}${project.live ? `\n      live: "${project.live}",` : ''}${project.logo ? `\n      logo: "${project.logo}",` : ''}${project.images ? `\n      images: [${project.images.map(img => `"${img}"`).join(', ')}],` : ''}
+      description: "${project.description}",${project.detailedDescription ? `\n      detailedDescription: "${project.detailedDescription}",` : ''}
+      techStack: [${project.techStack.map(tech => `"${tech}"`).join(', ')}],${project.features ? `\n      features: [${project.features.map(f => `"${f}"`).join(', ')}],` : ''}${project.challenges ? `\n      challenges: [${project.challenges.map(c => `"${c}"`).join(', ')}],` : ''}${project.learnings ? `\n      learnings: [${project.learnings.map(l => `"${l}"`).join(', ')}],` : ''}${project.github ? `\n      github: "${project.github}",` : ''}${project.liveDemo ? `\n      liveDemo: "${project.liveDemo}",` : ''}${project.logo ? `\n      logo: "${project.logo}",` : ''}${project.isNew ? `\n      isNew: true,` : ''}
+      category: "${project.category}"
     }`;
   }
 

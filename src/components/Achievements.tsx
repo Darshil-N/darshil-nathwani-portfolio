@@ -6,20 +6,7 @@ const Achievements = () => {
   const [selectedAchievement, setSelectedAchievement] = useState<any>(null);
   
   const achievements = [
-    {
-      title: "Participation",
-      subtitle: "HackOasisV2",
-      description: "A participation in first ever hackathon where we built a website using no coding tools like wix",
-      date: "28th November 2024",
-      category: "hackathon",
-      details: {
-        event: "HackOasisV2",
-        achievement: "Participation",
-        team: "Error 404",
-        technologies: ["Wix"],
-        impact: ""
-      }
-    },
+   
 {
       title: "TechTrek Hackathon",
       date: "March 29, 2025",
