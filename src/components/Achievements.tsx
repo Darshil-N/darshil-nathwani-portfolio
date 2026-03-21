@@ -5,98 +5,62 @@ import { Trophy, Users, Clock, Lightbulb, Award, Calendar, MapPin, Code2, X, Ext
 const Achievements = () => {
   const [selectedAchievement, setSelectedAchievement] = useState<any>(null);
   
-  const achievements = [
+  const competitiveAchievements = [
     {
-      title: "Hackoasis v2",
-      subtitle: "Hackathon",
-      description: "Participated in my first ever hackathon using no code tool called Wix",
-      date: "29th November 2024",
-      category: "hackathon",
-      details: {
-        event: "Hackoasis v2",
-        achievement: "Participation",
-        team: "error 404",
-        technologies: ["Wix"],
-        impact: ""
-      }
-    },
-{
-      title: "TechTrek Hackathon",
-      date: "March 29, 2025",
-      organizer: "DSCE ACM Student Chapter",
-      duration: "8 Hours",
-      type: "Open-themed Hackathon",
-      project: "PG Finder Web Application",
-      description: "Designed and developed a MERN stack web application to find PGs nearby. Participated in an intensive 8-hour hackathon that enhanced time management and web development skills while collaborating with an amazing team.",
+      title: "Indian Chess Academy Hackathon - 1st Place",
+      date: "2026",
+      organizer: "Indian Chess Academy",
+      duration: "72 Hours",
+      type: "Winning Team Project",
+      role: "Team Madoss",
+      project: "Smart, Secure, and Usable Hackathon Platform",
+      status: "1st Place",
+      description: "Team Madoss secured 1st place for delivering a polished and reliable platform with a strong balance of usability, security, and technical execution.",
       highlights: [
-        "Built complete MERN stack application",
-        "Implemented location-based PG search",
-        "Enhanced time management under pressure",
-        "Successful team collaboration",
-        "Mentorship from industry experts"
+        "Awarded 1st place for a well-rounded and thoughtfully developed solution",
+        "Recognized for balancing product usability with robust security",
+        "Delivered strong technical execution with dependable platform behavior",
+        "Qualified for a one-month training program post-hackathon"
       ],
       features: [
-        "Location-based search functionality",
-        "PG listing and filtering system",
-        "User-friendly interface design",
-        "Real-time data management"
+        "Collaborative end-to-end product build with clear ownership",
+        "Reliable platform workflows with production-minded implementation",
+        "Security-aware design choices aligned with hackathon goals",
+        "Post-win pathway to internship opportunities based on training performance"
       ],
-      teammates: ["Midde Jayanth", "Anshuman Pati", "Aman Kumar Singh"],
-      technologies: ["MongoDB", "Express.js", "React", "Node.js"],
-      icon: <Clock className="text-purple" size={20} />,
-      color: "from-purple/20 to-blue/20"
+      teammates: ["Darshil Nathwani", "Rigved", "Shrinidhi Patil", "Aadya Baranwal"],
+      technologies: ["React", "TypeScript", "Firebase", "Security-First Design", "Full-Stack Architecture"],
+      icon: <Trophy className="text-purple" size={20} />,
+      color: "from-yellow/20 to-amber-500/20"
     },
     {
-      title: "Hackverse 24-Hour Hackathon",
-      date: "2024",
-      organizer: "DSATM Techfusion",
-      duration: "24 Hours",
-      type: "AI/ML Domain",
+      title: "CICADA Hackathon - TOP 20",
+      date: "22-Hour Sprint",
+      organizer: "Mastersolis Infotech at Atria University, Bengaluru",
+      duration: "22 Hours",
+      type: "Innovation Hackathon",
       role: "Team Lead",
-      project: "Kara-AI: Multi-Modal AI Interview Coach",
-      description: "Led team 'Jugaadu' to build a comprehensive AI interview coaching platform. First time as team lead, successfully architected and delivered a complete full-stack AI solution.",
+      project: "KARM AI - College Placement Management Portal",
+      status: "TOP 20 Finish",
+      description: "Led Team Jugaadu to build KARM AI, a dual-platform placement management solution in 22 hours. We solved real campus recruitment pain points through a web portal for Students, HOD, and TPO, plus a Chrome extension that auto-fills applications and improves submission speed with AI-assisted workflows.",
       highlights: [
-        "First online hackathon experience",
-        "Successful team leadership debut",
-        "Full-stack AI project delivery",
-        "Multi-modal AI integration"
+        "Secured a TOP 20 finish among 150+ teams",
+        "Completed end-to-end architecture from briefing to final presentation",
+        "Built and validated a production-style multi-role placement workflow",
+        "Sustained clean code and delivery pace through an overnight sprint"
       ],
       features: [
-        "Dynamic context-aware questions",
-        "Live video & audio analysis",
-        "Real-time feedback system",
-        "Speech pattern evaluation"
+        "Multi-role portal access for Students, HOD, and TPO operations",
+        "AI-powered resume parsing, scoring, and candidate-job fit analysis",
+        "Automated placement drive lifecycle with email notifications",
+        "Real-time analytics dashboard with department-level reports (Excel/PDF)",
+        "Chrome extension for profile-based form auto-fill and one-click submissions",
+        "Live application tracking and instant drive update notifications"
       ],
-      teammates: ["Aadya B.", "Musaddik Jamadar"],
-      technologies: ["React", "Python", "OpenCV", "AI Models"],
-      icon: <Lightbulb className="text-purple" size={20} />,
-      color: "from-green/20 to-purple/20"
-    },
-    {
-      title: "HackMan v.8",
-      date: "2024",
-      organizer: "ISE Department, DSCE",
-      duration: "24 Hours",
-      type: "Innovation Marathon",
-      role: "Team Lead",
-      project: "Project Kriti - Trusted Career Network",
-      description: "Led development of a blockchain-based career verification system combining AI and distributed ledger technology to solve document forgery in recruitment.",
-      highlights: [
-        "Tackled real-world forgery problems",
-        "Integrated blockchain security",
-        "AI-powered recruitment tools",
-        "Comprehensive career passport"
-      ],
-      features: [
-        "Secure KYC wallet system",
-        "Tamper-proof credentials",
-        "AI-smart candidate filtering",
-        "Automated resume generation",
-        "Smart autofill extension"
-      ],
-      technologies: ["Hyperledger Aries", "Fabric", "PyTorch", "TensorFlow", "React", "Node.js", "Firebase"],
-      icon: <Award className="text-purple" size={20} />,
-      color: "from-blue/20 to-cyan/20"
+      teammates: ["Aadya Baranwal", "Musaddik Jamadar", "Shreyash J S"],
+      technologies: ["React", "FastAPI", "Firebase", "Gemini API", "Chrome Extension"],
+      icon: <Trophy className="text-purple" size={20} />,
+      color: "from-yellow/20 to-purple/20"
     },
     {
       title: "SIH Internal Hackathon",
@@ -124,6 +88,138 @@ const Achievements = () => {
     }
   ];
 
+  const participationHighlights = [
+    {
+      title: "Hackoasis v2",
+      date: "29th November 2024",
+      organizer: "Hackoasis",
+      duration: "Hackathon",
+      type: "Participation",
+      project: "No-code Prototype with Wix",
+      description: "Participated in my first hackathon and built a prototype using Wix, which kickstarted my competitive building journey.",
+      highlights: [
+        "First-ever hackathon participation",
+        "Built and presented a no-code prototype",
+        "Learned team coordination under event timelines"
+      ],
+      features: [
+        "Rapid prototyping in a constrained timeline",
+        "Foundation in hackathon workflow and pitching"
+      ],
+      technologies: ["Wix"],
+      icon: <Clock className="text-purple" size={20} />,
+      color: "from-purple/20 to-blue/20"
+    },
+    {
+      title: "TechTrek Hackathon",
+      date: "March 29, 2025",
+      organizer: "DSCE ACM Student Chapter",
+      duration: "8 Hours",
+      type: "Participation",
+      project: "PG Finder Web Application",
+      description: "Designed and developed a MERN stack web application to find PGs nearby while working through an intense 8-hour sprint.",
+      highlights: [
+        "Built complete MERN stack application",
+        "Implemented location-based PG search",
+        "Improved execution under strict time pressure"
+      ],
+      features: [
+        "Location-based search functionality",
+        "PG listing and filtering system",
+        "User-friendly responsive interface"
+      ],
+      teammates: ["Midde Jayanth", "Anshuman Pati", "Aman Kumar Singh"],
+      technologies: ["MongoDB", "Express.js", "React", "Node.js"],
+      icon: <Clock className="text-purple" size={20} />,
+      color: "from-purple/20 to-blue/20"
+    },
+    {
+      title: "Hackverse 24-Hour Hackathon",
+      date: "2024",
+      organizer: "DSATM Techfusion",
+      duration: "24 Hours",
+      type: "Participation",
+      role: "Team Lead",
+      project: "Kara-AI: Multi-Modal AI Interview Coach",
+      description: "Led team 'Jugaadu' to deliver a full-stack AI interview coaching prototype and gained critical leadership experience.",
+      highlights: [
+        "First online hackathon experience",
+        "Team leadership under a 24-hour deadline",
+        "Full-stack AI project delivery"
+      ],
+      features: [
+        "Dynamic context-aware interview questions",
+        "Live video and audio analysis",
+        "Real-time feedback system"
+      ],
+      teammates: ["Aadya B.", "Musaddik Jamadar"],
+      technologies: ["React", "Python", "OpenCV", "AI Models"],
+      icon: <Lightbulb className="text-purple" size={20} />,
+      color: "from-green/20 to-purple/20"
+    },
+    {
+      title: "HackMan v.8",
+      date: "Oct 31 - Nov 1, 2025",
+      organizer: "Dayananda Sagar College of Engineering (DSCE)",
+      duration: "24 Hours",
+      type: "Participation",
+      role: "Team Lead",
+      project: "Kriti (कृति) - Decentralized Career Identity Platform",
+      description: "In my first-ever 24-hour hackathon, I led Team UNO on a single mission: solving the trust crisis in hiring. We built Kriti, a decentralized digital identity platform that works like a DigiLocker for careers. It tackles fake resumes and slow background checks through a blockchain trust layer for verifiable credentials and an AI layer for ATS-proof resume generation plus instant recruiter-side talent verification.",
+      highlights: [
+        "24-hour sleepless build sprint as Team Lead",
+        "Built a B2B/B2C architecture from whiteboard to working prototype",
+        "Focused on solving fake resumes and hiring verification delays",
+        "Strong learning outcome despite no final rank"
+      ],
+      features: [
+        "Blockchain-backed verifiable credentials for degrees and experience letters",
+        "Tamper-proof trust layer for un-forgeable career records",
+        "AI engine for ATS-optimized resume creation",
+        "Instant candidate verification workflow for recruiters",
+        "Career identity vault inspired by DigiLocker"
+      ],
+      teammates: ["Dhruva K R", "Aadya Baranwal", "Utsav Patel"],
+      technologies: ["Blockchain", "Verifiable Credentials", "AI", "React", "Node.js"],
+      codeLink: "https://lnkd.in/gjRjJH-6",
+      icon: <Award className="text-purple" size={20} />,
+      color: "from-blue/20 to-cyan/20"
+    },
+    {
+      title: "Aegis Cybersecurity Hackathon",
+      date: "24-Hour Sprint",
+      organizer: "Aegis at DSCE",
+      duration: "24 Hours",
+      type: "Participation",
+      role: "Team Merge Conflict",
+      project: "Kavach - AI Security Copilot",
+      description: "Built Kavach, an AI that watches your AI-generated code in real time. The system blocks risky terminal commands, detects dependency attacks, scans live file changes, protects secrets, and provides local-first AI security analysis without sending code to external servers.",
+      highlights: [
+        "Delivered a fully local AI security workflow in 24 hours",
+        "Focused on making vibe coding safer through proactive guardrails",
+        "Combined threat detection, intent control, and rollback safety in one tool",
+        "Validated end-to-end implementation under extreme hackathon pressure"
+      ],
+      features: [
+        "Terminal interception to block dangerous commands pre-execution",
+        "Phantom dependency blocker for fake and typosquatted packages",
+        "Live security scanner for injections, broken auth, weak crypto, and secrets",
+        "Secret Shield to keep credentials off AI servers",
+        "Intent Guard to prevent over-scoped AI actions",
+        "RAG-powered cross-file codebase security analysis",
+        "Living vulnerability report that updates as fixes are made",
+        "Reinforcement learning loop to reduce noise over time",
+        "Rollback safety net for one-command recovery"
+      ],
+      teammates: ["Arpit Ravi", "Arya Dudalkar", "Rigved Tamkoria"],
+      technologies: ["Ollama", "phi4-mini", "nomic-embed-text", "Semgrep", "XGBoost", "ChromaDB", "scikit-learn", "SQLite", "FastAPI", "Python", "TypeScript", "VS Code Extension"],
+      codeLink: "https://lnkd.in/gy7hziPh",
+      demoLink: "https://lnkd.in/ge3DmKgg",
+      icon: <Trophy className="text-purple" size={20} />,
+      color: "from-cyan-500/20 to-purple/20"
+    }
+  ];
+
   return (
     <Section id="achievements" className="bg-dark-secondary py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -131,13 +227,16 @@ const Achievements = () => {
           <h2 className="text-3xl font-bold text-white mb-2">Achievements & Recognition</h2>
           <div className="w-24 h-1 bg-purple mx-auto rounded-full mb-4"></div>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Showcasing hackathon victories, leadership experiences, and innovative projects that demonstrate 
-            technical excellence and collaborative problem-solving skills.
+            A clear split between competitive outcomes and participation journey across hackathons and technical events.
           </p>
         </div>
-        
+
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold text-white mb-2">Competitive Achievements</h3>
+          <p className="text-gray-400 text-sm">Wins, rankings, and officially recognized outcomes.</p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {achievements.map((achievement, index) => (
+          {competitiveAchievements.map((achievement, index) => (
             <div 
               key={index}
               className="gradient-border p-4 animate-slide-up opacity-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
@@ -181,6 +280,61 @@ const Achievements = () => {
                   )}
                 </div>
                 
+                <div className="flex items-center justify-center text-purple group-hover:text-purple-light transition-colors">
+                  <ExternalLink size={14} className="mr-1" />
+                  <span className="text-xs font-medium">Details</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 mb-6">
+          <h3 className="text-xl font-semibold text-white mb-2">Hackathon Participation Journey</h3>
+          <p className="text-gray-400 text-sm">Sprints that shaped execution speed, teamwork, and product intuition.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {participationHighlights.map((achievement, index) => (
+            <div 
+              key={`participation-${index}`}
+              className="gradient-border p-4 animate-slide-up opacity-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
+              style={{ animationDelay: `${0.1 + index * 0.1}s` }}
+              onClick={() => setSelectedAchievement(achievement)}
+              role="button"
+              tabIndex={0}
+              aria-label={`View details for ${achievement.title}`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedAchievement(achievement);
+                }
+              }}
+            >
+              <div className="text-center">
+                <div className="p-2 bg-purple/10 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center group-hover:bg-purple/20 transition-colors">
+                  <div className="scale-75">
+                    {achievement.icon}
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">{achievement.title}</h3>
+
+                {achievement.role && (
+                  <span className="inline-block px-2 py-1 bg-purple/20 text-purple text-xs rounded-full mb-2">
+                    {achievement.role}
+                  </span>
+                )}
+
+                {achievement.project && (
+                  <div className="mb-2">
+                    <h4 className="text-sm font-semibold text-purple line-clamp-2">{achievement.project}</h4>
+                  </div>
+                )}
+
+                <div className="text-xs text-gray-400 mb-3">
+                  <div className="mb-1">{achievement.date}</div>
+                </div>
+
                 <div className="flex items-center justify-center text-purple group-hover:text-purple-light transition-colors">
                   <ExternalLink size={14} className="mr-1" />
                   <span className="text-xs font-medium">Details</span>
@@ -286,10 +440,33 @@ const Achievements = () => {
               <div className="mb-4">
                 <h4 className="text-sm font-semibold text-white mb-2">About the Project</h4>
                 <p className="text-gray-300 text-sm leading-relaxed">{selectedAchievement.description}</p>
+                {selectedAchievement.codeLink && (
+                  <a
+                    href={selectedAchievement.codeLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center mt-3 text-xs font-medium text-purple hover:text-purple-light transition-colors"
+                  >
+                    <ExternalLink size={12} className="mr-1" />
+                    Check out the code
+                  </a>
+                )}
+                {selectedAchievement.demoLink && (
+                  <a
+                    href={selectedAchievement.demoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center mt-2 ml-4 text-xs font-medium text-purple hover:text-purple-light transition-colors"
+                  >
+                    <ExternalLink size={12} className="mr-1" />
+                    Watch demo video
+                  </a>
+                )}
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Highlights */}
+                {selectedAchievement.highlights && (
                 <div>
                   <h4 className="text-sm font-semibold text-white mb-2">Key Highlights</h4>
                   <div className="space-y-1">
@@ -301,6 +478,7 @@ const Achievements = () => {
                     ))}
                   </div>
                 </div>
+                )}
 
                 {/* Features */}
                 {selectedAchievement.features && (

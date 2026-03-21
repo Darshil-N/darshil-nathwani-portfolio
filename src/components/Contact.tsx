@@ -134,14 +134,18 @@ const Contact = () => {
                 ></textarea>
               </div>
               
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-purple hover:bg-purple-light text-white py-3 rounded-md transition-colors duration-300 font-medium disabled:opacity-70 animate-slide-up opacity-0"
-                style={{ animationDelay: '0.35s' }}
-              >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-              </button>
+              <div className="w-full flex justify-center mt-6">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="uiverse-btn animate-slide-up opacity-0"
+                  style={{ animationDelay: '0.35s' }}
+                  data-text={isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}
+                >
+                  <span className="actual-text">&nbsp;{isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}&nbsp;</span>
+                  <span aria-hidden="true" className="hover-text">&nbsp;{isSubmitting ? 'SENDING...' : 'SEND MESSAGE'}&nbsp;</span>
+                </button>
+              </div>
               
               {submitMessage && (
                 <div className="mt-4 p-3 bg-purple/10 border border-purple/20 text-purple text-center rounded-md">

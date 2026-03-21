@@ -77,8 +77,8 @@ const App = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Hidden admin shortcut: Ctrl+Alt+L
-      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'l') {
+      // Hidden admin shortcut: Ctrl+R
+      if (e.ctrlKey && e.key.toLowerCase() === 'r') {
         e.preventDefault();
         setShowAdminLogin(true);
       }

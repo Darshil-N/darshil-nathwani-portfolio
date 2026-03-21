@@ -201,7 +201,7 @@ const Projects = () => {
         "Building scalable AI applications with performance optimization"
       ],
       github: "https://github.com/Darshil-N/Kara-Ai",
-      logo: "https://github.com/Darshil-N/Kara-Ai/blob/fd9e28527c1cf10665cc3bbb3c3e17c8d583cb21/Kara_Ai_Logo.png",
+      logo: "/Logos/Kara_ai.png",
       isNew: true,
       category: 'ai'
     },
@@ -243,6 +243,132 @@ const Projects = () => {
       liveDemo: "https://raahi-eta.vercel.app/",
       isNew: true,
       category: 'mobile'
+    },
+    {
+      title: "Kriti (कृति): Trusted Career Identity",
+      description: "A decentralized career identity platform that solves hiring trust gaps using verifiable credentials and AI-powered recruiter workflows.",
+      detailedDescription: "Kriti is a decentralized digital identity platform designed as a DigiLocker for careers. The system addresses two core hiring pain points: forged resumes and slow, expensive background checks. It combines a blockchain trust layer for verifiable credentials (education and work proofs) with an AI intelligence layer that consumes verified data to generate ATS-optimized resumes and accelerate recruiter-side candidate validation. The platform includes candidate onboarding, credential issuance and verification, recruiter search flows, and trust scoring pathways.",
+      techStack: ["React", "TypeScript", "Node.js", "Express.js", "Firebase", "Blockchain", "Verifiable Credentials", "Hyperledger Aries", "Hyperledger Fabric", "PyTorch", "TensorFlow"],
+      features: [
+        "Candidate career vault for storing education and experience credentials",
+        "Cryptographically verifiable records to make credentials tamper-evident",
+        "One-click credential validation flow for recruiter and HR screening stages",
+        "AI-assisted ATS-ready resume generation from trusted credential data",
+        "Trust-first candidate shortlisting pipeline for faster hiring decisions",
+        "B2B/B2C architecture prototype with end-to-end workflow coverage"
+      ],
+      challenges: [
+        "Defining a secure decentralized identity model under severe time constraints",
+        "Bridging blockchain credential verification with practical recruiter workflows",
+        "Designing reliable data flows across credential storage, AI parsing, and screening",
+        "Balancing product depth with rapid MVP delivery during a sleepless sprint"
+      ],
+      learnings: [
+        "End-to-end leadership across a high-pressure multi-domain build",
+        "Applying decentralized identity and verifiable credential concepts to real hiring problems",
+        "Structuring AI layers around trusted data instead of raw self-reported profiles",
+        "Turning a complex concept into an explainable and demo-ready architecture quickly"
+      ],
+      github: "https://lnkd.in/gjRjJH-6",
+      logo: "/Logos/Kriti_Ai.png",
+      isNew: true,
+      category: 'ai'
+    },
+    {
+      title: "KARM AI: Placement Management System",
+      description: "A dual-platform college placement system combining AI-assisted screening with a Chrome extension for faster application workflows.",
+      detailedDescription: "KARM AI targets practical campus recruitment challenges by combining a web portal and a Chrome extension into one connected experience. The web platform supports Students, HOD, and TPO with resume analysis, hiring pipeline visibility, and automated drive operations. The Chrome extension eliminates repetitive form filling by auto-populating student details, enabling one-click submissions and timely notifications. The overall architecture delivers an ATS-aware placement workflow with real-time data sync and actionable insights.",
+      techStack: ["React", "TypeScript", "FastAPI", "Firebase", "Firestore", "Gemini API", "Chrome Extension"],
+      features: [
+        "Role-based placement portal for Students, HOD, and TPO",
+        "AI-driven resume parsing and intelligent candidate filtering",
+        "Automated placement drive creation, tracking, and stage transitions",
+        "Smart email notifications for every recruitment milestone",
+        "Real-time dashboard analytics with department-wise trend insights",
+        "Exportable performance reporting in Excel/PDF workflows",
+        "Gemini API integration for resume scoring and job-fit analysis",
+        "Chrome extension with profile-based auto-fill and one-click applications",
+        "Instant drive alerts and real-time application progress tracking"
+      ],
+      challenges: [
+        "Shipping a complete dual-platform architecture with production-like depth",
+        "Keeping real-time Firebase data sync reliable under rapid iteration",
+        "Integrating AI evaluation flows while preserving fast UX and clear outputs",
+        "Maintaining code quality during overnight debugging and final-stage pressure"
+      ],
+      learnings: [
+        "Leading high-intensity execution across full product lifecycle phases",
+        "Designing practical AI features that directly reduce recruiter and student effort",
+        "Building extension plus web-platform interoperability for seamless workflows",
+        "Balancing speed, architecture clarity, and demo readiness under extreme timelines"
+      ],
+      isNew: true,
+      category: 'web'
+    },
+    {
+      title: "Festive Hackathon Registration Portal",
+      description: "A smart, secure, and immersive hackathon registration platform with OCR, AI assistance, and instant admin-triggered email workflows.",
+      detailedDescription: "This platform starts from core requirements such as team registration, verification, and email confirmation, then expands into a feature-rich product with strong UX and automation. The portal supports smooth candidate onboarding through OCR-based ID auto-fill, bot-safe interactions through reCAPTCHA-style verification, and a Gemini-powered real-time assistant for participant guidance. On the admin side, application decisions instantly trigger personalized communication via Firebase-integrated backend flows and Nodemailer. The product includes a fully responsive festive interface while maintaining practical production-style functionality.",
+      techStack: ["React", "TypeScript", "Firebase", "Nodemailer", "Gemini API", "OCR", "reCAPTCHA"],
+      features: [
+        "Team registration and verification workflow with structured data capture",
+        "OCR-based ID scanning for fast name and profile auto-fill",
+        "Anti-bot verification for secure and reliable submissions",
+        "Gemini API chatbot for dynamic FAQs and real-time support",
+        "Admin panel to review, approve, and reject team applications",
+        "Instant personalized email confirmations through Nodemailer",
+        "Real-time backend sync powered by Firebase",
+        "Responsive Christmas-themed UI with festive background music"
+      ],
+      challenges: [
+        "Building and polishing a complete full-stack product in just 24 hours",
+        "Integrating OCR and AI assistance without degrading UX performance",
+        "Designing secure verification and communication flows under time pressure",
+        "Balancing product depth, frontend polish, and backend reliability as a solo developer"
+      ],
+      learnings: [
+        "High-pressure solo execution from requirements to working production-style MVP",
+        "Effective orchestration of AI APIs, email pipelines, and realtime backend services",
+        "Importance of UX details in differentiating a standard full-stack build",
+        "How to expand a baseline problem statement into a standout audition deliverable"
+      ],
+      liveDemo: "https://lnkd.in/gWq3Qc2Y",
+      isNew: true,
+      category: 'web'
+    },
+    {
+      title: "Kavach: AI Security Copilot",
+      description: "A local-first AI security copilot that monitors AI-generated code and blocks risky actions before they impact your codebase.",
+      detailedDescription: "Kavach addresses a modern risk: developers accepting AI-generated output without deep review. It acts as an active defensive layer by intercepting dangerous terminal commands, blocking suspicious dependencies, and scanning live code edits for critical vulnerabilities. The system combines local LLM inference with RAG-based repository understanding, reinforcement learning for low-noise feedback, and one-command rollback safety. Everything runs fully local, with zero outbound API dependency for core security flows, ensuring that sensitive code and credentials never leave the machine.",
+      techStack: ["Ollama", "phi4-mini", "nomic-embed-text", "Semgrep", "XGBoost", "ChromaDB", "scikit-learn", "SQLite", "FastAPI", "Python", "TypeScript", "VS Code Extension", "Watchdog", "Shell Hooks"],
+      features: [
+        "Terminal interception that blocks dangerous commands before execution",
+        "Phantom dependency blocker for typosquatting and fake package attacks",
+        "Live scanner on every file save for OWASP-style security issues",
+        "Secret Shield preventing credential leakage to AI systems",
+        "Intent Guard that stops AI from exceeding user-requested scope",
+        "RAG-powered cross-file threat analysis for full-project awareness",
+        "Living security report that updates as vulnerabilities are fixed",
+        "Contextual bandit reinforcement learning to reduce false positives",
+        "Rollback safety net for rapid recovery after unsafe AI actions"
+      ],
+      challenges: [
+        "Building a real-time multi-layer defense stack with low-latency guardrails",
+        "Balancing strict security controls with developer-friendly usability",
+        "Keeping the system fully local while maintaining meaningful AI analysis",
+        "Coordinating extension, backend, scanning, and policy logic in one cohesive architecture"
+      ],
+      learnings: [
+        "How to engineer practical guardrails around AI-assisted coding workflows",
+        "Integrating static analysis, ML scoring, and local LLM reasoning cohesively",
+        "Designing actionable security signals with minimal alert fatigue",
+        "Delivering a polished security product under extreme time pressure"
+      ],
+      github: "https://lnkd.in/gy7hziPh",
+      liveDemo: "https://lnkd.in/ge3DmKgg",
+      logo: "/Logos/Kavach_ai.png",
+      isNew: true,
+      category: 'ai'
     },
     {
       title: "AI Resource Suggestion Chatbot",
@@ -406,28 +532,24 @@ const Projects = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-purple via-purple-light to-purple mx-auto rounded-full"></div>
         </div>
         {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="flex flex-wrap justify-center gap-6 mb-12">
           <button
-            className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 text-sm ${
-              !selectedCategory 
-                ? 'bg-purple text-white shadow-lg shadow-purple/25' 
-                : 'bg-dark border border-purple/30 text-purple hover:bg-purple/10 hover:border-purple/50'
-            }`}
+            className={`uiverse-btn-secondary ${!selectedCategory ? 'active' : ''}`}
+            data-text="ALL PROJECTS"
             onClick={() => navigate("/projects")}
           >
-            All Projects
+            <span className="actual-text">&nbsp;ALL PROJECTS&nbsp;</span>
+            <span aria-hidden="true" className="hover-text">&nbsp;ALL PROJECTS&nbsp;</span>
           </button>
           {categories.map(cat => (
             <button
               key={cat.key}
-              className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 text-sm ${
-                selectedCategory === cat.key 
-                  ? 'bg-purple text-white shadow-lg shadow-purple/25' 
-                  : 'bg-dark border border-purple/30 text-purple hover:bg-purple/10 hover:border-purple/50'
-              }`}
+              className={`uiverse-btn-secondary ${selectedCategory === cat.key ? 'active' : ''}`}
+              data-text={cat.label.toUpperCase()}
               onClick={() => navigate(`?category=${cat.key}`)}
             >
-              {cat.label}
+              <span className="actual-text">&nbsp;{cat.label.toUpperCase()}&nbsp;</span>
+              <span aria-hidden="true" className="hover-text">&nbsp;{cat.label.toUpperCase()}&nbsp;</span>
             </button>
           ))}
         </div>
@@ -438,10 +560,20 @@ const Projects = () => {
             filteredProjects.map((project, index) => (
               <div 
                 key={index} 
-                className="gradient-border p-6 h-full flex flex-col animate-slide-up opacity-0 cursor-pointer hover:border-purple-light transition-all duration-300 transform hover:scale-105" 
+                className="ui-browser-card h-full flex flex-col animate-slide-up opacity-0 cursor-pointer transition-all duration-300 transform hover:scale-[1.02]" 
                 style={{ animationDelay: `${0.2 + index * 0.1}s` }}
                 onClick={() => openProjectModal(project)}
               >
+                <div className="ui-browser-card__bar">
+                  <div className="ui-browser-card__circles" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <div className="ui-browser-card__search">{project.category}.project</div>
+                </div>
+
+                <div className="p-6 h-full flex flex-col">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-3">
                     {project.logo ? (
@@ -492,6 +624,7 @@ const Projects = () => {
                       View on GitHub
                     </a>
                   )}
+                </div>
                 </div>
               </div>
             ))
@@ -649,34 +782,45 @@ const Projects = () => {
                   <h4 className="text-lg font-semibold text-white mb-4">Explore This Project</h4>
                   <div className="flex flex-wrap gap-4">
                     {selectedProject.github && (
-                      <Button asChild className="bg-gradient-to-r from-purple to-purple-light hover:from-purple-light hover:to-purple text-white border-none shadow-lg shadow-purple/25 transition-all duration-300">
-                        <a 
-                          href={selectedProject.github} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <Github size={18} />
-                          View Source Code
-                        </a>
-                      </Button>
+                      <a 
+                        href={selectedProject.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="uiverse-btn"
+                        data-text="SOURCE CODE"
+                      >
+                        <span className="actual-text">
+                          <span className="inline-flex items-center gap-2">&nbsp;<Github size={18} /> SOURCE CODE&nbsp;</span>
+                        </span>
+                        <span aria-hidden="true" className="hover-text">
+                          <span className="inline-flex items-center gap-2">&nbsp;<Github size={18} /> SOURCE CODE&nbsp;</span>
+                        </span>
+                      </a>
                     )}
                     {selectedProject.liveDemo && (
-                      <Button asChild className="bg-transparent border-2 border-purple text-purple hover:bg-purple hover:text-white shadow-lg hover:shadow-purple/25 transition-all duration-300">
-                        <a 
-                          href={selectedProject.liveDemo} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink size={18} />
-                          Live Demo
-                        </a>
-                      </Button>
+                      <a 
+                        href={selectedProject.liveDemo} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="uiverse-btn"
+                        data-text="LIVE DEMO"
+                      >
+                        <span className="actual-text">
+                          <span className="inline-flex items-center gap-2">&nbsp;<ExternalLink size={18} /> LIVE DEMO&nbsp;</span>
+                        </span>
+                        <span aria-hidden="true" className="hover-text">
+                          <span className="inline-flex items-center gap-2">&nbsp;<ExternalLink size={18} /> LIVE DEMO&nbsp;</span>
+                        </span>
+                      </a>
                     )}
-                    <Button variant="outline" onClick={closeModal} className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-gray-500 transition-all duration-300">
-                      Close Details
-                    </Button>
+                    <button 
+                      onClick={closeModal} 
+                      className="uiverse-btn-secondary"
+                      data-text="CLOSE"
+                    >
+                      <span className="actual-text">&nbsp;CLOSE&nbsp;</span>
+                      <span aria-hidden="true" className="hover-text">&nbsp;CLOSE&nbsp;</span>
+                    </button>
                   </div>
                 </div>
               </div>

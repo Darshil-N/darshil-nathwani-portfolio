@@ -1,28 +1,28 @@
 import React from 'react';
 import Section from './ui/Section';
-import { Brain, Code2, Cloud, Database, Cpu, Zap, BookOpen, Rocket } from 'lucide-react';
+import { Brain, Code2, Cloud, Shield, Zap, Rocket } from 'lucide-react';
 
 const ExploringSection = () => {
   const exploringCategories = [
     {
-      title: "Machine Learning Libraries",
+      title: "AI Security & Local LLMs",
       icon: <Brain className="text-purple" size={24} />,
-      items: ["PyTorch", "Scikit-learn", "Seaborn", "Plotly", "Keras", "XGBoost"]
+      items: ["Ollama", "Local Model Routing", "Prompt Guardrails", "Secure Inference", "Model Evaluation", "Safety Policies"]
     },
     {
-      title: "Web Development",
+      title: "Full-Stack Product Engineering",
       icon: <Code2 className="text-purple" size={24} />,
-      items: ["Next.js", "Redux", "Material-UI", "Framer Motion", "Socket.io", "Express.js"]
+      items: ["Next.js", "WebSocket Workflows", "Event-Driven APIs", "Advanced Auth", "Caching Patterns", "System Design"]
     },
     {
-      title: "Cloud Platforms",
+      title: "Cloud & DevOps",
       icon: <Cloud className="text-purple" size={24} />,
-      items: ["AWS Basics", "Google Cloud", "Heroku", "DigitalOcean", "Firebase Functions"]
+      items: ["AWS Core Services", "GCP Services", "Docker Compose", "CI/CD Pipelines", "Observability", "Cost-Aware Deployment"]
     },
     {
-      title: "Development Tools",
-      icon: <Zap className="text-purple" size={24} />,
-      items: ["Jest Testing", "Postman API", "GitHub Actions", "ESLint", "Prettier", "Swagger"]
+      title: "Secure Developer Tooling",
+      icon: <Shield className="text-purple" size={24} />,
+      items: ["Semgrep Rule Tuning", "Dependency Risk Scoring", "Secret Scanning", "Extension Security", "Rollback Automation", "Threat Modeling"]
     }
   ];
 
@@ -33,8 +33,8 @@ const ExploringSection = () => {
           <h2 className="text-3xl font-bold text-white mb-2">Currently Exploring</h2>
           <div className="w-24 h-1 bg-purple mx-auto rounded-full mb-4"></div>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Continuously expanding my skillset and staying ahead of the curve in emerging technologies, 
-            frameworks, and industry best practices.
+            I stay hands-on with production-relevant technologies and security-first workflows, 
+            continuously exploring tools that improve reliability, speed, and real-world impact.
           </p>
         </div>
         
@@ -71,7 +71,7 @@ const ExploringSection = () => {
           <div className="inline-flex items-center px-6 py-3 bg-purple/10 rounded-full border border-purple/20">
             <Rocket className="text-purple mr-2" size={20} />
             <span className="text-gray-300 font-medium">
-              Always learning, always growing, always building
+              Learning in public, building in sprints, improving every release
             </span>
           </div>
         </div>

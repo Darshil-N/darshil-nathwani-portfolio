@@ -29,36 +29,36 @@ const aboutCards = [
   {
     icon: <Brain className="text-purple" size={28} />, 
     title: 'Artificial Intelligence', 
-    desc: 'Building intelligent systems with ML & NLP',
-    brief: 'I specialize in developing machine learning models and natural language processing systems that can understand context and make intelligent predictions. My expertise spans across neural networks, deep learning, and creating AI solutions that adapt and learn from data to solve complex real-world challenges.',
+    desc: 'Building practical AI systems for real-world impact',
+    brief: 'I build AI systems that combine machine learning, automation, and product thinking. My recent work focuses on trusted AI workflows, security-aware coding copilots, and intelligent decision systems that convert complex models into usable tools.',
     link: '/projects'
   },
   {
     icon: <Smartphone className="text-purple" size={28} />, 
     title: 'Mobile Development', 
     desc: 'Native Android apps with modern architecture',
-    brief: 'I build native Android applications using modern development practices with Kotlin and Jetpack Compose. My focus is on creating intuitive user experiences while integrating advanced technologies like blockchain, real-time communication, and cloud services for comprehensive mobile solutions.',
+    brief: 'I build native Android apps using Kotlin and Jetpack Compose with a focus on reliability, UX clarity, and real-world utility. I enjoy integrating backend services, identity systems, and safety-first features into mobile products.',
     link: '/projects'
   },
   {
     icon: <Eye className="text-purple" size={28} />, 
     title: 'Computer Vision', 
     desc: 'Teaching machines to see and understand',
-    brief: 'I develop computer vision systems that can analyze images, detect objects, recognize faces, and interpret visual patterns. Using frameworks like YOLO and OpenCV, I create applications that bridge the gap between human visual perception and machine understanding through advanced image processing techniques.',
+    brief: 'I work on computer vision pipelines for detection, tracking, and behavior understanding using tools like OpenCV and YOLO. My goal is to make vision models fast, interpretable, and deployable in practical applications.',
     link: '/projects'
   },
   {
     icon: <Globe className="text-purple" size={28} />, 
     title: 'Web Development', 
     desc: 'Full-stack applications with modern tech',
-    brief: 'I have created full-stack web applications using React, TypeScript, and Node.js, focusing on responsive design and seamless user experiences. My approach emphasizes clean architecture, performance optimization, and building interfaces that make complex functionality accessible and intuitive for end users.',
+    brief: 'I build full-stack web products with React, TypeScript, FastAPI/Node.js, and Firebase. I focus on clear architecture, responsive interfaces, and automation-first workflows that make complex systems easy to use.',
     link: '/projects'
   },
   {
     icon: <Zap className="text-purple" size={28} />, 
     title: 'Data Structures & Algorithms', 
     desc: 'Optimizing performance with efficient code',
-    brief: 'I have a strong foundation in computer science fundamentals, implementing efficient algorithms and data structures in C++. My focus is on writing optimized code that scales well, understanding time and space complexity, and applying algorithmic thinking to solve challenging computational problems.',
+    brief: 'I rely on strong CS fundamentals for building scalable systems under pressure. DSA and algorithmic thinking help me optimize APIs, improve model-serving performance, and make fast engineering decisions during hackathon-style builds.',
     link: '/projects'
   },
 ];
@@ -83,7 +83,7 @@ const About = () => {
       <div className="max-w-4xl mx-auto relative min-h-[420px] flex items-center justify-center">
         <div className="animate-slide-up opacity-0" style={{ animationDelay: '0.2s' }}>
           <p className="text-gray-300 text-lg leading-relaxed mb-12 text-center">
-            I'm an AI/ML engineer who believes technology should make life better, not more complicated. My journey started with curiosity about how machines could learn and think, and has evolved into building practical AI solutions that solve real problems. Whether it's creating an intelligent interview coach that helps people land their dream jobs, or developing fraud detection systems that protect financial institutions, I focus on making AI accessible and impactful. I'm driven by the challenge of turning complex algorithms into user-friendly applications that people actually want to use.
+            I am an AI/ML-focused full-stack developer who loves turning high-stakes ideas into working products. From trusted identity systems and placement automation to AI security copilots like Kavach, I build solutions that are practical, secure, and user-first. I enjoy leading fast execution cycles in hackathons, then refining those prototypes into production-minded architectures with clean code, measurable impact, and strong developer experience.
           </p>
           {/* Expanded card view */}
           <AnimatePresence mode="wait">

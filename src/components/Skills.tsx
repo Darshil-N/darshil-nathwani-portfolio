@@ -5,15 +5,15 @@ import { Code2, Brain, Eye, Cloud, Server, Database, Smartphone, Globe, Zap, Set
 
 const Skills = () => {
   const skills = {
-    programming: ["Python", "C++", "C", "JavaScript", "TypeScript", "Kotlin"],
-    frameworks: ["React", "FastAPI", "Flask", "Node.js", "Streamlit", "Jetpack Compose", "Tailwind CSS", "Vite"],
-    aiml: ["TensorFlow", "OpenCV", "YOLO", "XGBoost", "SHAP", "Gemini API", "LangChain", "Hugging Face", "Emotion Detection"],
-    databases: ["Firebase", "Firestore", "Supabase", "MongoDB", "SQLite"],
-    tools: ["VS Code", "GitHub", "Git", "Jupyter Notebook", "Google Colab", "Anaconda", "Kaggle", "Android Studio", "Spline"],
-    dataScience: ["Pandas", "Numpy", "Matplotlib", "Power BI", "Data Science", "Data Interpretation"],
-    devOps: ["Linux", "Ubuntu", "Docker", "Vercel", "Railway", "Netlify", "Cloud Computing", "Deployment", "Blockchain", "Polygon", "Metamask"],
+    programming: ["Python", "TypeScript", "JavaScript", "C++", "C", "Kotlin"],
+    frameworks: ["React", "FastAPI", "Node.js", "Flask", "Streamlit", "Tailwind CSS", "Vite"],
+    aiml: ["Ollama", "phi4-mini", "nomic-embed-text", "TensorFlow", "OpenCV", "YOLO", "XGBoost", "SHAP", "Gemini API", "LangChain", "Hugging Face", "Emotion Detection"],
+    databases: ["Firebase", "Firestore", "Supabase", "MongoDB", "SQLite", "ChromaDB"],
+    tools: ["VS Code", "GitHub", "Git", "Jupyter Notebook", "Google Colab", "Anaconda", "Kaggle", "Android Studio", "Postman", "Spline"],
+    dataScience: ["Pandas", "Numpy", "Matplotlib", "Power BI", "scikit-learn", "Data Interpretation"],
+    devOps: ["Linux", "Ubuntu", "Docker", "GitHub Actions", "Vercel", "Railway", "Netlify", "Cloud Computing", "Deployment", "Blockchain", "Polygon", "Metamask", "Semgrep"],
     design: ["Canva", "Figma", "Spline"],
-    concepts: ["DSA", "AI", "ML", "Computer Vision", "API Development", "OOP", "Authentication", "Stacks", "Queues", "Linked Lists"]
+    concepts: ["DSA", "AI", "ML", "Computer Vision", "API Development", "OOP", "Authentication", "RAG", "AI Security", "Prompt Engineering", "Stacks", "Queues", "Linked Lists"]
   };
 
   const skillIcons: Record<string, React.ReactNode> = {
@@ -42,6 +42,9 @@ const Skills = () => {
     'XGBoost': <Bot className="text-purple mr-1" size={16} />,
     'SHAP': <Brain className="text-purple mr-1" size={16} />,
     'Gemini API': <Bot className="text-purple mr-1" size={16} />,
+    'Ollama': <Bot className="text-purple mr-1" size={16} />,
+    'phi4-mini': <Bot className="text-purple mr-1" size={16} />,
+    'nomic-embed-text': <Brain className="text-purple mr-1" size={16} />,
     'LangChain': <Layers className="text-purple mr-1" size={16} />,
     'Hugging Face': <SiHuggingface className="text-purple mr-1" size={16} />,
     'Emotion Detection': <Eye className="text-purple mr-1" size={16} />,
@@ -52,6 +55,7 @@ const Skills = () => {
     'Supabase': <Database className="text-purple mr-1" size={16} />,
     'MongoDB': <SiMongodb className="text-purple mr-1" size={16} />,
     'SQLite': <SiSqlite className="text-purple mr-1" size={16} />,
+    'ChromaDB': <Database className="text-purple mr-1" size={16} />,
     
     // Tools
     'VS Code': <SiVscodium className="text-purple mr-1" size={16} />,
@@ -62,6 +66,7 @@ const Skills = () => {
     'Anaconda': <SiAnaconda className="text-purple mr-1" size={16} />,
     'Kaggle': <SiKaggle className="text-purple mr-1" size={16} />,
     'Android Studio': <SiAndroid className="text-purple mr-1" size={16} />,
+    'Postman': <Globe className="text-purple mr-1" size={16} />,
     'Spline': <Code2 className="text-purple mr-1" size={16} />,
     
     // Data Science
@@ -71,6 +76,7 @@ const Skills = () => {
     'Power BI': <MonitorSpeaker className="text-purple mr-1" size={16} />,
     'Data Science': <BarChart3 className="text-purple mr-1" size={16} />,
     'Data Interpretation': <FileText className="text-purple mr-1" size={16} />,
+    'scikit-learn': <Brain className="text-purple mr-1" size={16} />,
     
     // DevOps & Systems
     'Linux': <SiLinux className="text-purple mr-1" size={16} />,
@@ -84,6 +90,7 @@ const Skills = () => {
     'Blockchain': <SiSolidity className="text-purple mr-1" size={16} />,
     'Polygon': <Shield className="text-purple mr-1" size={16} />,
     'Metamask': <Shield className="text-purple mr-1" size={16} />,
+    'Semgrep': <Shield className="text-purple mr-1" size={16} />,
     
     // Design Tools
     'Canva': <SiCanva className="text-purple mr-1" size={16} />,
@@ -97,6 +104,9 @@ const Skills = () => {
     'API Development': <Globe className="text-purple mr-1" size={16} />,
     'OOP': <Cpu className="text-purple mr-1" size={16} />,
     'Authentication': <Shield className="text-purple mr-1" size={16} />,
+    'RAG': <Layers className="text-purple mr-1" size={16} />,
+    'AI Security': <Shield className="text-purple mr-1" size={16} />,
+    'Prompt Engineering': <Bot className="text-purple mr-1" size={16} />,
     'Stacks': <Layers className="text-purple mr-1" size={16} />,
     'Queues': <Link className="text-purple mr-1" size={16} />,
     'Linked Lists': <Link className="text-purple mr-1" size={16} />,

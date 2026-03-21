@@ -126,6 +126,148 @@
     transform: scale(1.05);
     box-shadow: 0 4px 24px 0 rgba(110, 60, 188, 0.15);
   }
+
+  .ui-browser-card {
+    @apply rounded-xl overflow-hidden;
+    background: linear-gradient(145deg, #0f0f12, #171721);
+    border: 1px solid rgba(147, 112, 219, 0.35);
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.35);
+  }
+
+  .ui-browser-card__bar {
+    @apply h-10 px-4 flex items-center justify-between;
+    background: rgba(10, 10, 16, 0.9);
+    border-bottom: 1px solid rgba(147, 112, 219, 0.25);
+  }
+
+  .ui-browser-card__circles {
+    @apply flex items-center gap-2;
+  }
+
+  .ui-browser-card__circles span {
+    @apply w-2.5 h-2.5 rounded-full;
+  }
+
+  .ui-browser-card__circles span:nth-child(1) {
+    background: #f87171;
+  }
+
+  .ui-browser-card__circles span:nth-child(2) {
+    background: #facc15;
+  }
+
+  .ui-browser-card__circles span:nth-child(3) {
+    background: #4ade80;
+  }
+
+  .ui-browser-card__search {
+    @apply text-[11px] px-3 py-1 rounded-md text-gray-400;
+    border: 1px solid rgba(147, 112, 219, 0.35);
+    background: rgba(20, 20, 30, 0.8);
+    min-width: 140px;
+    text-align: center;
+  }
+
+  /* Uiverse Button */
+  .uiverse-btn {
+    --border-right: 6px;
+    --text-stroke-color: rgba(255,255,255,0.6);
+    --animation-color: #a084e8; /* purple */
+    --fs-size: 1rem;
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 3px;
+    text-decoration: none;
+    font-size: var(--fs-size);
+    font-family: inherit;
+    position: relative;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-stroke-color);
+    white-space: nowrap;
+    display: inline-block;
+  }
+  .uiverse-btn .actual-text {
+    display: flex;
+    align-items: center;
+    width: max-content;
+  }
+  .uiverse-btn .hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: var(--border-right) solid var(--animation-color);
+    overflow: hidden;
+    transition: 0.5s;
+    -webkit-text-stroke: 1px var(--animation-color);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+  .uiverse-btn .hover-text > * {
+    flex-shrink: 0;
+  }
+  .uiverse-btn:hover .hover-text {
+    width: 100%;
+    filter: drop-shadow(0 0 23px var(--animation-color));
+  }
+
+  /* Uiverse Button Secondary (Slightly softer/smaller) */
+  .uiverse-btn-secondary {
+    --border-right: 4px;
+    --text-stroke-color: rgba(255,255,255,0.4);
+    --animation-color: #a084e8;
+    --fs-size: 0.85rem;
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-decoration: none;
+    font-size: var(--fs-size);
+    font-family: inherit;
+    position: relative;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-stroke-color);
+    white-space: nowrap;
+    display: inline-block;
+  }
+  .uiverse-btn-secondary .actual-text {
+    display: flex;
+    align-items: center;
+    width: max-content;
+  }
+  .uiverse-btn-secondary .hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: var(--border-right) solid var(--animation-color);
+    overflow: hidden;
+    transition: 0.4s;
+    -webkit-text-stroke: 1px var(--animation-color);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+  .uiverse-btn-secondary .hover-text > * {
+    flex-shrink: 0;
+  }
+  .uiverse-btn-secondary:hover .hover-text,
+  .uiverse-btn-secondary.active .hover-text {
+    width: 100%;
+    filter: drop-shadow(0 0 12px var(--animation-color));
+  }
 }
 
 .section-transition {

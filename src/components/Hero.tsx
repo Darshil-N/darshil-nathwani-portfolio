@@ -69,19 +69,23 @@ const Hero = () => {
             that make a real difference. My journey spans across computer vision, NLP, and MLOps - always with 
             the goal of turning complex algorithms into meaningful, user-friendly applications that solve genuine problems.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
             <Link to="/projects">
-            <button 
-              className="bg-purple hover:bg-purple-light text-white px-8 py-3 rounded-md transition-all duration-300 font-medium text-base sm:text-lg w-full sm:w-auto"
-            >
-              View My Projects
-            </button>
+              <button 
+                className="uiverse-btn"
+                data-text="VIEW MY PROJECTS"
+              >
+                <span className="actual-text">&nbsp;VIEW MY PROJECTS&nbsp;</span>
+                <span aria-hidden="true" className="hover-text">&nbsp;VIEW MY PROJECTS&nbsp;</span>
+              </button>
             </Link>
             <button 
               onClick={() => scrollToSection('contact')}
-              className="border border-purple hover:border-purple-light text-white px-8 py-3 rounded-md transition-all duration-300 font-medium text-base sm:text-lg w-full sm:w-auto hover:bg-purple/10"
+              className="uiverse-btn-secondary"
+              data-text="GET IN TOUCH"
             >
-              Get In Touch
+              <span className="actual-text">&nbsp;GET IN TOUCH&nbsp;</span>
+              <span aria-hidden="true" className="hover-text">&nbsp;GET IN TOUCH&nbsp;</span>
             </button>
           </div>
           </div>

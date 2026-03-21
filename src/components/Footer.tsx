@@ -27,10 +27,15 @@ const Footer = () => {
             <a 
               href="/resume/Minimalist White and Grey Professional Resume.pdf"
               download="Darshil_Nathwani_Resume.pdf"
-              className="flex items-center text-gray-300 hover:text-purple transition-colors"
+              className="uiverse-btn"
+              data-text="RESUME"
             >
-              <Download className="mr-2" size={20} />
-              Download Resume
+              <span className="actual-text">
+                <span className="inline-flex items-center gap-2 px-2">&nbsp;<Download size={18} /> RESUME&nbsp;</span>
+              </span>
+              <span aria-hidden="true" className="hover-text">
+                <span className="inline-flex items-center gap-2 px-2">&nbsp;<Download size={18} /> RESUME&nbsp;</span>
+              </span>
             </a>
           </div>
         </div>
