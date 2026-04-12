@@ -306,11 +306,12 @@ const Projects = () => {
       category: 'web'
     },
     {
-      title: "Festive Hackathon Registration Portal",
-      description: "A smart, secure, and immersive hackathon registration platform with OCR, AI assistance, and instant admin-triggered email workflows.",
-      detailedDescription: "This platform starts from core requirements such as team registration, verification, and email confirmation, then expands into a feature-rich product with strong UX and automation. The portal supports smooth candidate onboarding through OCR-based ID auto-fill, bot-safe interactions through reCAPTCHA-style verification, and a Gemini-powered real-time assistant for participant guidance. On the admin side, application decisions instantly trigger personalized communication via Firebase-integrated backend flows and Nodemailer. The product includes a fully responsive festive interface while maintaining practical production-style functionality.",
+      title: "Indian Chess Academy Hackathon Winner Platform",
+      description: "1st-place winning team project (72-hour sprint): a smart, secure, and immersive hackathon registration platform with OCR, AI assistance, and instant admin-triggered email workflows.",
+      detailedDescription: "Built as Team Madoss during the Indian Chess Academy Hackathon, this platform helped secure 1st place by balancing usability, security, and technical reliability. The product starts from core requirements such as team registration, verification, and email confirmation, then expands into a feature-rich experience with OCR-based ID auto-fill, bot-safe verification, and a Gemini-powered real-time assistant. On the admin side, application decisions instantly trigger personalized communication via Firebase-integrated backend flows and Nodemailer.",
       techStack: ["React", "TypeScript", "Firebase", "Nodemailer", "Gemini API", "OCR", "reCAPTCHA"],
       features: [
+        "Delivered as the 1st-place winning solution at Indian Chess Academy Hackathon",
         "Team registration and verification workflow with structured data capture",
         "OCR-based ID scanning for fast name and profile auto-fill",
         "Anti-bot verification for secure and reliable submissions",
@@ -367,6 +368,90 @@ const Projects = () => {
       github: "https://lnkd.in/gy7hziPh",
       liveDemo: "https://lnkd.in/ge3DmKgg",
       logo: "/Logos/Kavach_ai.png",
+      isNew: true,
+      category: 'ai'
+    },
+    {
+      title: "Sanjeevani: ICU Diagnostic Risk Assistant",
+      description: "A multi-agent clinical intelligence system built at Ignisia 26 to detect ICU complication risks from fragmented patient data.",
+      detailedDescription: "Sanjeevani was built for a core ICU reality: hospitals have data, but teams do not always have time to connect every signal manually. The platform coordinated specialized agents for clinical note understanding, lab trend interpretation, guideline-grounded retrieval, and final risk synthesis. The result was a single interpretable report that highlighted potential complications, surfaced outliers, and added cautious clinical framing around AI outputs.",
+      techStack: ["Clinical NLP", "Multi-Agent Systems", "RAG", "Embeddings", "Vector Search", "NFC"],
+      features: [
+        "Clinical NLP pipeline for unstructured note-to-timeline conversion",
+        "Trend analysis over longitudinal lab data rather than one-time readings",
+        "Medical RAG grounding against guideline-aligned reference context",
+        "Chief synthesis layer merging all agents into one risk narrative",
+        "Outlier-aware aggregation to avoid unsafe conclusions from noisy data",
+        "NFC-based patient access and authentication for practical bedside usage"
+      ],
+      challenges: [
+        "Designing reliable multi-agent coordination inside a 24-hour sprint",
+        "Balancing interpretability and speed for high-stakes ICU context",
+        "Handling uneven and noisy clinical data without overconfident outputs",
+        "Keeping the architecture practical for real-world hospital workflows"
+      ],
+      learnings: [
+        "Healthcare AI products depend as much on protocol-aware systems as model quality",
+        "Agent role clarity dramatically improves signal synthesis under time pressure",
+        "Meaningful hackathon outcomes can matter more than leaderboard position"
+      ],
+      isNew: true,
+      category: 'ai'
+    },
+    {
+      title: "Setu AI: Adaptive Onboarding Engine",
+      description: "An AI onboarding platform built at ArtPark CodeForge that computes role-wise skill gaps and generates focused learning tracks.",
+      detailedDescription: "Setu AI replaces one-size-fits-all onboarding with an adaptive bridge between candidate capability and role expectations. The system analyzes resumes against job descriptions, computes precise skill gaps, and builds a prerequisite-respecting learning path. It includes grounded recommendations tied to an actual course catalog and a reasoning trace that explains exactly why modules were selected, skipped, or prioritized.",
+      techStack: ["Mistral 7B", "Python", "NetworkX", "ChromaDB", "Docker"],
+      features: [
+        "Skill-gap inference by comparing resume evidence against role requirements",
+        "Adaptive curriculum generation with no redundant beginner modules",
+        "Prerequisite-aware sequencing using NetworkX knowledge graph logic",
+        "Grounded recommendations through ChromaDB-backed course retrieval",
+        "Transparent reasoning trace for every major AI planning decision"
+      ],
+      challenges: [
+        "Teaching the model to distinguish true expertise levels from keyword overlap",
+        "Designing curriculum logic that respects dependency ordering",
+        "Preventing hallucinated recommendations with strict catalog grounding",
+        "Building and Dockerizing the full system in a 48-hour window"
+      ],
+      learnings: [
+        "Reasoning transparency is essential for trust in enterprise AI tooling",
+        "Knowledge graphs are highly effective for onboarding sequence control",
+        "Fast execution still needs architecture discipline to stay maintainable"
+      ],
+      github: "https://lnkd.in/eCi7Hyca",
+      liveDemo: "https://lnkd.in/eMiwDVNc",
+      isNew: true,
+      category: 'ai'
+    },
+    {
+      title: "RNSIT AI Code Analyzer",
+      description: "A local-first AI code review copilot for VS Code and PR pages with multi-agent analysis and streaming diagnostics.",
+      detailedDescription: "RNSIT AI Code Analyzer is a complete local code-review system spanning editor workflows and pull-request review pages. It uses a FastAPI backend and orchestration layer to run specialist agents for bugs, security, quality, and compliance. The platform supports a Chrome extension for GitHub/GitLab review screens and a VS Code extension with multiple depth modes, then streams findings as structured output for low-latency feedback loops.",
+      techStack: ["FastAPI", "Python", "LangChain", "TypeScript", "VS Code Extension", "Chrome Extension", "ChromaDB", "Ollama", "Semgrep", "Ruff", "Gitleaks", "Tree-sitter"],
+      features: [
+        "Local backend API with structured JSON analysis output",
+        "Multi-agent chain for bug, security, quality, and compliance findings",
+        "Chrome extension support for GitHub PR and GitLab MR pages",
+        "Inline review annotations plus downloadable Markdown reports",
+        "VS Code extension commands for quick, normal, and thorough depth",
+        "Streaming JSONL delivery for progressive no-wait rendering",
+        "Job-based API workflow with polling and websocket options",
+        "Architecture-rule loading from repository-specific configuration"
+      ],
+      challenges: [
+        "Coordinating multiple interfaces across editor, browser, and backend",
+        "Keeping analysis responsive with semantic chunking and context reduction",
+        "Managing local-model orchestration with stable structured output",
+        "Ensuring privacy guarantees while maintaining useful cross-file reasoning"
+      ],
+      learnings: [
+        "Local-first tooling can achieve strong UX with proper streaming design",
+        "Agent specialization improves review quality for complex codebases",
+        "Tight integration between static tools and LLM reasoning is high leverage"
+      ],
       isNew: true,
       category: 'ai'
     },

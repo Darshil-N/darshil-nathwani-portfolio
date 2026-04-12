@@ -108,7 +108,7 @@ const Navbar = () => {
           </div>
           
           <div className="hidden md:flex flex-1 justify-end">
-            <div className="ml-6 flex items-center gap-2 text-base">
+            <div className="ml-10 lg:ml-14 flex items-center gap-2 text-base">
               <button onClick={() => handleSectionNav('about')} className={`px-2 py-1 transition-colors duration-300 ${activeSection === 'about' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>About</button>
               <button onClick={() => handleSectionNav('experience')} className={`px-2 py-1 transition-colors duration-300 ${activeSection === 'experience' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>Experience</button>
               <Link to="/projects" className={`px-2 py-1 transition-colors duration-300 ${activeSection === 'projects' ? 'text-purple font-bold' : 'text-gray-300 hover:text-purple'}`}>

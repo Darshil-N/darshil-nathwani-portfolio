@@ -90,6 +90,88 @@ const Achievements = () => {
 
   const participationHighlights = [
     {
+      title: "Ignisia 26 National Hackathon",
+      date: "January-February 2026",
+      organizer: "Ignisia 26",
+      duration: "24 Hours",
+      type: "Participation",
+      role: "Team Atrangi",
+      project: "Sanjeevani - Agentic Diagnostic Risk Assistant for ICU Complication Detection",
+      description: "Built Sanjeevani to solve a critical ICU challenge: hospitals do not lack data, they lack time to connect signals across that data. The system used a multi-agent architecture to transform fragmented clinical information into interpretable risk reports for faster, safer decisions.",
+      highlights: [
+        "Completed a full 24-hour national-level build sprint under high pressure",
+        "Focused on practical ICU risk interpretation instead of black-box predictions",
+        "Used protocol-aware agent collaboration to improve decision quality",
+        "Did not win, but shipped a meaningful healthcare AI prototype",
+        "Learned in one sprint what usually takes weeks of normal development"
+      ],
+      features: [
+        "Clinical NLP agent to convert unstructured notes into structured timelines",
+        "Trend analysis agent to track lab-value evolution over time",
+        "Medical RAG agent using embeddings and vector search over real guidance",
+        "Chief synthesis agent to merge outputs into one interpretable risk report",
+        "NFC-enabled quick patient data access and authentication for ICU practicality"
+      ],
+      teammates: ["Vishvajitsinh Gohil", "Ishita Mandle", "Kathan Gajera"],
+      technologies: ["Clinical NLP", "Multi-Agent Systems", "RAG", "Vector Search", "Embeddings", "NFC"],
+      icon: <Clock className="text-purple" size={20} />,
+      color: "from-red-500/20 to-purple/20"
+    },
+    {
+      title: "ArtPark CodeForge Hackathon",
+      date: "2026",
+      organizer: "ArtPark CodeForge",
+      duration: "48 Hours",
+      type: "Participation",
+      role: "Team Kaarigars",
+      project: "Setu AI - Adaptive Onboarding Engine",
+      description: "Built Setu AI, an adaptive onboarding engine that compares resumes against job descriptions to calculate skill gaps and generate focused learning pathways. The product removed one-size-fits-all onboarding and replaced it with role-aware, evidence-backed progression.",
+      highlights: [
+        "Delivered a fully functional AI onboarding engine in 48 hours",
+        "Solved enterprise onboarding inefficiency with adaptive skill-gap planning",
+        "Shipped from blank repository to Dockerized end-to-end system",
+        "Added transparent reasoning traces to justify recommendation paths"
+      ],
+      features: [
+        "Fine-tuned Mistral 7B adapters for expertise-aware recommendation behavior",
+        "NetworkX prerequisite graph to enforce learning dependency order",
+        "ChromaDB grounding to map recommendations to real course inventory",
+        "Built-in reasoning trace explaining skipped basics and advanced priorities"
+      ],
+      teammates: ["Arpit Ravi", "Arya Dudalkar", "Eesha Hemani"],
+      technologies: ["Mistral 7B", "NetworkX", "ChromaDB", "Python", "Docker"],
+      codeLink: "https://lnkd.in/eCi7Hyca",
+      demoLink: "https://lnkd.in/eMiwDVNc",
+      icon: <Lightbulb className="text-purple" size={20} />,
+      color: "from-blue-500/20 to-cyan-500/20"
+    },
+    {
+      title: "RNSIT Hackathon",
+      date: "8-9 April 2026",
+      organizer: "RNSIT",
+      duration: "48 Hours",
+      type: "Participation",
+      role: "AI Code Review Build Team",
+      project: "RNSIT AI Code Analyzer",
+      description: "Built a local-first AI code analysis system for editor and pull-request workflows. The platform combined a FastAPI backend, multi-agent analysis chains, a browser extension for GitHub and GitLab review pages, and a VS Code extension for workspace-aware diagnostics.",
+      highlights: [
+        "Implemented multi-surface review flow across editor, browser, and backend",
+        "Enabled local-only execution so code stays inside localhost boundaries",
+        "Supported quick, normal, and thorough scan depths in VS Code",
+        "Shipped inline annotations and downloadable Markdown review reports"
+      ],
+      features: [
+        "FastAPI local backend with structured analysis output",
+        "Multi-agent pipeline for bug, security, quality, and compliance checks",
+        "Chrome extension support for GitHub PR and GitLab MR review pages",
+        "Streaming JSONL responses for near-instant progressive rendering",
+        "Job-based analyze APIs with polling and websocket alternatives"
+      ],
+      technologies: ["FastAPI", "LangChain", "Tree-sitter", "ChromaDB", "Ollama", "Semgrep", "Ruff", "Gitleaks", "TypeScript", "VS Code Extension", "Chrome Extension"],
+      icon: <Code2 className="text-purple" size={20} />,
+      color: "from-purple/20 to-emerald-500/20"
+    },
+    {
       title: "Hackoasis v2",
       date: "29th November 2024",
       organizer: "Hackoasis",
