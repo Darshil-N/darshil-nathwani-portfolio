@@ -7,6 +7,31 @@ const Achievements = () => {
   
   const competitiveAchievements = [
     {
+      title: "Nasiko x Devaarambh Buildathon - TOP 10 Finish",
+      date: "2026",
+      organizer: "Nasiko x Devaarambh at Microsoft",
+      duration: "1 Day",
+      type: "Buildathon / Hackathon",
+      role: "Developer",
+      project: "Resilient Multi-Agent Request Layer",
+      status: "Top 10 Finish",
+      description: "Spent the day building a resilient request layer for multi-agent systems. Faced Redis queues, cache logic, Docker issues, and API routing challenges. Placed in the Top 10 out of over 200 builders at Microsoft.",
+      highlights: [
+        "Finished in the TOP 10🏆 out of 200+ builders at Microsoft",
+        "Built a resilient request layer for multi-agent systems under tight timelines",
+        "Collaborated and networked with builders, speakers, and mentors obsessed with AI infra and agent architectures",
+        "Received valuable debugging assistance and architectural feedback from industry mentors"
+      ],
+      features: [
+        "Designed high-reliability queuing and routing logic using Redis and Docker",
+        "Optimized agent synchronization pipelines under intense constraints",
+        "Learned how to successfully implement open-source contributions without breaking existing features"
+      ],
+      technologies: ["Redis", "Docker", "API Routing", "Multi-Agent Systems", "Caching", "Open Source"],
+      icon: <Trophy className="text-purple" size={20} />,
+      color: "from-yellow/20 to-purple/20"
+    },
+    {
       title: "Indian Chess Academy Hackathon - 1st Place",
       date: "2026",
       organizer: "Indian Chess Academy",

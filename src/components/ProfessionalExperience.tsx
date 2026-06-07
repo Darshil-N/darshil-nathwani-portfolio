@@ -29,6 +29,20 @@ const professionalExperiences: Experience[] = [
       'Followed company confidentiality and data security practices across deliverables',
     ],
   },
+  {
+    role: 'Artificial Intelligence Research Intern',
+    company: 'Grep Digital | Trust-Grade Platforms & Sovereign Systems',
+    period: 'Oct 2025 - Mar 2026',
+    type: 'Internship (Remote)',
+    summary:
+      'Led the design and implementation of an AI system that converts natural language queries into SQL while supporting CCTV footage retrieval workflows for Drishti AI.',
+    highlights: [
+      'Designed a natural language to SQL pipeline for analytical querying',
+      'Collaborated with cross-functional teams to retrieve CCTV footage using constraint-based queries',
+      'Improved query efficiency and overall system performance for Drishti AI',
+      'First author on “Drishti-AI: A Natural Language-Driven Framework for Campus Incident Analysis using Text-to-SQL”, submitted to IEEE TENCON 2025 (under review)',
+    ],
+  },
 ];
 
 const clubRoles: Experience[] = [
@@ -57,6 +71,7 @@ const clubRoles: Experience[] = [
       'Collaborated with team members on cloud and full-stack implementation tasks',
       'Supported smooth technical operations for workshops, sessions, and showcases',
       'Contributed to rapid prototyping and practical developer workflows',
+      'Prepared CTF 2026 questions and helped shape the event flow for Capture The Flag 2026',
     ],
   },
 ];

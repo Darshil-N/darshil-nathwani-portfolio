@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Github, ExternalLink, Lightbulb, Target, Code2, Database, Globe, Cpu, Brain, Eye, Bot, Settings, FileBarChart2, Layers, Terminal, FlaskConical, BookText, Server } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { SiPython, SiCplusplus, SiC, SiGithub, SiGit, SiVscodium, SiTensorflow, SiOpencv, SiFlask, SiJupyter, SiReact, SiTypescript, SiTailwindcss, SiSqlite, SiFastapi, SiStreamlit, SiMongodb, SiArduino, SiNodedotjs, SiSupabase, SiKotlin, SiFirebase, SiSolidity, SiPolygon, SiAndroid } from 'react-icons/si';
+import { SiPython, SiCplusplus, SiC, SiGithub, SiGit, SiVscodium, SiTensorflow, SiOpencv, SiFlask, SiJupyter, SiReact, SiTypescript, SiTailwindcss, SiSqlite, SiFastapi, SiStreamlit, SiMongodb, SiArduino, SiNodedotjs, SiSupabase, SiKotlin, SiFirebase, SiSolidity, SiPolygon, SiAndroid, SiRedis, SiDocker } from 'react-icons/si';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -116,6 +116,8 @@ const techStackIcons: Record<string, React.ReactNode> = {
   'Geohashing': <Globe className="text-red-500" size={24} />,
   'Mapbox': <Globe className="text-blue-600" size={24} />,
   'Leaflet': <Globe className="text-green-500" size={24} />,
+  'Redis': <SiRedis className="text-red-600" size={24} />,
+  'Docker': <SiDocker className="text-blue-500" size={24} />,
 };
 
 const Projects = () => {
@@ -137,6 +139,30 @@ const Projects = () => {
   };
 
   const projects: Project[] = [
+    {
+      title: "Resilient Multi-Agent Request Layer",
+      description: "A resilient request layer for multi-agent systems built during the Nasiko x Devaarambh Buildathon (finished in the Top 10), managing request queues, routing, and caching logic.",
+      detailedDescription: "Designed and built during the Nasiko x Devaarambh Buildathon held at Microsoft, this project is a resilient request layer for multi-agent systems. The architecture focuses on handling high-throughput agent communication by integrating Redis queue structures, containerized Docker deployments, and robust API routing to handle concurrent tasks and cache constraints, securing a Top 10 finish out of over 200 builders.",
+      techStack: ["Redis", "Docker", "Python", "API Routing", "Multi-Agent Systems", "Caching", "Queues"],
+      features: [
+        "Finished in the Top 10 at the Nasiko x Devaarambh Buildathon at Microsoft",
+        "Resilient request layer designed specifically for multi-agent communication",
+        "Redis-backed task queueing and caching to manage concurrent agent requests",
+        "Dockerized environment setup for reliable orchestration and routing"
+      ],
+      challenges: [
+        "Managing multi-agent state coordination without bottlenecking requests",
+        "Fighting Redis queue synchronization and cache logic under rapid iteration",
+        "Handling Docker container networking and API routing constraints under tight hackathon timelines"
+      ],
+      learnings: [
+        "Mastered open-source integration, focusing on how not to break existing code while adding new features",
+        "Designed resilient request routing architectures for distributed AI agent systems",
+        "Optimized Docker containerization and network pipelines under pressure"
+      ],
+      isNew: true,
+      category: 'ai'
+    },
     {
       title: "Siddhi AI Platform",
       description: "Enterprise-grade augmented intelligence platform for concessional lending risk management. Features XGBoost ML models, SHAP explainability, LSTM forecasting, and comprehensive borrower assessment with interactive dashboards.",

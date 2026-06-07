@@ -1,0 +1,20 @@
+# Darshil Nathwani Portfolio
+
+This site is a personal portfolio focused on AI/ML, full-stack development, hackathons, research, and technical leadership.
+
+## Best Starting Points
+- / - Home page with the full portfolio narrative and sectioned content
+- /projects - Project gallery and detailed project modals
+- /resume/Minimalist White and Grey Professional Resume.pdf - Public resume PDF
+
+## Topics Covered
+- AI and machine learning systems
+- Text-to-SQL and natural language interfaces
+- Full-stack web development
+- Computer vision and multi-modal AI
+- Hackathons, competitions, and club work
+
+## Crawlability Notes
+- Sitemap: /sitemap.xml
+- Robots: /robots.txt
+- The site is intended to be indexable by search engines and AI crawlers
