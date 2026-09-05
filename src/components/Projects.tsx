@@ -332,34 +332,26 @@ const Projects = () => {
       category: 'web'
     },
     {
-      title: "Indian Chess Academy Hackathon Winner Platform",
-      description: "1st-place winning team project (72-hour sprint): a smart, secure, and immersive hackathon registration platform with OCR, AI assistance, and instant admin-triggered email workflows.",
-      detailedDescription: "Built as Team Madoss during the Indian Chess Academy Hackathon, this platform helped secure 1st place by balancing usability, security, and technical reliability. The product starts from core requirements such as team registration, verification, and email confirmation, then expands into a feature-rich experience with OCR-based ID auto-fill, bot-safe verification, and a Gemini-powered real-time assistant. On the admin side, application decisions instantly trigger personalized communication via Firebase-integrated backend flows and Nodemailer.",
-      techStack: ["React", "TypeScript", "Firebase", "Nodemailer", "Gemini API", "OCR", "reCAPTCHA"],
+      title: "Indian Chess Academy Hackathon Winner",
+      description: "1st-place winning team project (72-hour sprint): a smart, secure, and highly usable hackathon platform.",
+      detailedDescription: "Built as Team Madoss during the Indian Chess Academy Hackathon, this platform helped secure 1st place by balancing usability, security, and technical reliability. The collaborative end-to-end product build focused on reliable platform workflows with a production-minded implementation.",
+      techStack: ["React", "TypeScript", "Firebase", "Security-First Design", "Full-Stack Architecture"],
       features: [
-        "Delivered as the 1st-place winning solution at Indian Chess Academy Hackathon",
-        "Team registration and verification workflow with structured data capture",
-        "OCR-based ID scanning for fast name and profile auto-fill",
-        "Anti-bot verification for secure and reliable submissions",
-        "Gemini API chatbot for dynamic FAQs and real-time support",
-        "Admin panel to review, approve, and reject team applications",
-        "Instant personalized email confirmations through Nodemailer",
-        "Real-time backend sync powered by Firebase",
-        "Responsive Christmas-themed UI with festive background music"
+        "Awarded 1st place out of all participating teams",
+        "Collaborative end-to-end product build with clear ownership",
+        "Reliable platform workflows with production-minded implementation",
+        "Security-aware design choices aligned with hackathon goals"
       ],
       challenges: [
-        "Building and polishing a complete full-stack product in just 24 hours",
-        "Integrating OCR and AI assistance without degrading UX performance",
-        "Designing secure verification and communication flows under time pressure",
-        "Balancing product depth, frontend polish, and backend reliability as a solo developer"
+        "Building and polishing a complete full-stack product in a 72-hour sprint",
+        "Designing secure verification flows under time pressure",
+        "Balancing product depth, frontend polish, and backend reliability"
       ],
       learnings: [
-        "High-pressure solo execution from requirements to working production-style MVP",
-        "Effective orchestration of AI APIs, email pipelines, and realtime backend services",
-        "Importance of UX details in differentiating a standard full-stack build",
-        "How to expand a baseline problem statement into a standout audition deliverable"
+        "Effective teamwork and orchestration of full-stack services",
+        "Importance of UX details in differentiating a standard build",
+        "Delivering strong technical execution with dependable platform behavior"
       ],
-      liveDemo: "https://lnkd.in/gWq3Qc2Y",
       isNew: true,
       category: 'web'
     },
@@ -584,7 +576,96 @@ const Projects = () => {
       techStack: ["Python", "OpenCV", "TensorFlow", "Custom Dataset", "Arduino IDE"],
       category: 'cv'
     }
-  ];
+  
+    ,{
+      title: "Google DeepMind Bangalore Hackathon",
+      description: "Built an AI agent using Gemini in a fast-paced one-day sprint, finishing in the Top 25.",
+      detailedDescription: "Participated in the Google DeepMind Bangalore Hackathon. Took on the challenge solo and spent the day building, debugging, and rethinking ideas to create a functional AI agent using Gemini tokens. Finished in the Top 25 amongst a room full of builders, researchers, and founders.",
+      techStack: ["Gemini API", "Python", "Multi-Agent Systems"],
+      features: [
+        "Finished in the Top 25 out of talented builders",
+        "Solo development sprint completed in one day",
+        "Integration with Gemini for agentic capabilities"
+      ],
+      isNew: true,
+      category: 'ai'
+    },
+    {
+      title: "Pravaah AI: Bias Detection System",
+      description: "A 100% offline, air-gapped AI bias detection tool built at Cepheus 2.0.",
+      detailedDescription: "Built with Team Baazigar at Cepheus 2.0 (GDG on Campus AIT x Code Club Atria). Pravaah AI is designed for healthcare, fintech, and defense. It runs 100% offline with no cloud compromise. It uses 5 specialized AI agents to handle profiling, proxy detection, counterfactual testing, and report writing to detect bias before it ruins a model's fairness.",
+      techStack: ["Python", "Multi-Agent Systems", "Data Synthesis"],
+      features: [
+        "Runs 100% offline for air-gapped systems",
+        "5 specialized AI agents for bias scoring and counterfactual testing",
+        "Translates technical metrics into plain English explanations",
+        "Human-in-the-loop column assignments",
+        "Executive-ready PDF audit report generation"
+      ],
+      github: "https://lnkd.in/gQURRpm5",
+      isNew: true,
+      category: 'ai'
+    },
+    {
+      title: "Antraa: Synthetic Data Generator",
+      description: "A 100% local synthetic data generator with formal differential privacy, built at Athermex (Top 10).",
+      detailedDescription: "Built with Team Baazigar at Athermex (organized by ByteXync, BMSCE x DSCE). Antraa addresses the challenge of locked healthcare and fintech data by generating statistically accurate synthetic data preserving all minute details while running 100% locally. Finished in the Top 10 out of 150 teams.",
+      techStack: ["Python", "Multi-Agent Systems"],
+      features: [
+        "Finished in the Top 10 out of 150 teams at Athermex",
+        "Generates synthetic data mathematically proven with formal differential privacy",
+        "7 automated AI agents for profiling, compliance, generation, and validation",
+        "Auto-maps to HIPAA, GDPR, GLBA, EEOC before generating rows",
+        "Outputs a PDF compliance certificate upon completion"
+      ],
+      isNew: true,
+      category: 'ai'
+    },
+    {
+      title: "OpenEnv: AI Catastrophe Simulator",
+      description: "A production-grade RL environment for testing AI robotics in disaster scenarios, built at OpenEnv Hackathon.",
+      detailedDescription: "Built with Team Kaarigars at the OpenEnv Hackathon by Scaler x Meta. We created an arena to test how an AI thinks when lives are on the line, featuring a realistic earthquake simulation and a legged rescue robot. Deployed on Hugging Face Spaces using the same infrastructure Meta uses internally.",
+      techStack: ["Python", "Docker"],
+      features: [
+        "Realistic earthquake simulation (Mw 7.5, direct impact, sensor degradation)",
+        "Legged rescue robot simulation with sensor suites (LiDAR, Thermal, RGB-D)",
+        "Triage logic enforcing rescue priorities for victims",
+        "Multi-pillar reward system across safety, path efficiency, and time"
+      ],
+      github: "https://lnkd.in/gW5btXhu",
+      isNew: true,
+      category: 'ai'
+    },
+    {
+      title: "NeroBot: Marine Pollution Cleaner",
+      description: "A jellyfish-inspired underwater robot designed to detect and clean marine pollution.",
+      detailedDescription: "Developed with Team TritoneXus. NeroBot is a jellyfish-inspired underwater robot aimed at tackling marine pollution. The software team successfully developed a YOLO-based detection model to identify plastic bottles in real time using OpenCV. The model was exported via TorchScript for lightweight deployment, enabling autonomous waste collection on command.",
+      techStack: ["Python", "YOLO", "OpenCV", "Arduino IDE", "Camera Module"],
+      features: [
+        "Real-time plastic bottle detection underwater",
+        "Lightweight deployment optimized for embedded systems",
+        "Integration with Arduino Uno and servo motors for autonomous collection mechanisms"
+      ],
+      isNew: true,
+      category: 'cv'
+    },
+    {
+      title: "NUMERANO Hackathon Portal",
+      description: "A smart, festive hackathon registration platform built in a 24-hour solo sprint.",
+      detailedDescription: "Built as an audition problem statement for NUMERANO, this is a fully immersive, Christmas-themed Hackathon Registration Portal. The project focused on packing maximum functionality into a single day, including OCR for ID scanning, a Gemini-powered chatbot, and instant backend email feedback loops.",
+      techStack: ["React", "TypeScript", "Firebase", "Gemini API"],
+      features: [
+        "24-hour solo sprint development",
+        "OCR-based ID card scanning with auto-fill",
+        "Gemini API integrated responsive Chatbot for FAQs",
+        "Real-time instant feedback loop using Firebase and Nodemailer",
+        "Festive UI with background music"
+      ],
+      liveDemo: "https://lnkd.in/gWq3Qc2Y",
+      isNew: true,
+      category: 'web'
+    }
+];
 
   const filteredProjects = useMemo(() => {
     if (!selectedCategory) return projects;

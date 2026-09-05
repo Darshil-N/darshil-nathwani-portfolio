@@ -111,7 +111,55 @@ const Achievements = () => {
       icon: <Trophy className="text-purple" size={20} />,
       color: "from-yellow/20 to-orange/20"
     }
-  ];
+  
+    ,{
+      title: "Google DeepMind Bangalore Hackathon - TOP 25",
+      date: "2026",
+      organizer: "Google DeepMind",
+      duration: "1 Day",
+      type: "Hackathon",
+      role: "Solo Developer",
+      project: "AI Agent",
+      status: "Top 25 Finish",
+      description: "Spent the day building, debugging, rethinking ideas, and somehow making it to the submission before the countdown hit zero. Finished in the Top 25 out of a room full of builders, researchers, and founders.",
+      highlights: [
+        "Finished in the TOP 25",
+        "Solo 1-day sprint",
+        "Leveraged Gemini API to build an agentic solution"
+      ],
+      features: [
+        "Rapid prototyping of AI workflows",
+        "Agentic system design using Gemini"
+      ],
+      technologies: ["Python", "Gemini API"],
+      icon: <Trophy className="text-purple" size={20} />,
+      color: "from-yellow/20 to-purple/20"
+    },
+    {
+      title: "Athermex by BMSCE x DSCE - TOP 10",
+      date: "2026",
+      organizer: "ByteXync (BMSCE x DSCE)",
+      duration: "Hackathon",
+      type: "Hackathon",
+      role: "Team Baazigar",
+      project: "Antraa",
+      status: "Top 10 Finish",
+      description: "Built Antraa, a 100% local synthetic data generator with formal differential privacy. Finished Top 10 out of 150+ teams and 450+ participants.",
+      highlights: [
+        "Finished Top 10 out of 150+ teams",
+        "Built a solution for highly regulated sectors (Healthcare, Fintech, Defence)"
+      ],
+      features: [
+        "Generates synthetic data preserving all patterns",
+        "Runs 100% local with no cloud dependency",
+        "7 automated AI agents for profiling, compliance, generation, and validation"
+      ],
+      teammates: ["Aadya Baranwal", "Shrinidhi Patil", "Pragun Pradeep"],
+      technologies: ["Python", "Differential Privacy", "Multi-Agent Systems"],
+      icon: <Trophy className="text-purple" size={20} />,
+      color: "from-yellow/20 to-blue/20"
+    }
+];
 
   const participationHighlights = [
     {
@@ -325,7 +373,84 @@ const Achievements = () => {
       icon: <Trophy className="text-purple" size={20} />,
       color: "from-cyan-500/20 to-purple/20"
     }
+  
+    ,{
+      title: "Cepheus 2.0 (GDG on Campus AIT)",
+      date: "2026",
+      organizer: "GDG on Campus AIT x Code Club Atria",
+      duration: "24 Hours",
+      type: "Participation",
+      role: "Team Baazigar",
+      project: "Pravaah AI",
+      description: "Participated at Cepheus 2.0 building Pravaah AI, a 100% offline, air-gapped bias detection tool for AI models. Used 5 specialized AI agents to handle profiling, proxy detection, and counterfactual testing.",
+      highlights: [
+        "Built something enterprises actually need in 24 hours",
+        "Focused on AI fairness and bias mitigation",
+        "Created a system that translates complex metrics into plain English"
+      ],
+      features: [
+        "100% offline execution for data privacy",
+        "Human-in-the-loop review system",
+        "Executive-ready PDF audit report generation"
+      ],
+      teammates: ["Pragun Pradeep", "Shrinidhi Patil", "Aadya Baranwal"],
+      technologies: ["Python", "LLMs", "Multi-Agent Systems"],
+      codeLink: "https://lnkd.in/gQURRpm5",
+      icon: <Clock className="text-purple" size={20} />,
+      color: "from-green-500/20 to-purple/20"
+    },
+    {
+      title: "OpenEnv Hackathon",
+      date: "2026",
+      organizer: "Scaler x Meta",
+      duration: "Hackathon",
+      type: "Participation",
+      role: "Team Kaarigars",
+      project: "OpenEnv RL Arena",
+      description: "Built an arena to test how an AI thinks when lives are on the line. Created a realistic earthquake simulation and a legged rescue robot in a production-grade RL environment built on Meta's infrastructure.",
+      highlights: [
+        "Competed against 3000+ teams",
+        "Cleared both phases of automated evaluation",
+        "Shipped a production-grade RL environment"
+      ],
+      features: [
+        "Realistic earthquake simulation with sensor degradation",
+        "Multi-pillar reward system for RL",
+        "Deployed on Hugging Face Spaces"
+      ],
+      teammates: ["Pragun Pradeep", "Shrinidhi Patil"],
+      technologies: ["PyTorch", "Hugging Face", "Python", "Docker"],
+      codeLink: "https://lnkd.in/gW5btXhu",
+      icon: <Lightbulb className="text-purple" size={20} />,
+      color: "from-blue-500/20 to-cyan-500/20"
+    }
+];
+  const publications = [
+    {
+      title: "Drishti-Ai: A Natural Language-Driven Framework for Campus Incident Analysis Using DeepSeek Text-to-SQL",
+      date: "2026",
+      organizer: "IEEE Region 10 Conference (TENCON)",
+      duration: "Accepted",
+      type: "Research Paper",
+      role: "Co-Author",
+      project: "IEEE Publication",
+      description: "Co-authored and presented an accepted paper at TENCON 2026 (Computing, Data Science & Intelligent Systems). The paper introduces a natural language-driven framework for campus incident analysis, utilizing DeepSeek Text-to-SQL capabilities to process and analyze security issues.",
+      highlights: [
+        "Accepted at IEEE TENCON 2026",
+        "Transforms natural language queries into SQL for campus security data",
+        "Leverages DeepSeek for advanced language understanding"
+      ],
+      features: [
+        "Published research contributing to practical NLP and AI security applications"
+      ],
+      guides: ["Annapurna P Patil", "Ranjit Shankar", "Y. Surya Prakash", "Vijetha", "Bindu Bhargavi Sm"],
+      teammates: ["Aadya Baranwal", "Aman Kumar Singh", "Dhruva K R"],
+      technologies: ["Python", "DeepSeek", "NLP", "Text-to-SQL"],
+      icon: <Award className="text-purple" size={20} />,
+      color: "from-purple/20 to-indigo/20"
+    }
   ];
+
 
   return (
     <Section id="achievements" className="bg-dark-secondary py-20">
@@ -459,6 +584,61 @@ const Achievements = () => {
             </span>
           </div>
         </div>
+        <div className="mt-10 mb-6">
+          <h3 className="text-xl font-semibold text-white mb-2">Research & Publications</h3>
+          <p className="text-gray-400 text-sm">Academic contributions and peer-reviewed work.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {publications.map((achievement, index) => (
+            <div 
+              key={`pub-${index}`}
+              className="gradient-border p-4 animate-slide-up opacity-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
+              style={{ animationDelay: `${0.1 + index * 0.1}s` }}
+              onClick={() => setSelectedAchievement(achievement)}
+              role="button"
+              tabIndex={0}
+              aria-label={`View details for ${achievement.title}`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setSelectedAchievement(achievement);
+                }
+              }}
+            >
+              <div className="text-center">
+                <div className="p-2 bg-purple/10 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center group-hover:bg-purple/20 transition-colors">
+                  <div className="scale-75">
+                    {achievement.icon}
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">{achievement.title}</h3>
+
+                {achievement.role && (
+                  <span className="inline-block px-2 py-1 bg-purple/20 text-purple text-xs rounded-full mb-2">
+                    {achievement.role}
+                  </span>
+                )}
+
+                {achievement.project && (
+                  <div className="mb-2">
+                    <h4 className="text-sm font-semibold text-purple line-clamp-2">{achievement.project}</h4>
+                  </div>
+                )}
+
+                <div className="text-xs text-gray-400 mb-3">
+                  <div className="mb-1">{achievement.date}</div>
+                </div>
+
+                <div className="flex items-center justify-center text-purple group-hover:text-purple-light transition-colors">
+                  <ExternalLink size={14} className="mr-1" />
+                  <span className="text-xs font-medium">Details</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
 
       {/* Modal Popup */}
@@ -487,18 +667,19 @@ const Achievements = () => {
                 </div>
               </div>
               <button 
+                autoFocus
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedAchievement(null);
                 }}
-                className="p-2 hover:bg-purple/10 rounded-full transition-colors"
+                className="p-2 hover:bg-purple/10 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple/50"
                 aria-label="Close achievement details"
               >
                 <X className="text-gray-400 hover:text-white" size={18} />
               </button>
             </div>
             
-            <div className="overflow-y-auto max-h-[calc(80vh-70px)] p-4">
+            <div className="overflow-y-auto max-h-[calc(80vh-70px)] p-4 pb-12">
             
               {/* Project Title */}
               {selectedAchievement.project && (
@@ -631,6 +812,23 @@ const Achievements = () => {
                     {selectedAchievement.teammates.map((teammate, idx) => (
                       <div key={idx} className="bg-dark/50 border border-purple/20 p-2 rounded">
                         <span className="text-white text-xs font-medium">{teammate}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Guides */}
+              {selectedAchievement.guides && (
+                <div className="mt-4">
+                  <h4 className="text-sm font-semibold text-white mb-2 flex items-center">
+                    <Users className="mr-1" size={14} />
+                    Guides
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedAchievement.guides.map((guide, idx) => (
+                      <div key={idx} className="bg-dark/50 border border-purple/20 p-2 rounded">
+                        <span className="text-white text-xs font-medium">{guide}</span>
                       </div>
                     ))}
                   </div>

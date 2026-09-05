@@ -14,6 +14,19 @@ interface Experience {
 
 const professionalExperiences: Experience[] = [
   {
+    role: 'Part-Time Software Developer',
+    company: 'Vina EduTech',
+    period: 'Jul 2026 - Present',
+    type: 'Part-Time (Remote)',
+    summary:
+      'Transitioned to the parent company, Vina EduTech, to focus on cross-platform app and web development using React Native and related technologies.',
+    highlights: [
+      'Leading app and web development initiatives using React Native and the modern JavaScript ecosystem',
+      'Actively participating in professional software development lifecycles including code reviews and iterations',
+      'Collaborating closely with a dedicated technical team to deliver reliable and maintainable software products'
+    ],
+  },
+  {
     role: 'Full Stack Developer Intern',
     company: 'Indian Chess Academy (Vina EduTech Pvt. Ltd.)',
     period: 'Apr 2026 - Jun 2026',
@@ -40,7 +53,7 @@ const professionalExperiences: Experience[] = [
       'Designed a natural language to SQL pipeline for analytical querying',
       'Collaborated with cross-functional teams to retrieve CCTV footage using constraint-based queries',
       'Improved query efficiency and overall system performance for Drishti AI',
-      'First author on “Drishti-AI: A Natural Language-Driven Framework for Campus Incident Analysis using Text-to-SQL”, submitted to IEEE TENCON 2025 (under review)',
+      'Co-authored “Drishti-Ai: A Natural Language-Driven Framework for Campus Incident Analysis Using DeepSeek Text-to-SQL”, accepted at IEEE TENCON 2026',
     ],
   },
 ];

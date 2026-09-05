@@ -64,10 +64,7 @@ const Hero = () => {
             <span className="inline-block px-1">Innovation Builder</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-base sm:text-lg mb-10">
-            I'm deeply fascinated by the endless possibilities of artificial intelligence and machine learning. 
-            From building intelligent interview coaches to fraud detection systems, I love creating AI solutions 
-            that make a real difference. My journey spans across computer vision, NLP, and MLOps - always with 
-            the goal of turning complex algorithms into meaningful, user-friendly applications that solve genuine problems.
+            For me, AI is about constant learning and exploration. Whether that means diving deep into NLP frameworks through academic research or building user-centric tools like intelligent interview coaches, I love creating solutions that make a real difference. My journey spans computer vision, NLP, and MLOps, always driven by the desire to turn complex algorithms into accessible, problem-solving applications.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8">
             <Link to="/projects">
