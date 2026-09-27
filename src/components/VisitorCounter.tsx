@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Users } from 'lucide-react';
-import { incrementVisitorCount, getVisitorCount } from '../services/visitorService';
-
-const SESSION_KEY = 'visitor_counted';
+import { incrementVisitorCount } from '../services/visitorService';
 
 const VisitorCounter: React.FC = () => {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const alreadyCounted = sessionStorage.getItem(SESSION_KEY);
-
-    if (alreadyCounted) {
-      // Don't increment again this session — just fetch current count
-      getVisitorCount().then(setCount);
-    } else {
-      // First visit this session — increment
-      incrementVisitorCount().then((newCount) => {
-        setCount(newCount);
-        sessionStorage.setItem(SESSION_KEY, 'true');
-      });
-    }
+    // Increment on every page load
+    incrementVisitorCount().then(setCount);
   }, []);
 
   return (
