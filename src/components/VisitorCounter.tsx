@@ -1,30 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Users } from 'lucide-react';
-import { incrementVisitorCount } from '../services/visitorService';
+import React from 'react';
+
+// hits.sh auto-increments on every image load — no backend, no setup needed.
+// Change the key below to match your actual Netlify domain.
+const HITS_KEY = 'darshilnathwani.netlify.app';
 
 const VisitorCounter: React.FC = () => {
-  const [count, setCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    // Increment on every page load
-    incrementVisitorCount().then(setCount);
-  }, []);
-
   return (
-    <div className="flex items-center gap-2 text-gray-500 text-sm">
-      <Users size={14} className="text-purple opacity-70" />
-      <span>
-        {count === null ? (
-          <span className="animate-pulse">···</span>
-        ) : (
-          <>
-            <span className="text-purple font-semibold">
-              {count.toLocaleString()}
-            </span>{' '}
-            {count === 1 ? 'visitor' : 'visitors'}
-          </>
-        )}
-      </span>
+    <div className="flex items-center gap-1 text-gray-500 text-sm">
+      <span className="text-gray-500">Views:</span>
+      <img
+        src={`https://hits.sh/${HITS_KEY}.svg?style=flat&color=6d28d9&label=`}
+        alt="Visitor count"
+        className="h-5"
+      />
     </div>
   );
 };
