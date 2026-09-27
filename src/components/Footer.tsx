@@ -1,5 +1,6 @@
 import React from 'react';
 import { Github, Download } from 'lucide-react';
+import VisitorCounter from './VisitorCounter';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -40,11 +41,13 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-500 text-sm mb-4 md:mb-0">
+        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-500 text-sm">
             &copy; {currentYear} Darshil Nathwani. All rights reserved.
           </p>
-          
+
+          <VisitorCounter />
+
           <div className="flex items-center space-x-4">
             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-gray-400 hover:text-purple transition-colors text-sm">
               Back to Top
