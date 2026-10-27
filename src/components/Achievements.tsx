@@ -1,845 +1,613 @@
+/**
+ * Achievements.tsx — Mosaic trophy wall
+ *
+ * SIGNATURE BOLDNESS: Masonry-style grid with interactive trophy cards
+ * Cards expand on click revealing full details in modal overlay
+ * Inspired by: A Love Hate Story's mosaic + Componine's interactive grids
+ * 
+ * UNIQUE ELEMENTS:
+ * - Masonry/pinterest-style layout (varying heights)
+ * - Trophy cards with massive rank numbers
+ * - Click to expand into fullscreen modal
+ * - Staggered entrance from random directions
+ * - IEEE publication highlighted differently
+ */
+
 import React, { useState } from 'react';
-import Section from './ui/Section';
-import { Trophy, Users, Clock, Lightbulb, Award, Calendar, MapPin, Code2, X, ExternalLink } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Trophy, Award, X, ExternalLink, Users, Calendar } from 'lucide-react';
+import { sound } from '../lib/sound';
 
-const Achievements = () => {
-  const [selectedAchievement, setSelectedAchievement] = useState<any>(null);
-  
-  const competitiveAchievements = [
-    {
-      title: "Nasiko x Devaarambh Buildathon - TOP 10 Finish",
-      date: "2026",
-      organizer: "Nasiko x Devaarambh at Microsoft",
-      duration: "1 Day",
-      type: "Buildathon / Hackathon",
-      role: "Developer",
-      project: "Resilient Multi-Agent Request Layer",
-      status: "Top 10 Finish",
-      description: "Spent the day building a resilient request layer for multi-agent systems. Faced Redis queues, cache logic, Docker issues, and API routing challenges. Placed in the Top 10 out of over 200 builders at Microsoft.",
-      highlights: [
-        "Finished in the TOP 10🏆 out of 200+ builders at Microsoft",
-        "Built a resilient request layer for multi-agent systems under tight timelines",
-        "Collaborated and networked with builders, speakers, and mentors obsessed with AI infra and agent architectures",
-        "Received valuable debugging assistance and architectural feedback from industry mentors"
-      ],
-      features: [
-        "Designed high-reliability queuing and routing logic using Redis and Docker",
-        "Optimized agent synchronization pipelines under intense constraints",
-        "Learned how to successfully implement open-source contributions without breaking existing features"
-      ],
-      technologies: ["Redis", "Docker", "API Routing", "Multi-Agent Systems", "Caching", "Open Source"],
-      icon: <Trophy className="text-purple" size={20} />,
-      color: "from-yellow/20 to-purple/20"
-    },
-    {
-      title: "Indian Chess Academy Hackathon - 1st Place",
-      date: "2026",
-      organizer: "Indian Chess Academy",
-      duration: "72 Hours",
-      type: "Winning Team Project",
-      role: "Team Madoss",
-      project: "Smart, Secure, and Usable Hackathon Platform",
-      status: "1st Place",
-      description: "Team Madoss secured 1st place for delivering a polished and reliable platform with a strong balance of usability, security, and technical execution.",
-      highlights: [
-        "Awarded 1st place for a well-rounded and thoughtfully developed solution",
-        "Recognized for balancing product usability with robust security",
-        "Delivered strong technical execution with dependable platform behavior",
-        "Qualified for a one-month training program post-hackathon"
-      ],
-      features: [
-        "Collaborative end-to-end product build with clear ownership",
-        "Reliable platform workflows with production-minded implementation",
-        "Security-aware design choices aligned with hackathon goals",
-        "Post-win pathway to internship opportunities based on training performance"
-      ],
-      teammates: ["Darshil Nathwani", "Rigved", "Shrinidhi Patil", "Aadya Baranwal"],
-      technologies: ["React", "TypeScript", "Firebase", "Security-First Design", "Full-Stack Architecture"],
-      icon: <Trophy className="text-purple" size={20} />,
-      color: "from-yellow/20 to-amber-500/20"
-    },
-    {
-      title: "CICADA Hackathon - TOP 20",
-      date: "22-Hour Sprint",
-      organizer: "Mastersolis Infotech at Atria University, Bengaluru",
-      duration: "22 Hours",
-      type: "Innovation Hackathon",
-      role: "Team Lead",
-      project: "KARM AI - College Placement Management Portal",
-      status: "TOP 20 Finish",
-      description: "Led Team Jugaadu to build KARM AI, a dual-platform placement management solution in 22 hours. We solved real campus recruitment pain points through a web portal for Students, HOD, and TPO, plus a Chrome extension that auto-fills applications and improves submission speed with AI-assisted workflows.",
-      highlights: [
-        "Secured a TOP 20 finish among 150+ teams",
-        "Completed end-to-end architecture from briefing to final presentation",
-        "Built and validated a production-style multi-role placement workflow",
-        "Sustained clean code and delivery pace through an overnight sprint"
-      ],
-      features: [
-        "Multi-role portal access for Students, HOD, and TPO operations",
-        "AI-powered resume parsing, scoring, and candidate-job fit analysis",
-        "Automated placement drive lifecycle with email notifications",
-        "Real-time analytics dashboard with department-level reports (Excel/PDF)",
-        "Chrome extension for profile-based form auto-fill and one-click submissions",
-        "Live application tracking and instant drive update notifications"
-      ],
-      teammates: ["Aadya Baranwal", "Musaddik Jamadar", "Shreyash J S"],
-      technologies: ["React", "FastAPI", "Firebase", "Gemini API", "Chrome Extension"],
-      icon: <Trophy className="text-purple" size={20} />,
-      color: "from-yellow/20 to-purple/20"
-    },
-    {
-      title: "SIH Internal Hackathon",
-      date: "2024",
-      organizer: "Smart India Hackathon",
-      type: "National Competition",
-      role: "Team Lead",
-      project: "Smart Tourist Safety Monitoring System",
-      status: "Selected for Next Round",
-      description: "Team 'Paradox' successfully advanced to the next round with an innovative AI-powered tourist safety solution using geo-fencing and blockchain-based digital identity.",
-      highlights: [
-        "Successfully passed evaluation round",
-        "Impressed expert evaluators",
-        "Advanced to next competition phase",
-        "National-level recognition"
-      ],
-      features: [
-        "AI-powered monitoring system",
-        "Geo-fencing technology",
-        "Blockchain digital ID",
-        "Incident response automation"
-      ],
-      icon: <Trophy className="text-purple" size={20} />,
-      color: "from-yellow/20 to-orange/20"
-    }
-  
-    ,{
-      title: "Google DeepMind Bangalore Hackathon - TOP 25",
-      date: "2026",
-      organizer: "Google DeepMind",
-      duration: "1 Day",
-      type: "Hackathon",
-      role: "Solo Developer",
-      project: "AI Agent",
-      status: "Top 25 Finish",
-      description: "Spent the day building, debugging, rethinking ideas, and somehow making it to the submission before the countdown hit zero. Finished in the Top 25 out of a room full of builders, researchers, and founders.",
-      highlights: [
-        "Finished in the TOP 25",
-        "Solo 1-day sprint",
-        "Leveraged Gemini API to build an agentic solution"
-      ],
-      features: [
-        "Rapid prototyping of AI workflows",
-        "Agentic system design using Gemini"
-      ],
-      technologies: ["Python", "Gemini API"],
-      icon: <Trophy className="text-purple" size={20} />,
-      color: "from-yellow/20 to-purple/20"
-    },
-    {
-      title: "Athermex by BMSCE x DSCE - TOP 10",
-      date: "2026",
-      organizer: "ByteXync (BMSCE x DSCE)",
-      duration: "Hackathon",
-      type: "Hackathon",
-      role: "Team Baazigar",
-      project: "Antraa",
-      status: "Top 10 Finish",
-      description: "Built Antraa, a 100% local synthetic data generator with formal differential privacy. Finished Top 10 out of 150+ teams and 450+ participants.",
-      highlights: [
-        "Finished Top 10 out of 150+ teams",
-        "Built a solution for highly regulated sectors (Healthcare, Fintech, Defence)"
-      ],
-      features: [
-        "Generates synthetic data preserving all patterns",
-        "Runs 100% local with no cloud dependency",
-        "7 automated AI agents for profiling, compliance, generation, and validation"
-      ],
-      teammates: ["Aadya Baranwal", "Shrinidhi Patil", "Pragun Pradeep"],
-      technologies: ["Python", "Differential Privacy", "Multi-Agent Systems"],
-      icon: <Trophy className="text-purple" size={20} />,
-      color: "from-yellow/20 to-blue/20"
-    }
+const E = [0.76, 0, 0.24, 1] as const;
+
+interface Achievement {
+  id: string;
+  title: string;
+  rank: string;
+  date: string;
+  organizer: string;
+  type: 'hackathon' | 'publication' | 'competition';
+  description: string;
+  highlights: string[];
+  team?: string[];
+  link?: string;
+}
+
+const achievements: Achievement[] = [
+  {
+    id: '1',
+    title: 'Nasiko × Devaarambh Buildathon',
+    rank: 'TOP 10',
+    date: '2026',
+    organizer: 'Microsoft Reactor',
+    type: 'hackathon',
+    description: 'Built resilient multi-agent request layer. Redis queues, Docker, API routing. Top 10 out of 200+ builders.',
+    highlights: [
+      'Multi-agent systems architecture',
+      'Redis queue management',
+      'Mentorship from industry experts',
+      'Open-source contributions',
+    ],
+  },
+  {
+    id: '2',
+    title: 'Indian Chess Academy Hackathon',
+    rank: '1ST PLACE',
+    date: '2026',
+    organizer: 'Vina EduTech',
+    type: 'hackathon',
+    description: 'Team Madoss won 1st place building secure, usable platform. Led to training program and internship.',
+    highlights: [
+      'Security-first design',
+      'Production-minded implementation',
+      'One-month training program',
+      'Internship pathway',
+    ],
+    team: ['Rigved', 'Shrinidhi Patil', 'Aadya Baranwal'],
+  },
+  {
+    id: '3',
+    title: 'CICADA Hackathon',
+    rank: 'TOP 20',
+    date: '2026',
+    organizer: 'Mastersolis @ Atria University',
+    type: 'hackathon',
+    description: 'KARM AI: 22-hour sprint building placement portal + Chrome extension. Multi-role access, AI resume parsing.',
+    highlights: [
+      'Dual-platform solution',
+      'AI-powered resume scoring',
+      'Chrome extension auto-fill',
+      'Real-time analytics',
+    ],
+    team: ['Aadya Baranwal', 'Musaddik Jamadar', 'Shreyash J S'],
+  },
+  {
+    id: '4',
+    title: 'IEEE TENCON 2026',
+    rank: 'ACCEPTED',
+    date: '2026',
+    organizer: 'IEEE International',
+    type: 'publication',
+    description: 'Research paper on Drishti AI accepted. Natural language to SQL and CCTV video retrieval systems.',
+    highlights: [
+      'Peer-reviewed publication',
+      'International conference',
+      'NL-to-SQL semantic parser',
+      'CCTV retrieval pipeline',
+    ],
+    link: '#',
+  },
+  {
+    id: '5',
+    title: 'Google DeepMind Hackathon',
+    rank: 'TOP 25',
+    date: '2026',
+    organizer: 'Google DeepMind Bangalore',
+    type: 'hackathon',
+    description: 'Solo 1-day sprint building AI agent with Gemini API. Top 25 finish.',
+    highlights: [
+      'Solo developer',
+      'Rapid prototyping',
+      'Agentic system design',
+      'Gemini API integration',
+    ],
+  },
+  {
+    id: '6',
+    title: 'Athermex Hackathon',
+    rank: 'TOP 10',
+    date: '2026',
+    organizer: 'BMSCE × DSCE',
+    type: 'hackathon',
+    description: 'Antraa: 100% local synthetic data generator with differential privacy. Top 10 out of 150+ teams.',
+    highlights: [
+      'Differential privacy',
+      'Healthcare/fintech focus',
+      '450+ participants',
+      'Privacy-preserving tech',
+    ],
+    team: ['Team Baazigar'],
+  },
+  {
+    id: '7',
+    title: 'SIH Internal Round',
+    rank: 'QUALIFIED',
+    date: '2024',
+    organizer: 'Smart India Hackathon',
+    type: 'competition',
+    description: 'Team Paradox advanced with AI-powered tourist safety monitoring using geo-fencing and blockchain.',
+    highlights: [
+      'AI monitoring system',
+      'Geo-fencing technology',
+      'Blockchain digital ID',
+      'National competition',
+    ],
+    team: ['Team Paradox'],
+  },
 ];
 
-  const participationHighlights = [
-    {
-      title: "Ignisia 26 National Hackathon",
-      date: "January-February 2026",
-      organizer: "Ignisia 26",
-      duration: "24 Hours",
-      type: "Participation",
-      role: "Team Atrangi",
-      project: "Sanjeevani - Agentic Diagnostic Risk Assistant for ICU Complication Detection",
-      description: "Built Sanjeevani to solve a critical ICU challenge: hospitals do not lack data, they lack time to connect signals across that data. The system used a multi-agent architecture to transform fragmented clinical information into interpretable risk reports for faster, safer decisions.",
-      highlights: [
-        "Completed a full 24-hour national-level build sprint under high pressure",
-        "Focused on practical ICU risk interpretation instead of black-box predictions",
-        "Used protocol-aware agent collaboration to improve decision quality",
-        "Did not win, but shipped a meaningful healthcare AI prototype",
-        "Learned in one sprint what usually takes weeks of normal development"
-      ],
-      features: [
-        "Clinical NLP agent to convert unstructured notes into structured timelines",
-        "Trend analysis agent to track lab-value evolution over time",
-        "Medical RAG agent using embeddings and vector search over real guidance",
-        "Chief synthesis agent to merge outputs into one interpretable risk report",
-        "NFC-enabled quick patient data access and authentication for ICU practicality"
-      ],
-      teammates: ["Vishvajitsinh Gohil", "Ishita Mandle", "Kathan Gajera"],
-      technologies: ["Clinical NLP", "Multi-Agent Systems", "RAG", "Vector Search", "Embeddings", "NFC"],
-      icon: <Clock className="text-purple" size={20} />,
-      color: "from-red-500/20 to-purple/20"
-    },
-    {
-      title: "ArtPark CodeForge Hackathon",
-      date: "2026",
-      organizer: "ArtPark CodeForge",
-      duration: "48 Hours",
-      type: "Participation",
-      role: "Team Kaarigars",
-      project: "Setu AI - Adaptive Onboarding Engine",
-      description: "Built Setu AI, an adaptive onboarding engine that compares resumes against job descriptions to calculate skill gaps and generate focused learning pathways. The product removed one-size-fits-all onboarding and replaced it with role-aware, evidence-backed progression.",
-      highlights: [
-        "Delivered a fully functional AI onboarding engine in 48 hours",
-        "Solved enterprise onboarding inefficiency with adaptive skill-gap planning",
-        "Shipped from blank repository to Dockerized end-to-end system",
-        "Added transparent reasoning traces to justify recommendation paths"
-      ],
-      features: [
-        "Fine-tuned Mistral 7B adapters for expertise-aware recommendation behavior",
-        "NetworkX prerequisite graph to enforce learning dependency order",
-        "ChromaDB grounding to map recommendations to real course inventory",
-        "Built-in reasoning trace explaining skipped basics and advanced priorities"
-      ],
-      teammates: ["Arpit Ravi", "Arya Dudalkar", "Eesha Hemani"],
-      technologies: ["Mistral 7B", "NetworkX", "ChromaDB", "Python", "Docker"],
-      codeLink: "https://lnkd.in/eCi7Hyca",
-      demoLink: "https://lnkd.in/eMiwDVNc",
-      icon: <Lightbulb className="text-purple" size={20} />,
-      color: "from-blue-500/20 to-cyan-500/20"
-    },
-    {
-      title: "RNSIT Hackathon",
-      date: "8-9 April 2026",
-      organizer: "RNSIT",
-      duration: "48 Hours",
-      type: "Participation",
-      role: "AI Code Review Build Team",
-      project: "RNSIT AI Code Analyzer",
-      description: "Built a local-first AI code analysis system for editor and pull-request workflows. The platform combined a FastAPI backend, multi-agent analysis chains, a browser extension for GitHub and GitLab review pages, and a VS Code extension for workspace-aware diagnostics.",
-      highlights: [
-        "Implemented multi-surface review flow across editor, browser, and backend",
-        "Enabled local-only execution so code stays inside localhost boundaries",
-        "Supported quick, normal, and thorough scan depths in VS Code",
-        "Shipped inline annotations and downloadable Markdown review reports"
-      ],
-      features: [
-        "FastAPI local backend with structured analysis output",
-        "Multi-agent pipeline for bug, security, quality, and compliance checks",
-        "Chrome extension support for GitHub PR and GitLab MR review pages",
-        "Streaming JSONL responses for near-instant progressive rendering",
-        "Job-based analyze APIs with polling and websocket alternatives"
-      ],
-      technologies: ["FastAPI", "LangChain", "Tree-sitter", "ChromaDB", "Ollama", "Semgrep", "Ruff", "Gitleaks", "TypeScript", "VS Code Extension", "Chrome Extension"],
-      icon: <Code2 className="text-purple" size={20} />,
-      color: "from-purple/20 to-emerald-500/20"
-    },
-    {
-      title: "Hackoasis v2",
-      date: "29th November 2024",
-      organizer: "Hackoasis",
-      duration: "Hackathon",
-      type: "Participation",
-      project: "No-code Prototype with Wix",
-      description: "Participated in my first hackathon and built a prototype using Wix, which kickstarted my competitive building journey.",
-      highlights: [
-        "First-ever hackathon participation",
-        "Built and presented a no-code prototype",
-        "Learned team coordination under event timelines"
-      ],
-      features: [
-        "Rapid prototyping in a constrained timeline",
-        "Foundation in hackathon workflow and pitching"
-      ],
-      technologies: ["Wix"],
-      icon: <Clock className="text-purple" size={20} />,
-      color: "from-purple/20 to-blue/20"
-    },
-    {
-      title: "TechTrek Hackathon",
-      date: "March 29, 2025",
-      organizer: "DSCE ACM Student Chapter",
-      duration: "8 Hours",
-      type: "Participation",
-      project: "PG Finder Web Application",
-      description: "Designed and developed a MERN stack web application to find PGs nearby while working through an intense 8-hour sprint.",
-      highlights: [
-        "Built complete MERN stack application",
-        "Implemented location-based PG search",
-        "Improved execution under strict time pressure"
-      ],
-      features: [
-        "Location-based search functionality",
-        "PG listing and filtering system",
-        "User-friendly responsive interface"
-      ],
-      teammates: ["Midde Jayanth", "Anshuman Pati", "Aman Kumar Singh"],
-      technologies: ["MongoDB", "Express.js", "React", "Node.js"],
-      icon: <Clock className="text-purple" size={20} />,
-      color: "from-purple/20 to-blue/20"
-    },
-    {
-      title: "Hackverse 24-Hour Hackathon",
-      date: "2024",
-      organizer: "DSATM Techfusion",
-      duration: "24 Hours",
-      type: "Participation",
-      role: "Team Lead",
-      project: "Kara-AI: Multi-Modal AI Interview Coach",
-      description: "Led team 'Jugaadu' to deliver a full-stack AI interview coaching prototype and gained critical leadership experience.",
-      highlights: [
-        "First online hackathon experience",
-        "Team leadership under a 24-hour deadline",
-        "Full-stack AI project delivery"
-      ],
-      features: [
-        "Dynamic context-aware interview questions",
-        "Live video and audio analysis",
-        "Real-time feedback system"
-      ],
-      teammates: ["Aadya B.", "Musaddik Jamadar"],
-      technologies: ["React", "Python", "OpenCV", "AI Models"],
-      icon: <Lightbulb className="text-purple" size={20} />,
-      color: "from-green/20 to-purple/20"
-    },
-    {
-      title: "HackMan v.8",
-      date: "Oct 31 - Nov 1, 2025",
-      organizer: "Dayananda Sagar College of Engineering (DSCE)",
-      duration: "24 Hours",
-      type: "Participation",
-      role: "Team Lead",
-      project: "Kriti (कृति) - Decentralized Career Identity Platform",
-      description: "In my first-ever 24-hour hackathon, I led Team UNO on a single mission: solving the trust crisis in hiring. We built Kriti, a decentralized digital identity platform that works like a DigiLocker for careers. It tackles fake resumes and slow background checks through a blockchain trust layer for verifiable credentials and an AI layer for ATS-proof resume generation plus instant recruiter-side talent verification.",
-      highlights: [
-        "24-hour sleepless build sprint as Team Lead",
-        "Built a B2B/B2C architecture from whiteboard to working prototype",
-        "Focused on solving fake resumes and hiring verification delays",
-        "Strong learning outcome despite no final rank"
-      ],
-      features: [
-        "Blockchain-backed verifiable credentials for degrees and experience letters",
-        "Tamper-proof trust layer for un-forgeable career records",
-        "AI engine for ATS-optimized resume creation",
-        "Instant candidate verification workflow for recruiters",
-        "Career identity vault inspired by DigiLocker"
-      ],
-      teammates: ["Dhruva K R", "Aadya Baranwal", "Utsav Patel"],
-      technologies: ["Blockchain", "Verifiable Credentials", "AI", "React", "Node.js"],
-      codeLink: "https://lnkd.in/gjRjJH-6",
-      icon: <Award className="text-purple" size={20} />,
-      color: "from-blue/20 to-cyan/20"
-    },
-    {
-      title: "Aegis Cybersecurity Hackathon",
-      date: "24-Hour Sprint",
-      organizer: "Aegis at DSCE",
-      duration: "24 Hours",
-      type: "Participation",
-      role: "Team Merge Conflict",
-      project: "Kavach - AI Security Copilot",
-      description: "Built Kavach, an AI that watches your AI-generated code in real time. The system blocks risky terminal commands, detects dependency attacks, scans live file changes, protects secrets, and provides local-first AI security analysis without sending code to external servers.",
-      highlights: [
-        "Delivered a fully local AI security workflow in 24 hours",
-        "Focused on making vibe coding safer through proactive guardrails",
-        "Combined threat detection, intent control, and rollback safety in one tool",
-        "Validated end-to-end implementation under extreme hackathon pressure"
-      ],
-      features: [
-        "Terminal interception to block dangerous commands pre-execution",
-        "Phantom dependency blocker for fake and typosquatted packages",
-        "Live security scanner for injections, broken auth, weak crypto, and secrets",
-        "Secret Shield to keep credentials off AI servers",
-        "Intent Guard to prevent over-scoped AI actions",
-        "RAG-powered cross-file codebase security analysis",
-        "Living vulnerability report that updates as fixes are made",
-        "Reinforcement learning loop to reduce noise over time",
-        "Rollback safety net for one-command recovery"
-      ],
-      teammates: ["Arpit Ravi", "Arya Dudalkar", "Rigved Tamkoria"],
-      technologies: ["Ollama", "phi4-mini", "nomic-embed-text", "Semgrep", "XGBoost", "ChromaDB", "scikit-learn", "SQLite", "FastAPI", "Python", "TypeScript", "VS Code Extension"],
-      codeLink: "https://lnkd.in/gy7hziPh",
-      demoLink: "https://lnkd.in/ge3DmKgg",
-      icon: <Trophy className="text-purple" size={20} />,
-      color: "from-cyan-500/20 to-purple/20"
-    }
-  
-    ,{
-      title: "Cepheus 2.0 (GDG on Campus AIT)",
-      date: "2026",
-      organizer: "GDG on Campus AIT x Code Club Atria",
-      duration: "24 Hours",
-      type: "Participation",
-      role: "Team Baazigar",
-      project: "Pravaah AI",
-      description: "Participated at Cepheus 2.0 building Pravaah AI, a 100% offline, air-gapped bias detection tool for AI models. Used 5 specialized AI agents to handle profiling, proxy detection, and counterfactual testing.",
-      highlights: [
-        "Built something enterprises actually need in 24 hours",
-        "Focused on AI fairness and bias mitigation",
-        "Created a system that translates complex metrics into plain English"
-      ],
-      features: [
-        "100% offline execution for data privacy",
-        "Human-in-the-loop review system",
-        "Executive-ready PDF audit report generation"
-      ],
-      teammates: ["Pragun Pradeep", "Shrinidhi Patil", "Aadya Baranwal"],
-      technologies: ["Python", "LLMs", "Multi-Agent Systems"],
-      codeLink: "https://lnkd.in/gQURRpm5",
-      icon: <Clock className="text-purple" size={20} />,
-      color: "from-green-500/20 to-purple/20"
-    },
-    {
-      title: "OpenEnv Hackathon",
-      date: "2026",
-      organizer: "Scaler x Meta",
-      duration: "Hackathon",
-      type: "Participation",
-      role: "Team Kaarigars",
-      project: "OpenEnv RL Arena",
-      description: "Built an arena to test how an AI thinks when lives are on the line. Created a realistic earthquake simulation and a legged rescue robot in a production-grade RL environment built on Meta's infrastructure.",
-      highlights: [
-        "Competed against 3000+ teams",
-        "Cleared both phases of automated evaluation",
-        "Shipped a production-grade RL environment"
-      ],
-      features: [
-        "Realistic earthquake simulation with sensor degradation",
-        "Multi-pillar reward system for RL",
-        "Deployed on Hugging Face Spaces"
-      ],
-      teammates: ["Pragun Pradeep", "Shrinidhi Patil"],
-      technologies: ["PyTorch", "Hugging Face", "Python", "Docker"],
-      codeLink: "https://lnkd.in/gW5btXhu",
-      icon: <Lightbulb className="text-purple" size={20} />,
-      color: "from-blue-500/20 to-cyan-500/20"
-    }
-];
-  const publications = [
-    {
-      title: "Drishti-Ai: A Natural Language-Driven Framework for Campus Incident Analysis Using DeepSeek Text-to-SQL",
-      date: "2026",
-      organizer: "IEEE Region 10 Conference (TENCON)",
-      duration: "Accepted",
-      type: "Research Paper",
-      role: "Co-Author",
-      project: "IEEE Publication",
-      description: "Co-authored and presented an accepted paper at TENCON 2026 (Computing, Data Science & Intelligent Systems). The paper introduces a natural language-driven framework for campus incident analysis, utilizing DeepSeek Text-to-SQL capabilities to process and analyze security issues.",
-      highlights: [
-        "Accepted at IEEE TENCON 2026",
-        "Transforms natural language queries into SQL for campus security data",
-        "Leverages DeepSeek for advanced language understanding"
-      ],
-      features: [
-        "Published research contributing to practical NLP and AI security applications"
-      ],
-      guides: ["Annapurna P Patil", "Ranjit Shankar", "Y. Surya Prakash", "Vijetha", "Bindu Bhargavi Sm"],
-      teammates: ["Aadya Baranwal", "Aman Kumar Singh", "Dhruva K R"],
-      technologies: ["Python", "DeepSeek", "NLP", "Text-to-SQL"],
-      icon: <Award className="text-purple" size={20} />,
-      color: "from-purple/20 to-indigo/20"
-    }
-  ];
+function ClipLine({ children, delay }: { children: React.ReactNode; delay: number }) {
+  return (
+    <div style={{ overflow: 'hidden' }}>
+      <motion.div
+        initial={{ y: '110%' }}
+        animate={{ y: '0%' }}
+        transition={{ duration: 1.05, delay, ease: E }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+}
 
+function AchievementCard({ achievement, index, onClick }: { achievement: Achievement; index: number; onClick: () => void }) {
+  const isPublication = achievement.type === 'publication';
+  const randomX = (Math.random() - 0.5) * 80;
+  const randomY = Math.random() * 60 + 40;
 
   return (
-    <Section id="achievements" className="bg-dark-secondary py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-2">Achievements & Recognition</h2>
-          <div className="w-24 h-1 bg-purple mx-auto rounded-full mb-4"></div>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            A clear split between competitive outcomes and participation journey across hackathons and technical events.
-          </p>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, x: randomX, y: randomY }}
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 1, delay: index * 0.08, ease: E }}
+      onClick={() => {
+        sound.playClick?.();
+        onClick();
+      }}
+      whileHover={{ y: -8, scale: 1.02 }}
+      style={{
+        border: `1px solid ${isPublication ? 'rgba(163,230,53,0.3)' : 'rgba(255,255,255,0.08)'}`,
+        backgroundColor: isPublication ? 'rgba(163,230,53,0.03)' : 'rgba(255,255,255,0.01)',
+        padding: 'clamp(2rem, 3vw, 2.5rem)',
+        cursor: 'pointer',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Rank badge */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: isPublication ? 3 : 2,
+          backgroundColor: isPublication ? '#A3E635' : 'rgba(163,230,53,0.5)',
+          boxShadow: isPublication ? '0 0 20px rgba(163,230,53,0.4)' : 'none',
+        }}
+      />
 
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold text-white mb-2">Competitive Achievements</h3>
-          <p className="text-gray-400 text-sm">Wins, rankings, and officially recognized outcomes.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {competitiveAchievements.map((achievement, index) => (
-            <div 
-              key={index}
-              className="gradient-border p-4 animate-slide-up opacity-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
-              style={{ animationDelay: `${0.1 + index * 0.1}s` }}
-              onClick={() => setSelectedAchievement(achievement)}
-              role="button"
-              tabIndex={0}
-              aria-label={`View details for ${achievement.title}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setSelectedAchievement(achievement);
-                }
-              }}
-            >
-              <div className="text-center">
-                <div className="p-2 bg-purple/10 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center group-hover:bg-purple/20 transition-colors">
-                  <div className="scale-75">
-                    {achievement.icon}
-                  </div>
-                </div>
-                
-                <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">{achievement.title}</h3>
-                
-                {achievement.role && (
-                  <span className="inline-block px-2 py-1 bg-purple/20 text-purple text-xs rounded-full mb-2">
-                    {achievement.role}
-                  </span>
-                )}
-                
-                {achievement.project && (
-                  <div className="mb-2">
-                    <h4 className="text-sm font-semibold text-purple line-clamp-2">{achievement.project}</h4>
-                  </div>
-                )}
-                
-                <div className="text-xs text-gray-400 mb-3">
-                  <div className="mb-1">{achievement.date}</div>
-                  {achievement.status && (
-                    <div className="text-yellow-400 font-medium">{achievement.status}</div>
-                  )}
-                </div>
-                
-                <div className="flex items-center justify-center text-purple group-hover:text-purple-light transition-colors">
-                  <ExternalLink size={14} className="mr-1" />
-                  <span className="text-xs font-medium">Details</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 mb-6">
-          <h3 className="text-xl font-semibold text-white mb-2">Hackathon Participation Journey</h3>
-          <p className="text-gray-400 text-sm">Sprints that shaped execution speed, teamwork, and product intuition.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {participationHighlights.map((achievement, index) => (
-            <div 
-              key={`participation-${index}`}
-              className="gradient-border p-4 animate-slide-up opacity-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
-              style={{ animationDelay: `${0.1 + index * 0.1}s` }}
-              onClick={() => setSelectedAchievement(achievement)}
-              role="button"
-              tabIndex={0}
-              aria-label={`View details for ${achievement.title}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setSelectedAchievement(achievement);
-                }
-              }}
-            >
-              <div className="text-center">
-                <div className="p-2 bg-purple/10 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center group-hover:bg-purple/20 transition-colors">
-                  <div className="scale-75">
-                    {achievement.icon}
-                  </div>
-                </div>
-
-                <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">{achievement.title}</h3>
-
-                {achievement.role && (
-                  <span className="inline-block px-2 py-1 bg-purple/20 text-purple text-xs rounded-full mb-2">
-                    {achievement.role}
-                  </span>
-                )}
-
-                {achievement.project && (
-                  <div className="mb-2">
-                    <h4 className="text-sm font-semibold text-purple line-clamp-2">{achievement.project}</h4>
-                  </div>
-                )}
-
-                <div className="text-xs text-gray-400 mb-3">
-                  <div className="mb-1">{achievement.date}</div>
-                </div>
-
-                <div className="flex items-center justify-center text-purple group-hover:text-purple-light transition-colors">
-                  <ExternalLink size={14} className="mr-1" />
-                  <span className="text-xs font-medium">Details</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-12 text-center">
-          <div className="inline-flex items-center px-6 py-3 bg-purple/10 rounded-full border border-purple/20">
-            <Trophy className="text-purple mr-2" size={20} />
-            <span className="text-gray-300 font-medium">
-              Continuously participating in hackathons and technical competitions
-            </span>
-          </div>
-        </div>
-        <div className="mt-10 mb-6">
-          <h3 className="text-xl font-semibold text-white mb-2">Research & Publications</h3>
-          <p className="text-gray-400 text-sm">Academic contributions and peer-reviewed work.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {publications.map((achievement, index) => (
-            <div 
-              key={`pub-${index}`}
-              className="gradient-border p-4 animate-slide-up opacity-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer group"
-              style={{ animationDelay: `${0.1 + index * 0.1}s` }}
-              onClick={() => setSelectedAchievement(achievement)}
-              role="button"
-              tabIndex={0}
-              aria-label={`View details for ${achievement.title}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setSelectedAchievement(achievement);
-                }
-              }}
-            >
-              <div className="text-center">
-                <div className="p-2 bg-purple/10 rounded-full w-12 h-12 mx-auto mb-3 flex items-center justify-center group-hover:bg-purple/20 transition-colors">
-                  <div className="scale-75">
-                    {achievement.icon}
-                  </div>
-                </div>
-
-                <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">{achievement.title}</h3>
-
-                {achievement.role && (
-                  <span className="inline-block px-2 py-1 bg-purple/20 text-purple text-xs rounded-full mb-2">
-                    {achievement.role}
-                  </span>
-                )}
-
-                {achievement.project && (
-                  <div className="mb-2">
-                    <h4 className="text-sm font-semibold text-purple line-clamp-2">{achievement.project}</h4>
-                  </div>
-                )}
-
-                <div className="text-xs text-gray-400 mb-3">
-                  <div className="mb-1">{achievement.date}</div>
-                </div>
-
-                <div className="flex items-center justify-center text-purple group-hover:text-purple-light transition-colors">
-                  <ExternalLink size={14} className="mr-1" />
-                  <span className="text-xs font-medium">Details</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
+      {/* Icon */}
+      <div
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 8,
+          backgroundColor: isPublication ? 'rgba(163,230,53,0.15)' : 'rgba(163,230,53,0.08)',
+          border: `1px solid ${isPublication ? 'rgba(163,230,53,0.3)' : 'rgba(163,230,53,0.15)'}`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '1.5rem',
+        }}
+      >
+        {isPublication ? <Award size={18} style={{ color: '#A3E635' }} /> : <Trophy size={18} style={{ color: '#A3E635' }} />}
       </div>
 
-      {/* Modal Popup */}
-      {selectedAchievement && (
-        <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setSelectedAchievement(null);
-            }
+      {/* Rank/Status */}
+      <div
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: '10px',
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: '#A3E635',
+          marginBottom: '1rem',
+        }}
+      >
+        {achievement.rank}
+      </div>
+
+      {/* Title */}
+      <h3
+        style={{
+          fontFamily: "'Inter Tight', sans-serif",
+          fontWeight: 800,
+          fontSize: 'clamp(1.2rem, 1.6vw, 1.5rem)',
+          letterSpacing: '-0.02em',
+          color: '#F8FAFC',
+          marginBottom: '0.8rem',
+          lineHeight: 1.3,
+        }}
+      >
+        {achievement.title}
+      </h3>
+
+      {/* Organizer + Date */}
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '10px',
+            color: 'rgba(248,250,252,0.5)',
           }}
         >
-          <div className="bg-dark-secondary border border-purple/20 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden relative animate-slide-up">
-            <div className="bg-dark-secondary border-b border-purple/20 p-3 flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="p-2 bg-purple/10 rounded-full mr-3">
-                  {selectedAchievement.icon}
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-white">{selectedAchievement.title}</h2>
-                  {selectedAchievement.role && (
-                    <span className="inline-block px-2 py-1 bg-purple/20 text-purple text-xs rounded-full mt-1">
-                      {selectedAchievement.role}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <button 
-                autoFocus
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedAchievement(null);
-                }}
-                className="p-2 hover:bg-purple/10 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple/50"
-                aria-label="Close achievement details"
-              >
-                <X className="text-gray-400 hover:text-white" size={18} />
-              </button>
-            </div>
-            
-            <div className="overflow-y-auto max-h-[calc(80vh-70px)] p-4 pb-12">
-            
-              {/* Project Title */}
-              {selectedAchievement.project && (
-                <div className="mb-4">
-                  <h3 className="text-base font-semibold text-purple mb-2 flex items-center">
-                    <Code2 className="mr-2" size={16} />
-                    {selectedAchievement.project}
-                  </h3>
-                </div>
-              )}
+          {achievement.organizer}
+        </span>
+        <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '10px',
+            color: 'rgba(248,250,252,0.4)',
+          }}
+        >
+          {achievement.date}
+        </span>
+      </div>
 
-              {/* Event Details */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                <div className="bg-dark/50 p-2 rounded border border-purple/20">
-                  <div className="flex items-center text-gray-400 mb-1">
-                    <Calendar className="mr-1 text-purple" size={12} />
-                    <span className="text-xs">Date</span>
-                  </div>
-                  <p className="text-white text-sm font-medium">{selectedAchievement.date}</p>
-                </div>
-                
-                <div className="bg-dark/50 p-2 rounded border border-purple/20">
-                  <div className="flex items-center text-gray-400 mb-1">
-                    <MapPin className="mr-1 text-purple" size={12} />
-                    <span className="text-xs">Organizer</span>
-                  </div>
-                  <p className="text-white text-sm font-medium">{selectedAchievement.organizer}</p>
-                </div>
-                
-                <div className="bg-dark/50 p-2 rounded border border-purple/20">
-                  <div className="flex items-center text-gray-400 mb-1">
-                    <Clock className="mr-1 text-purple" size={12} />
-                    <span className="text-xs">Duration</span>
-                  </div>
-                  <p className="text-white text-sm font-medium">{selectedAchievement.duration || selectedAchievement.type}</p>
-                  {selectedAchievement.status && (
-                    <div className="flex items-center mt-1">
-                      <Trophy className="mr-1 text-yellow-400" size={10} />
-                      <span className="text-yellow-400 text-xs font-medium">{selectedAchievement.status}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+      {/* Description */}
+      <p
+        style={{
+          fontSize: '0.85rem',
+          lineHeight: 1.6,
+          color: 'rgba(248,250,252,0.5)',
+          marginBottom: '1rem',
+        }}
+      >
+        {achievement.description}
+      </p>
 
-              {/* Description */}
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold text-white mb-2">About the Project</h4>
-                <p className="text-gray-300 text-sm leading-relaxed">{selectedAchievement.description}</p>
-                {selectedAchievement.codeLink && (
-                  <a
-                    href={selectedAchievement.codeLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center mt-3 text-xs font-medium text-purple hover:text-purple-light transition-colors"
-                  >
-                    <ExternalLink size={12} className="mr-1" />
-                    Check out the code
-                  </a>
-                )}
-                {selectedAchievement.demoLink && (
-                  <a
-                    href={selectedAchievement.demoLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center mt-2 ml-4 text-xs font-medium text-purple hover:text-purple-light transition-colors"
-                  >
-                    <ExternalLink size={12} className="mr-1" />
-                    Watch demo video
-                  </a>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {/* Highlights */}
-                {selectedAchievement.highlights && (
-                <div>
-                  <h4 className="text-sm font-semibold text-white mb-2">Key Highlights</h4>
-                  <div className="space-y-1">
-                    {selectedAchievement.highlights.map((highlight, idx) => (
-                      <div key={idx} className="flex items-start">
-                        <div className="w-1.5 h-1.5 bg-purple rounded-full mt-1.5 mr-2 flex-shrink-0"></div>
-                        <span className="text-gray-300 text-xs">{highlight}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                )}
-
-                {/* Features */}
-                {selectedAchievement.features && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-white mb-2">Key Features</h4>
-                    <div className="space-y-1">
-                      {selectedAchievement.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-start">
-                          <div className="w-1.5 h-1.5 bg-green-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></div>
-                          <span className="text-gray-300 text-xs">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Technologies */}
-              {selectedAchievement.technologies && (
-                <div className="mt-4">
-                  <h4 className="text-sm font-semibold text-white mb-2">Technologies Used</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedAchievement.technologies.map((tech, idx) => (
-                      <span 
-                        key={idx}
-                        className="px-2 py-1 bg-purple/10 text-purple border border-purple/20 rounded text-xs font-medium"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Team Members */}
-              {selectedAchievement.teammates && (
-                <div className="mt-4">
-                  <h4 className="text-sm font-semibold text-white mb-2 flex items-center">
-                    <Users className="mr-1" size={14} />
-                    Team Members
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedAchievement.teammates.map((teammate, idx) => (
-                      <div key={idx} className="bg-dark/50 border border-purple/20 p-2 rounded">
-                        <span className="text-white text-xs font-medium">{teammate}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Guides */}
-              {selectedAchievement.guides && (
-                <div className="mt-4">
-                  <h4 className="text-sm font-semibold text-white mb-2 flex items-center">
-                    <Users className="mr-1" size={14} />
-                    Guides
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedAchievement.guides.map((guide, idx) => (
-                      <div key={idx} className="bg-dark/50 border border-purple/20 p-2 rounded">
-                        <span className="text-white text-xs font-medium">{guide}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+      {/* Team indicator */}
+      {achievement.team && (
+        <div className="flex items-center gap-2">
+          <Users size={12} style={{ color: 'rgba(163,230,53,0.6)' }} />
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '9px',
+              letterSpacing: '0.05em',
+              color: 'rgba(248,250,252,0.4)',
+            }}
+          >
+            Team Project
+          </span>
         </div>
       )}
-    </Section>
-  );
-};
 
-export default Achievements;
+      {/* Click hint */}
+      <div
+        style={{
+          marginTop: '1.5rem',
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: '9px',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          color: 'rgba(163,230,53,0.6)',
+        }}
+      >
+        Click for details →
+      </div>
+    </motion.div>
+  );
+}
+
+function AchievementModal({ achievement, onClose }: { achievement: Achievement; onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: 'rgba(0,0,0,0.85)',
+        backdropFilter: 'blur(12px)',
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem',
+      }}
+    >
+      <motion.div
+        initial={{ scale: 0.9, y: 40 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.9, y: 40 }}
+        transition={{ duration: 0.4, ease: E }}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          maxWidth: '700px',
+          width: '100%',
+          maxHeight: '85vh',
+          overflowY: 'auto',
+          backgroundColor: '#0C0C0E',
+          border: '1px solid rgba(163,230,53,0.2)',
+          padding: 'clamp(2rem, 4vw, 3rem)',
+          position: 'relative',
+        }}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          onMouseEnter={() => sound.playHover?.()}
+          style={{
+            position: 'absolute',
+            top: '1.5rem',
+            right: '1.5rem',
+            width: 36,
+            height: 36,
+            border: '1px solid rgba(255,255,255,0.15)',
+            backgroundColor: 'transparent',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+          }}
+          className="hover:!border-[#A3E635] hover:bg-[rgba(163,230,53,0.1)]"
+        >
+          <X size={16} style={{ color: '#F8FAFC' }} />
+        </button>
+
+        {/* Rank */}
+        <div
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: '11px',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: '#A3E635',
+            marginBottom: '1rem',
+          }}
+        >
+          {achievement.rank}
+        </div>
+
+        {/* Title */}
+        <h2
+          style={{
+            fontFamily: "'Inter Tight', sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(1.8rem, 3vw, 2.5rem)',
+            letterSpacing: '-0.025em',
+            color: '#F8FAFC',
+            marginBottom: '1rem',
+            lineHeight: 1.2,
+          }}
+        >
+          {achievement.title}
+        </h2>
+
+        {/* Meta */}
+        <div className="flex flex-wrap items-center gap-3 mb-6 pb-6" style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="flex items-center gap-2">
+            <Calendar size={14} style={{ color: '#A3E635' }} />
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(248,250,252,0.6)' }}>
+              {achievement.date}
+            </span>
+          </div>
+          <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(248,250,252,0.5)' }}>
+            {achievement.organizer}
+          </span>
+        </div>
+
+        {/* Description */}
+        <p style={{ fontSize: '0.95rem', lineHeight: 1.7, color: 'rgba(248,250,252,0.65)', marginBottom: '2rem' }}>
+          {achievement.description}
+        </p>
+
+        {/* Highlights */}
+        <div>
+          <h3
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '10px',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'rgba(248,250,252,0.35)',
+              marginBottom: '1rem',
+            }}
+          >
+            Key Highlights
+          </h3>
+          <div className="space-y-2">
+            {achievement.highlights.map((highlight, i) => (
+              <div
+                key={i}
+                style={{
+                  fontSize: '0.88rem',
+                  color: 'rgba(248,250,252,0.55)',
+                  paddingLeft: '1.2rem',
+                  borderLeft: '2px solid rgba(163,230,53,0.3)',
+                  lineHeight: 1.6,
+                }}
+              >
+                {highlight}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Team */}
+        {achievement.team && (
+          <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="flex items-center gap-2 mb-2">
+              <Users size={14} style={{ color: '#A3E635' }} />
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: '10px',
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(248,250,252,0.4)',
+                }}
+              >
+                Team Members
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {achievement.team.map((member) => (
+                <span
+                  key={member}
+                  style={{
+                    padding: '0.4rem 0.8rem',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: '10px',
+                    color: 'rgba(248,250,252,0.6)',
+                  }}
+                >
+                  {member}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Link */}
+        {achievement.link && (
+          <a
+            href={achievement.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            onMouseEnter={() => sound.playHover?.()}
+            style={{
+              marginTop: '2rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              padding: '0.8rem 1.5rem',
+              backgroundColor: '#F8FAFC',
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '10px',
+              letterSpacing: '0.16em',
+              textTransform: 'uppercase',
+              color: '#0C0C0E',
+              fontWeight: 700,
+              textDecoration: 'none',
+              transition: 'all 0.3s ease',
+            }}
+            className="hover:bg-[#A3E635]"
+          >
+            View Publication
+            <ExternalLink size={12} />
+          </a>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export default function Achievements() {
+  const [selected, setSelected] = useState<Achievement | null>(null);
+
+  return (
+    <section
+      id="achievements"
+      style={{
+        position: 'relative',
+        backgroundColor: '#0C0C0E',
+        color: '#F8FAFC',
+        padding: 'clamp(5rem, 10vw, 10rem) 0',
+        overflow: 'hidden',
+      }}
+    >
+      <div className="px-6 sm:px-10 lg:px-16 max-w-[1500px] mx-auto">
+        {/* HEADER */}
+        <div className="mb-20">
+          <ClipLine delay={0.1}>
+            <div
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: '10px',
+                letterSpacing: '0.26em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.28)',
+                marginBottom: '1.5rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.8rem',
+              }}
+            >
+              <span style={{ color: '#A3E635', fontSize: 12 }}>◈</span>
+              <span>Competitive Track Record</span>
+            </div>
+          </ClipLine>
+
+          <div style={{ fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.88, letterSpacing: '-0.04em', fontFamily: "'Inter Tight', sans-serif" }}>
+            <ClipLine delay={0.2}>
+              <div style={{ fontSize: 'clamp(2.5rem, 7vw, 6.5rem)', color: '#F8FAFC' }}>
+                Wins &
+              </div>
+            </ClipLine>
+            <ClipLine delay={0.35}>
+              <div style={{ fontSize: 'clamp(2.5rem, 7vw, 6.5rem)', color: 'transparent', WebkitTextStroke: '1.5px rgba(248,250,252,0.35)' }}>
+                Placements
+              </div>
+            </ClipLine>
+          </div>
+
+          <div style={{ marginTop: 'clamp(1.8rem, 3vw, 2.8rem)', overflow: 'hidden' }}>
+            <motion.div
+              initial={{ y: '110%' }}
+              animate={{ y: '0%' }}
+              transition={{ duration: 0.9, delay: 0.5, ease: E }}
+              className="flex items-start gap-6"
+            >
+              <motion.div
+                style={{ height: 1, backgroundColor: '#A3E635', flexShrink: 0 }}
+                initial={{ width: 0 }}
+                animate={{ width: 50 }}
+                transition={{ duration: 0.7, delay: 0.75, ease: E }}
+              />
+              <p style={{ fontSize: 'clamp(0.88rem, 1.1vw, 1rem)', color: 'rgba(248,250,252,0.45)', lineHeight: 1.7, maxWidth: '42rem' }}>
+                Top finishes in hackathons, buildathons, and competitions. Plus one IEEE publication.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* MOSAIC GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {achievements.map((achievement, index) => (
+            <AchievementCard
+              key={achievement.id}
+              achievement={achievement}
+              index={index}
+              onClick={() => setSelected(achievement)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* MODAL */}
+      <AnimatePresence>
+        {selected && <AchievementModal achievement={selected} onClose={() => setSelected(null)} />}
+      </AnimatePresence>
+    </section>
+  );
+}

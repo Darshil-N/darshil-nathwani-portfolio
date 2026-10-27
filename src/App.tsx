@@ -4,16 +4,19 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, lazy, Suspense, useState } from 'react';
-import AdminLogin from './components/AdminLogin';
-import AdminDashboard from './components/AdminDashboard';
+import { useEffect, lazy, Suspense } from 'react';
 
-// Lazy load pages for code splitting
 const Index = lazy(() => import('./pages/Index'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 
 const queryClient = new QueryClient();
+
+const Fallback = () => (
+  <div className="min-h-screen bg-[#080808] flex items-center justify-center">
+    <div className="w-8 h-8 rounded-full border border-purple/30 border-t-purple animate-spin" />
+  </div>
+);
 
 const RoutesWithTransition = () => {
   const location = useLocation();
@@ -21,38 +24,36 @@ const RoutesWithTransition = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={
-          <Suspense fallback={<div className="min-h-screen bg-dark flex items-center justify-center text-purple">Loading...</div>}>
+          <Suspense fallback={<Fallback />}>
             <motion.div
-              initial={{ x: 100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -100, opacity: 0 }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             >
               <Index />
             </motion.div>
           </Suspense>
         } />
         <Route path="/projects" element={
-          <Suspense fallback={<div className="min-h-screen bg-dark flex items-center justify-center text-purple">Loading...</div>}>
+          <Suspense fallback={<Fallback />}>
             <motion.div
-              initial={{ x: 100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -100, opacity: 0 }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             >
               <ProjectsPage />
             </motion.div>
           </Suspense>
         } />
-        {/* REMOVE AchievementsPage route */}
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={
-          <Suspense fallback={<div className="min-h-screen bg-dark flex items-center justify-center text-purple">Loading...</div>}>
+          <Suspense fallback={<Fallback />}>
             <motion.div
-              initial={{ x: 100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -100, opacity: 0 }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             >
               <NotFound />
             </motion.div>
@@ -64,69 +65,22 @@ const RoutesWithTransition = () => {
 };
 
 function ScrollToTop() {
-  const location = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   return null;
 }
 
-const App = () => {
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [showAdminDashboard, setShowAdminDashboard] = useState(false);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Hidden admin shortcut: Ctrl+R
-      if (e.ctrlKey && e.key.toLowerCase() === 'r') {
-        e.preventDefault();
-        setShowAdminLogin(true);
-      }
-      
-      // ESC to close any admin modal
-      if (e.key === 'Escape') {
-        setShowAdminLogin(false);
-        setShowAdminDashboard(false);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const handleAdminLogin = () => {
-    setShowAdminLogin(false);
-    setShowAdminDashboard(true);
-  };
-
-  const handleAdminClose = () => {
-    setShowAdminLogin(false);
-    setShowAdminDashboard(false);
-  };
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <RoutesWithTransition />
-        </BrowserRouter>
-        
-        {/* Admin System */}
-        <AdminLogin 
-          isOpen={showAdminLogin}
-          onClose={() => setShowAdminLogin(false)}
-          onLogin={handleAdminLogin}
-        />
-        <AdminDashboard 
-          isOpen={showAdminDashboard}
-          onClose={handleAdminClose}
-        />
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
-};
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <ScrollToTop />
+        <RoutesWithTransition />
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;

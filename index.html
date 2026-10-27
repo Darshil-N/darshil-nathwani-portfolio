@@ -3,37 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Darshil Nathwani | AI/ML Engineer & Full-Stack Developer</title>
-    <meta name="description" content="Passionate AI/ML Engineer and Full-Stack Developer specializing in innovative solutions, machine learning, and modern web development. Explore my portfolio showcasing projects in AI, computer vision, and web applications." />
+    <title>Darshil Nathwani — Software Developer</title>
+    <meta name="description" content="Darshil Nathwani — Software Developer based in Bengaluru. Production web applications, mobile ecosystems, and IEEE research." />
     <meta name="author" content="Darshil Nathwani" />
-    <meta name="keywords" content="AI Engineer, Machine Learning, Full Stack Developer, React, Python, Computer Vision, Portfolio, Darshil Nathwani" />
-    <meta name="google-site-verification" content="v1xlR7OMJPur00zY_YbEC-J_DuW4AypeFBrIYccvsW8" />
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-    <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="robots" content="index,follow" />
 
-    <!-- DNS Prefetch for external resources -->
-    <link rel="dns-prefetch" href="//prod.spline.design">
-    <link rel="dns-prefetch" href="//github.com">
-    <link rel="dns-prefetch" href="//raw.githubusercontent.com">
-    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    <!-- Pure Modern Swiss Typography: Inter Tight (ABC Diatype aesthetic) + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Subtle film grain -->
+    <style>
+      html::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 300px 300px;
+        animation: bgGrain 0.35s steps(4) infinite;
+        will-change: background-position;
+      }
+      @keyframes bgGrain {
+        0%   { background-position: 0px 0px; }
+        25%  { background-position: -12px 8px; }
+        50%  { background-position: 9px -9px; }
+        75%  { background-position: -6px 12px; }
+        100% { background-position: 0px 0px; }
+      }
+    </style>
     
-    <!-- Preload critical resources -->
     <link rel="preload" href="/Images/darshil.jpg" as="image" type="image/jpeg">
-
-    <meta property="og:title" content="Darshil Nathwani | AI/ML Engineer & Full-Stack Developer" />
-    <meta property="og:description" content="Passionate AI/ML Engineer and Full-Stack Developer specializing in innovative solutions, machine learning, and modern web development." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Darshil Nathwani | AI/ML Engineer & Full-Stack Developer" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   </head>
 
-  <body>
+  <body class="bg-[#000000] text-[#FFFFFF] antialiased selection:bg-white selection:text-black">
     <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module" async></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
