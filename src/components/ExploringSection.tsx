@@ -135,7 +135,6 @@ export default function ExploringSection() {
             return (
               <motion.div
                 key={cat.title}
-                style={{ y }}
                 initial={{ opacity: 0, y: 80, rotate: index % 2 === 0 ? -1 : 1 }}
                 whileInView={{ opacity: 1, y: 0, rotate: 0 }}
                 viewport={{ once: true, margin: '-100px' }}
@@ -147,6 +146,7 @@ export default function ExploringSection() {
                   transition: { duration: 0.3 }
                 }}
                 style={{
+                  y,
                   border: '1px solid rgba(255,255,255,0.08)',
                   backgroundColor: 'rgba(255,255,255,0.01)',
                   padding: 'clamp(2.5rem, 4vw, 3.5rem)',
