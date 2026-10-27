@@ -150,7 +150,7 @@ export default function Hero() {
 
   /* ── Actions ── */
   const copyEmail = () => {
-    navigator.clipboard.writeText('darshilnathwani7@gmail.com');
+    navigator.clipboard.writeText('darshilnathwani@gmail.com');
     sound.playChime?.();
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);

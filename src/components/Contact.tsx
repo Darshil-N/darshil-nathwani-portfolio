@@ -37,8 +37,8 @@ const contactLinks = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'darshilnathwani7@gmail.com',
-    href: 'mailto:darshilnathwani7@gmail.com',
+    value: 'darshilnathwani@gmail.com',
+    href: 'mailto:darshilnathwani@gmail.com',
   },
   {
     icon: Linkedin,
@@ -69,7 +69,7 @@ export default function Contact() {
     setSubmitting(true);
     const subject = encodeURIComponent(`Portfolio Contact: ${form.name}`);
     const body = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`);
-    window.location.href = `mailto:darshilnathwani7@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:darshilnathwani@gmail.com?subject=${subject}&body=${body}`;
     setTimeout(() => {
       setSubmitting(false);
       setSent(true);

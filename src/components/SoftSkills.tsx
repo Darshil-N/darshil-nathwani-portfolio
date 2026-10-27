@@ -51,7 +51,10 @@ function useInView(threshold = 0.1) {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      ([entry]) => {
+        // Toggle inView based on whether element is intersecting
+        setInView(entry.isIntersecting);
+      },
       { threshold }
     );
     observer.observe(el);

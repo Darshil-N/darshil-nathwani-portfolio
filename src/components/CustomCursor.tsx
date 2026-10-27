@@ -56,7 +56,7 @@ export default function CustomCursor() {
     <>
       <style>{`
         @media (pointer: fine) {
-          a, button, [data-cursor-grow] { cursor: none; }
+          * { cursor: none !important; }
         }
       `}</style>
 

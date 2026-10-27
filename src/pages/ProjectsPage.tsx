@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Projects from '../components/Projects';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import CustomCursor from '../components/CustomCursor';
 
 const ProjectsPage = () => {
   useEffect(() => {
@@ -9,6 +10,7 @@ const ProjectsPage = () => {
   }, []);
   return (
     <div className="flex flex-col min-h-screen bg-dark">
+      <CustomCursor />
       <Navbar />
       <main>
         <Projects />

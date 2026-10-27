@@ -202,7 +202,7 @@ export default function Footer() {
               {[
                 { label: 'GitHub', href: 'https://github.com/Darshil-N', icon: Github },
                 { label: 'LinkedIn', href: 'https://www.linkedin.com/in/darshil-nathwani-bba698307', icon: Linkedin },
-                { label: 'Email', href: 'mailto:darshilnathwani7@gmail.com', icon: Mail },
+                { label: 'Email', href: 'mailto:darshilnathwani@gmail.com', icon: Mail },
               ].map((item) => {
                 const Icon = item.icon;
                 return (

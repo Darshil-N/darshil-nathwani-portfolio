@@ -63,7 +63,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
 
   const copyEmail = () => {
     sound.playChime();
-    navigator.clipboard.writeText('darshilnathwani7@gmail.com');
+    navigator.clipboard.writeText('darshilnathwani@gmail.com');
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
@@ -124,7 +124,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
                   {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-sky-400" />}
                   <span>{copied ? 'Copied to clipboard!' : 'Copy Darshil’s Email'}</span>
                 </div>
-                <span className="text-xs text-zinc-500">darshilnathwani7@gmail.com</span>
+                <span className="text-xs text-zinc-500">darshilnathwani@gmail.com</span>
               </Command.Item>
 
               <Command.Item

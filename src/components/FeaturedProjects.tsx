@@ -35,63 +35,111 @@ const E = [0.76, 0, 0.24, 1] as const;
 
 const FEATURED_PROJECTS: FeaturedProject[] = [
   {
-    id: 'crickraft-ams',
+    id: 'crickraft-web',
     num: '01',
-    title: 'Crickraft AMS: Academy Management System',
-    category: 'PUBLISHED GOOGLE PLAY STORE APP',
-    badge: 'LIVE ON GOOGLE PLAY STORE',
+    title: 'Crickraft Web Platform',
+    category: 'VINA EDUTECH - PRODUCTION WEB',
+    badge: 'LIVE PRODUCTION',
     description:
-      'Native Android application published on the Google Play Store for sports academy management. Powers batch scheduling, attendance tracking, fee collection, and player performance telemetry for cricket training institutes.',
+      'Full-featured web management platform for Crickraft Academy Management System at Vina EduTech. Admin dashboard for batch scheduling, attendance tracking, fee collection, and player performance telemetry for cricket training institutes.',
     architecture:
-      'Architected with native Android, Kotlin, and cloud synchronization for offline-first reliability. Features intuitive coach dashboards, parent communication channels, and secure payment reconciliation.',
-    techStack: ['Android', 'Kotlin', 'Mobile Architecture', 'Google Play', 'REST APIs', 'Cloud DB'],
-    metrics: ['Published on Google Play Store', '100% Production Reliability', 'Real-Time Player Telemetry'],
+      'Architected with React/TypeScript featuring coach dashboards, parent communication channels, secure payment reconciliation, and real-time cloud synchronization with the mobile app.',
+    techStack: ['React', 'TypeScript', 'Firebase', 'REST APIs', 'Cloud DB', 'Tailwind CSS'],
+    metrics: ['Full Web Platform Live at crickraft.vinaedutech.com', 'Real-Time Cloud Sync', 'Multi-Role Dashboard'],
     challenges: [
-      'Managing offline-first local data synchronization for remote cricket ground facilities',
-      'Optimizing performance across budget Android devices with smooth rendering',
-      'Deploying and passing Google Play Store production verification guidelines',
+      'Building unified state management synchronized with mobile companion app',
+      'Real-time player performance telemetry dashboard with live updates',
+      'Payment reconciliation workflows for academy operations',
     ],
     learnings: [
-      'End-to-end production Android release engineering and Play Console lifecycle',
+      'Cross-platform architecture maintaining web and mobile parity',
       'Designing specialized operational workflows for sports academies',
-      'Zero-downtime mobile data caching and validation',
+      'Production cloud deployment with real-time synchronization',
     ],
-    liveDemo: 'https://play.google.com/store/apps/details?id=com.crickraft.ams',
+    liveDemo: 'https://crickraft.vinaedutech.com/',
     highlightColor: 'from-amber-500/20 via-orange-600/10 to-transparent',
   },
   {
-    id: 'strengthkraft',
+    id: 'crickraft-app',
     num: '02',
-    title: 'StrengthKraft: Athletic Conditioning Ecosystem',
-    category: 'DUAL PRODUCTION: PLAY STORE APP & WEB PORTAL',
-    badge: 'LIVE ON PLAY STORE & WEB',
+    title: 'Crickraft Android App',
+    category: 'VINA EDUTECH - NATIVE MOBILE',
+    badge: 'LIVE ON PLAY STORE',
     description:
-      'Comprehensive athletic training ecosystem built during my tenure at Vina EduTech. Features a published React Native Android application on the Play Store coupled with an enterprise web platform for strength training protocols.',
+      'Native Android application for Crickraft AMS published on Google Play Store at Vina EduTech. Mobile companion for coaches with offline-first architecture, attendance marking, and performance logging from remote cricket grounds.',
     architecture:
-      'Built with React Native for the mobile companion app and React/TypeScript for the web management suite. Integrates high-performance video workouts, workout logging, and athlete progress dashboards.',
-    techStack: ['React Native', 'Android', 'React', 'TypeScript', 'Node.js', 'REST APIs', 'Tailwind CSS'],
-    metrics: ['Published on Play Store', 'Cross-Platform Android & Web', 'Live Production Ecosystem'],
+      'Built with Kotlin for native Android featuring offline-first local data synchronization, automatic cloud sync when connectivity resumes, and intuitive coach-facing mobile workflows.',
+    techStack: ['Android', 'Kotlin', 'Google Play', 'Offline-First', 'Local DB', 'Cloud Sync'],
+    metrics: ['Published on Google Play Store', 'Offline-First Architecture', 'Remote Ground Support'],
     challenges: [
-      'Maintaining unified state synchronization between web portals and mobile companions',
-      'Handling low-latency video streaming and workout playback on mobile',
-      'Ensuring responsive accessibility for athletes during high-intensity training',
+      'Managing offline-first data synchronization for remote facilities without connectivity',
+      'Deploying and passing Google Play Store production verification',
+      'Battery-optimized background sync without draining coach devices',
     ],
     learnings: [
-      'Large-scale React Native cross-platform architecture and native bridge performance',
-      'Managing continuous integration and app store submission pipelines',
-      'High-velocity collaborative development with engineering teams',
+      'End-to-end production Android release engineering and Play Console lifecycle',
+      'Offline-first mobile architecture with conflict resolution',
+      'Native mobile app optimization for field usage',
     ],
-    liveDemo: 'https://play.google.com/store/apps/details?id=com.vinaedutech.strengthkraft',
+    highlightColor: 'from-amber-600/20 via-yellow-600/10 to-transparent',
+  },
+  {
+    id: 'strengthkraft-web',
+    num: '03',
+    title: 'StrengthKraft Web Platform',
+    category: 'VINA EDUTECH - PRODUCTION WEB',
+    badge: 'LIVE PRODUCTION',
+    description:
+      'Enterprise web management platform for StrengthKraft athletic training ecosystem at Vina EduTech. Admin suite for workout program management, athlete progress dashboards, and high-performance video workout streaming.',
+    architecture:
+      'Built with React/TypeScript for the web management suite featuring workout logging, athlete progress dashboards, video workout catalog management, and unified state with mobile companion.',
+    techStack: ['React', 'TypeScript', 'Node.js', 'REST APIs', 'Video Streaming', 'Tailwind CSS'],
+    metrics: ['Live at strengthkraft.vinaedutech.com', 'High-Performance Video Streaming', 'Athlete Analytics'],
+    challenges: [
+      'Low-latency video streaming and adaptive playback quality',
+      'Maintaining unified state synchronization between web and mobile platforms',
+      'Responsive accessibility for athletes during high-intensity training',
+    ],
+    learnings: [
+      'Video streaming optimization and CDN integration',
+      'Real-time analytics dashboard architecture',
+      'High-velocity collaborative development with product teams',
+    ],
+    liveDemo: 'https://strengthkraft.vinaedutech.com/',
     highlightColor: 'from-sky-500/20 via-blue-600/10 to-transparent',
   },
   {
+    id: 'strengthkraft-app',
+    num: '04',
+    title: 'StrengthKraft Mobile App',
+    category: 'VINA EDUTECH - REACT NATIVE',
+    badge: 'LIVE ON PLAY STORE',
+    description:
+      'React Native Android application for StrengthKraft published on Google Play Store at Vina EduTech. Mobile companion for athletes with workout tracking, video playback, and progress logging on the go.',
+    architecture:
+      'Crafted with React Native for cross-platform mobile featuring workout logging, video playback, progress tracking, and seamless synchronization with web platform.',
+    techStack: ['React Native', 'Android', 'Google Play', 'Video Playback', 'Offline Caching'],
+    metrics: ['Published on Play Store', 'Cross-Platform Mobile', 'Offline Video Caching'],
+    challenges: [
+      'Native bridge performance optimization for smooth video playback',
+      'Managing continuous integration and app store submission pipelines',
+      'Offline video caching and playback without connectivity',
+    ],
+    learnings: [
+      'Large-scale React Native cross-platform architecture',
+      'Native module integration for performance-critical features',
+      'Mobile video playback optimization',
+    ],
+    highlightColor: 'from-sky-600/20 via-cyan-600/10 to-transparent',
+  },
+  {
     id: 'indian-chess-acad',
-    num: '03',
-    title: 'Indian Chess Academy: Official Platform',
-    category: 'PRODUCTION ACADEMY & TOURNAMENT PLATFORM',
+    num: '05',
+    title: 'Indian Chess Academy',
+    category: 'VINA EDUTECH - PRODUCTION WEB',
     badge: '1ST PLACE HACKATHON WIN',
     description:
-      'Official web platform for Indian Chess Academy (Vina EduTech Pvt. Ltd.), awarded following a 1st place hackathon finish and intensive training sprint. Handles course discovery, student enrolments, and tournament operations.',
+      'Official web platform for Indian Chess Academy (Vina EduTech). Awarded following 1st place hackathon finish. Handles course discovery, student enrolments, and tournament operations on custom domain.',
     architecture:
       'Production full-stack web architecture with responsive design, secure student management, and tournament bracket workflows deployed on custom domain (indianchessacad.com).',
     techStack: ['React', 'TypeScript', 'Firebase', 'Node.js', 'Tailwind CSS', 'Responsive UI'],
@@ -111,12 +159,12 @@ const FEATURED_PROJECTS: FeaturedProject[] = [
   },
   {
     id: 'velvet-academy',
-    num: '04',
-    title: 'Velvet Academy: Freelance Deliverable',
-    category: 'COMMERCIAL FREELANCE PRODUCTION',
-    badge: 'LIVE FREELANCE PRODUCTION',
+    num: '06',
+    title: 'Velvet Academy',
+    category: 'FREELANCE CLIENT PROJECT',
+    badge: 'LIVE PRODUCTION WEBSITE',
     description:
-      'Independent client freelance deliverable: engineered the official website for Velvet Academy (velvetacademy.org), featuring modern visual branding, program portfolios, and streamlined inquiry handling.',
+      'Freelance client project: Official website for Velvet Academy (velvetacademy.org). Independent deliverable featuring modern visual branding, program portfolios, and streamlined inquiry handling with full production deployment.',
     architecture:
       'Crafted with clean semantic markup, fast-loading modern JavaScript, responsive typography, and production cloud hosting delivering high performance scores and immediate client satisfaction.',
     techStack: ['Full-Stack Web', 'Responsive UI', 'SEO Optimization', 'Cloud Hosting', 'Client Delivery'],
@@ -135,131 +183,28 @@ const FEATURED_PROJECTS: FeaturedProject[] = [
     highlightColor: 'from-purple-500/20 via-indigo-600/10 to-transparent',
   },
   {
-    id: 'multi-agent-layer',
-    num: '05',
-    title: 'Resilient Multi-Agent Request Layer',
-    category: 'DISTRIBUTED AI INFRASTRUCTURE',
-    badge: 'TOP 10 @ MICROSOFT BUILDATHON',
-    description:
-      'A resilient request and execution layer built during the Nasiko x Devaarambh Buildathon at Microsoft, finishing in the Top 10 out of over 200 builders. Handles concurrent task queueing, state routing, and distributed caching for multi-agent workflows under heavy load.',
-    architecture:
-      'Engineered with Redis task queues to eliminate contention between autonomous agents. Wrapped in containerized Docker microservices with adaptive API routing and cache eviction to maintain low-latency agent interaction during rapid parallel task bursts.',
-    techStack: ['Redis', 'Docker', 'Python', 'FastAPI', 'Multi-Agent Infra', 'AsyncIO', 'Task Queues'],
-    metrics: ['Finished Top 10 / 200+ Builders', 'Sub-15ms Route Latency', 'Zero-State Contention'],
-    challenges: [
-      'Synchronizing asynchronous agent states without request serialization bottlenecks',
-      'Handling Docker network bridging constraints under intense hackathon deadlines',
-      'Implementing cache invalidation logic for volatile agent working memories',
-    ],
-    learnings: [
-      'Architecting resilient distributed queuing systems for multi-agent autonomy',
-      'Deploying zero-downtime containerized microservices under severe time pressure',
-      'How to contribute to complex open-source agent ecosystems without regression',
-    ],
-    github: 'https://github.com/Darshil-N',
-    highlightColor: 'from-sky-500/20 via-blue-600/10 to-transparent',
-  },
-  {
-    id: 'siddhi-ai',
-    num: '06',
-    title: 'Siddhi AI: Concessional Lending Risk Engine',
-    category: 'ENTERPRISE AI & REGULATORY COMPLIANCE',
-    badge: '1.8M+ FINANCIAL RECORDS PROCESSED',
-    description:
-      'Enterprise augmented intelligence platform for concessional lending risk assessment. Transforms static credit reports into dynamic behavioral analysis combining XGBoost predictive modeling, SHAP explainability matrices, and LSTM early warning alerts.',
-    architecture:
-      'FastAPI microservices pipeline coupled with a React/TypeScript analytics dashboard. Incorporates SHAP values for strict regulatory explainability so credit officers can audit each prediction feature by feature.',
-    techStack: ['React', 'TypeScript', 'FastAPI', 'XGBoost', 'SHAP', 'SQLite', 'TensorFlow', 'Tailwind CSS'],
-    metrics: ['85%+ Risk Scoring Accuracy', '1.8M+ Historical Records', 'Multi-Tier Human-in-Loop'],
-    challenges: [
-      'Benchmarking and optimizing data pipelines across 1.8M historical records efficiently',
-      'Creating transparent SHAP visualizations that non-technical loan officers can interpret instantly',
-      'Balancing high predictive accuracy with fairness and bias mitigation',
-    ],
-    learnings: [
-      'Advanced production machine learning deployment and validation',
-      'Financial compliance and explainable AI (XAI) frameworks',
-      'Building responsive real-time data visualization dashboards',
-    ],
-    github: 'https://github.com/Darshil-N/Siddhi-Ai',
-    logo: 'https://raw.githubusercontent.com/Darshil-N/Siddhi-Ai/main/Siddhi_Logo.png',
-    highlightColor: 'from-indigo-500/20 via-purple-600/10 to-transparent',
-  },
-  {
-    id: 'kara-ai',
+    id: 'drishti-ai',
     num: '07',
-    title: 'Kara-AI: Multimodal Interview Coach',
-    category: 'REAL-TIME COMPUTER VISION & SPEECH',
-    badge: 'GEMINI 2.5 FLASH + YOLOV8 CV',
+    title: 'Drishti-AI: Campus Surveillance Intelligence',
+    category: 'IEEE PUBLISHED RESEARCH',
+    badge: 'RESEARCH PAPER',
     description:
-      'Revolutionary AI interview preparation platform that analyzes speech, facial expressions, and body language in real-time. Features adaptive interview personas, YOLOv8 live emotion classification, and synchronized performance telemetry.',
+      'IEEE published research paper: Natural language campus surveillance system. DeepSeek Text-to-SQL with real-time computer vision for incident analysis. Deployed at DSCE campus and commercial retail partner achieving 93% query accuracy.',
     architecture:
-      'Full-stack WebRTC pipeline that streams video and audio frames to an asynchronous FastAPI backend. Fuses YOLOv8 emotion detection with Gemini 2.5 Flash for context-aware conversational questions with sub-second latency.',
-    techStack: ['React', 'TypeScript', 'FastAPI', 'Python', 'Gemini API', 'YOLOv8', 'OpenCV', 'WebRTC', 'Supabase'],
-    metrics: ['Sub-500ms Stream Latency', '>77% Facial Emotion Accuracy', '>95% Speech Transcription'],
+      'End-to-end platform combining real-time CV anomaly detection (fights, falls, crowds) with fine-tuned DeepSeek 6.7B Text-to-SQL model. Features smart query caching (73% hit rate), automatic fallback to fuzzy search, and privacy-first local inference.',
+    techStack: ['React', 'Flask', 'DeepSeek', 'PostgreSQL', 'Supabase', 'YOLOv8', 'OpenCV', 'PEFT'],
+    metrics: ['93% Query Accuracy on Manual Test', '73% Cache Hit Rate', 'Published in IEEE Proceedings'],
     challenges: [
-      'Fusing video frames, audio streams, and LLM reasoning simultaneously with low latency',
-      'Calibrating YOLOv8 facial landmark models across variable lighting and webcam angles',
-      'Designing realistic conversational AI interview personas that feel human and constructive',
+      'Schema grounding for consistent SQL generation without hallucinations',
+      '4-bit quantization without quality degradation on complex queries',
+      'Building resilient fallback architecture under model failure',
     ],
     learnings: [
-      'Full-duplex real-time WebRTC audio/video stream processing',
-      'Production deployment of computer vision models with OpenCV and YOLO',
-      'Multimodal prompt engineering and latency optimization with Gemini 2.5',
+      'Production LLM deployment with quantization and fine-tuning',
+      'Multi-layer security architecture for AI systems preventing SQL injection',
+      'Research to production pipeline transformation at institutional scale',
     ],
-    github: 'https://github.com/Darshil-N/Kara-Ai',
-    logo: '/Logos/Kara_ai.png',
-    highlightColor: 'from-cyan-500/20 via-teal-600/10 to-transparent',
-  },
-  {
-    id: 'raahi-safety',
-    num: '08',
-    title: 'Project Raahi: Smart Tourist Safety Ecosystem',
-    category: 'BLOCKCHAIN & NATIVE ANDROID',
-    badge: 'POLYGON ID + OFFLINE SMS FALLBACK',
-    description:
-      'Comprehensive digital ecosystem for tourist safety in Northeast India. Features blockchain-verified digital identity on Polygon, NFC wristband integration, offline SMS emergency fallbacks, and a real-time authority monitoring dashboard.',
-    architecture:
-      'Native Android application built with Kotlin and Jetpack Compose connected to Firebase serverless Cloud Functions, Polygon smart contracts for tamper-proof identity, and Leaflet/Mapbox geospatial heatmaps.',
-    techStack: ['Kotlin', 'Android', 'Jetpack Compose', 'Polygon', 'Solidity', 'Firebase', 'NFC', 'SMS Fallback', 'Mapbox'],
-    metrics: ['Zero-Connectivity SMS Fallback', 'NFC Tamper-Proof Verification', 'Live Situational Heatmap'],
-    challenges: [
-      'Architecting an offline-first panic mechanism that transmits GPS coordinates over cellular SMS when data fails',
-      'Integrating NFC verification in remote areas without internet latency bottlenecks',
-      'Balancing user biometric privacy with law enforcement emergency situational requirements',
-    ],
-    learnings: [
-      'Native Android development with Kotlin, Coroutines, and modern Jetpack Compose',
-      'Smart contract integration with Polygon and Web3 authentication',
-      'Mission-critical emergency workflow design and fault tolerance',
-    ],
-    github: 'https://github.com/Darshil-N',
-    highlightColor: 'from-amber-500/20 via-orange-600/10 to-transparent',
-  },
-  {
-    id: 'karm-ai',
-    num: '09',
-    title: 'KARM AI: Placement Automation Platform',
-    category: 'FULL-STACK AUTOMATION & CHROME EXT.',
-    badge: 'TOP 20 FINISH @ CICADA 22H SPRINT',
-    description:
-      'Led Team Jugaadu to build a dual-platform college placement portal in a 22-hour hackathon. Integrates multi-role student/TPO dashboards with a custom Chrome Extension that auto-fills complex drive applications in one click.',
-    architecture:
-      'React frontend with FastAPI microservices and Gemini API for automated resume parsing, ATS scoring, and candidate-drive matching, plus a background manifest v3 Chrome extension for automated form submissions.',
-    techStack: ['React', 'FastAPI', 'Firebase', 'Gemini API', 'Chrome Extension', 'Tailwind CSS'],
-    metrics: ['Built in 22 Hours', 'Top 20 Finish / 150+ Teams', 'One-Click Form Automation'],
-    challenges: [
-      'Maintaining clean modular architecture while building a full web portal and Chrome extension in 22 hours',
-      'Extracting and standardizing unstructured resume PDF data reliably using Gemini API',
-      'Handling live cross-origin form auto-filling on external job portals',
-    ],
-    learnings: [
-      'High-velocity team leadership and product delivery under continuous sprint constraints',
-      'Chrome Extension Manifest v3 architecture and secure DOM injection',
-      'End-to-end recruitment lifecycle automation',
-    ],
-    github: 'https://github.com/Darshil-N',
-    highlightColor: 'from-emerald-500/20 via-sky-600/10 to-transparent',
+    highlightColor: 'from-indigo-500/20 via-violet-600/10 to-transparent',
   },
 ];
 
@@ -297,7 +242,7 @@ function ProjectRow({ project, index }: { project: FeaturedProject; index: numbe
       }}
       className="group"
     >
-      {/* Invert panel sweep — slides up from the bottom on hover */}
+      {/* Invert panel sweep */}
       <motion.div
         aria-hidden
         animate={{ y: hovered ? '0%' : '101%' }}
@@ -378,7 +323,7 @@ function ProjectRow({ project, index }: { project: FeaturedProject; index: numbe
           </h3>
         </div>
 
-        {/* Tech stack — desktop only */}
+        {/* Tech stack */}
         <div className="hidden lg:flex flex-wrap gap-1.5 max-w-[260px] justify-end">
           {project.techStack.slice(0, 4).map((tech) => (
             <span

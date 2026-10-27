@@ -87,7 +87,7 @@ export default function Education() {
         <motion.div
           initial={{ opacity: 0, y: 80 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+          viewport={{ once: false, margin: '-100px' }}
           transition={{ duration: 1.2, ease: E }}
           style={{
             position: 'relative',
@@ -288,57 +288,6 @@ export default function Education() {
                     2024 – Present
                   </span>
                 </div>
-              </div>
-            </div>
-
-            {/* RIGHT: Focus areas */}
-            <div>
-              <p
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: '10px',
-                  letterSpacing: '0.18em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(248,250,252,0.35)',
-                  marginBottom: '1.5rem',
-                }}
-              >
-                Focus Areas
-              </p>
-
-              <div className="space-y-2.5">
-                {[
-                  'Full-Stack Development',
-                  'AI/ML Engineering',
-                  'Mobile Development',
-                  'Computer Vision',
-                  'Research & Publications',
-                ].map((area, i) => (
-                  <motion.div
-                    key={area}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.5 + i * 0.08, ease: E }}
-                    style={{
-                      padding: '0.8rem 1.2rem',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      backgroundColor: 'rgba(255,255,255,0.02)',
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: '11px',
-                      letterSpacing: '0.02em',
-                      color: 'rgba(248,250,252,0.65)',
-                      transition: 'all 0.3s ease',
-                    }}
-                    whileHover={{
-                      borderColor: 'rgba(163,230,53,0.4)',
-                      backgroundColor: 'rgba(163,230,53,0.04)',
-                      x: 4,
-                    }}
-                  >
-                    {area}
-                  </motion.div>
-                ))}
               </div>
             </div>
           </div>
