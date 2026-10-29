@@ -15,6 +15,7 @@ import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from
 import { ArrowDown, Check } from 'lucide-react';
 import { sound } from '../lib/sound';
 import { useSiteReady } from '../lib/siteReady';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import KineticName from './KineticName';
 import DecryptText from './DecryptText';
 
@@ -82,10 +83,10 @@ function MarqueeTicker() {
   return (
     <div style={{ overflow: 'hidden', width: '100%' }}>
       <div
+        className="hero-ticker"
         style={{
           display: 'flex',
           width: 'max-content',
-          animation: 'hero-marquee 36s linear infinite',
           willChange: 'transform',
         }}
       >
@@ -137,6 +138,22 @@ export default function Hero() {
     return () => clearInterval(id);
   }, []);
 
+  // Touch devices can't hover the photo, so it flushes into colour on its own as it changes.
+  const coarse = useMediaQuery('(pointer: coarse)');
+  const phoneLayout = useMediaQuery('(max-width: 1023px)');
+  useEffect(() => {
+    if (!coarse) return;
+    let off: ReturnType<typeof setTimeout>;
+    const id = setInterval(() => {
+      setPhotoHovered(true);
+      off = setTimeout(() => setPhotoHovered(false), 2000);
+    }, 4800);
+    return () => {
+      clearInterval(id);
+      clearTimeout(off);
+    };
+  }, [coarse]);
+
   /* ── Subtle parallax on mouse move (photo layer only) ── */
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -185,7 +202,7 @@ export default function Hero() {
       <section
         id="home"
         aria-hidden
-        style={{ position: 'sticky', top: 0, minHeight: '100vh', width: '100%', backgroundColor: '#0C0C0E', zIndex: 0 }}
+        style={{ position: 'sticky', top: 0, minHeight: '100svh', width: '100%', backgroundColor: '#0C0C0E', zIndex: 0 }}
       />
     );
   }
@@ -198,7 +215,7 @@ export default function Hero() {
       style={{
         position: 'sticky',
         top: 0,
-        minHeight: '100vh',
+        minHeight: '100svh',
         width: '100%',
         backgroundColor: '#0C0C0E',
         color: '#F8FAFC',
@@ -215,17 +232,16 @@ export default function Hero() {
               Desktop only.
       ══════════════════════════════════════════════ */}
       <motion.div
-        className="hidden lg:block"
+        className="absolute inset-x-0 top-0 h-[62svh] lg:inset-x-auto lg:right-0 lg:bottom-0 lg:h-auto lg:w-[40%]"
         data-cursor-grow
         onMouseEnter={() => setPhotoHovered(true)}
         onMouseLeave={() => setPhotoHovered(false)}
+        onPointerDown={(e) => e.pointerType === 'touch' && setPhotoHovered(true)}
+        onPointerUp={(e) => e.pointerType === 'touch' && setPhotoHovered(false)}
+        onPointerCancel={() => setPhotoHovered(false)}
         style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: '40%',
           x: photoX,
+          WebkitTouchCallout: 'none',
           y: photoY,
           zIndex: 1,
           overflow: 'hidden',
@@ -267,9 +283,10 @@ export default function Hero() {
           />
         </AnimatePresence>
 
-        {/* Left-edge fade: ultra-smooth blend with many gradient stops */}
+        {/* Left-edge fade: ultra-smooth blend with many gradient stops (desktop: photo sits on the right) */}
         <div
           aria-hidden
+          className="hidden lg:block"
           style={{
             position: 'absolute',
             inset: 0,
@@ -330,12 +347,27 @@ export default function Hero() {
           }}
         />
 
-        {/* Index dots */}
+        {/* Phones: the photo is a full-width banner, so it fades into the page from the bottom and darkens at the top for the navbar */}
         <div
+          aria-hidden
+          className="lg:hidden"
           style={{
             position: 'absolute',
-            bottom: '1.4rem',
-            right: '1.4rem',
+            inset: 0,
+            background:
+              'linear-gradient(to top, #0C0C0E 0%, rgba(12,12,14,0.94) 20%, rgba(12,12,14,0.6) 48%, rgba(12,12,14,0.18) 76%, transparent 100%), linear-gradient(to bottom, rgba(12,12,14,0.72) 0%, transparent 26%)',
+            opacity: photoHovered ? 0.55 : 1,
+            transition: 'opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
+
+        {/* Index dots */}
+        <div
+          className="top-[5.8rem] right-5 lg:top-auto lg:bottom-[1.4rem] lg:right-[1.4rem]"
+          style={{
+            position: 'absolute',
             zIndex: 3,
             display: 'flex',
             gap: '0.4rem',
@@ -368,10 +400,10 @@ export default function Hero() {
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '2rem 4rem',
+          paddingTop: '2rem',
+          paddingBottom: '2rem',
         }}
-        className="px-6 sm:px-10 lg:px-16 py-6 lg:max-w-[63%]"
+        className="justify-end lg:justify-center px-6 sm:px-10 lg:px-16 lg:max-w-[63%]"
       >
         {/* ── Discipline label ── */}
         <ClipLine
@@ -394,7 +426,7 @@ export default function Hero() {
 
         {/* ── MASSIVE NAME BLOCK — cursor torch + letter ripple ── */}
         <KineticName
-          fontSize="clamp(3.2rem, 9.5vw, 10.5rem)"
+          fontSize={phoneLayout ? 'clamp(3.4rem, 15.5vw, 9rem)' : 'clamp(3.2rem, 9.5vw, 10.5rem)'}
           lines={[
             { text: 'DARSHIL', variant: 'solid', delay: 0.22 },
             { text: 'NATHWANI', variant: 'outline', delay: 0.36 },
@@ -482,7 +514,8 @@ export default function Hero() {
           alignItems: 'center',
           justifyContent: 'space-between',
           borderTop: '1px solid rgba(255,255,255,0.055)',
-          padding: '1.35rem 4rem',
+          paddingTop: '1.35rem',
+          paddingBottom: 'calc(1.35rem + env(safe-area-inset-bottom, 0px))',
         }}
         className="px-6 sm:px-10 lg:px-16"
       >
@@ -597,6 +630,9 @@ export default function Hero() {
           KEYFRAMES
       ══════════════════════════════════════════════ */}
       <style>{`
+        /* ~100px/s on desktop. On phones the type is small, so the same speed reads as much faster. */
+        .hero-ticker { animation: hero-marquee 36s linear infinite; }
+        @media (max-width: 767px) { .hero-ticker { animation-duration: 90s; } }
         @keyframes hero-marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }

@@ -32,7 +32,7 @@ const LIME = '#A3E635';
 const RAIL = 'clamp(14px, 3vw, 34px)'; // x of the main timeline
 const LANE = 'clamp(10px, 1.8vw, 22px)'; // gap from main line to the parallel line
 const LANE_X = `calc(${RAIL} + ${LANE})`;
-const INDENT = `calc(${LANE_X} + clamp(26px, 5vw, 60px))`;
+const INDENT = `calc(${LANE_X} + clamp(16px, 5vw, 60px))`;
 
 const CSS = `
 @keyframes xp-flow { from { background-position: 0 0; } to { background-position: 0 -16px; } }
@@ -471,13 +471,20 @@ function WorkRow({ link, index }: { link: NonNullable<Experience['links']>[numbe
             fontFamily: "'Inter Tight', sans-serif",
             fontWeight: 900,
             textTransform: 'uppercase',
-            fontSize: 'clamp(1.4rem, 3.2vw, 2.6rem)',
+            fontSize: 'clamp(1.1rem, 3.2vw, 2.6rem)',
             letterSpacing: '-0.035em',
             lineHeight: 1,
             overflowWrap: 'anywhere',
           }}
         >
           {link.label}
+          {/* phones: the platform label moves under the title (the right-hand one needs the room) */}
+          <span
+            className="sm:hidden block"
+            style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 400, fontSize: 9, letterSpacing: '0.22em', lineHeight: 1.4, opacity: 0.6, marginTop: 8 }}
+          >
+            {link.isPlayStore ? 'Google Play' : 'Live site'}
+          </span>
         </span>
       </span>
       <span className="relative flex items-center gap-4 flex-shrink-0 transition-colors duration-300 group-hover:text-[#0C0C0E]">
@@ -488,8 +495,8 @@ function WorkRow({ link, index }: { link: NonNullable<Experience['links']>[numbe
           {link.isPlayStore ? 'Google Play' : 'Live site'}
         </span>
         <span
-          className="flex items-center justify-center transition-transform duration-500 group-hover:rotate-45"
-          style={{ width: 38, height: 38, borderRadius: '50%', border: '1px solid currentColor' }}
+          className="flex items-center justify-center w-[32px] h-[32px] sm:w-[38px] sm:h-[38px] transition-transform duration-500 group-hover:rotate-45"
+          style={{ borderRadius: '50%', border: '1px solid currentColor' }}
         >
           <ArrowUpRight size={16} />
         </span>
@@ -552,7 +559,7 @@ function ParallelTrack({ exp }: { exp: Experience }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7, ease: E }}
-        className="flex flex-wrap items-center gap-x-5 gap-y-2"
+        className="flex flex-col items-start sm:flex-row sm:flex-wrap sm:items-center gap-x-5 gap-y-2"
         style={{
           fontFamily: "'JetBrains Mono', monospace",
           fontSize: 10,
@@ -615,9 +622,11 @@ function ParallelTrack({ exp }: { exp: Experience }) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.5, delay: 0.07 * i, ease: E }}
+            className="flex"
           >
-            <span style={{ color: LIME, marginRight: 10 }}>{i === exp.highlights.length - 1 ? '└─' : '├─'}</span>
-            {h}
+            {/* hanging indent: wrapped lines line up under the text, not under the glyph */}
+            <span style={{ color: LIME, marginRight: 10, flexShrink: 0 }}>{i === exp.highlights.length - 1 ? '└─' : '├─'}</span>
+            <span>{h}</span>
           </motion.li>
         ))}
       </ul>
@@ -652,7 +661,7 @@ export default function ProfessionalExperience() {
         color: '#F8FAFC',
         fontFamily: "'Inter Tight', sans-serif",
         padding: 'clamp(5rem, 10vw, 10rem) clamp(1.5rem, 5vw, 4rem)',
-        overflow: 'hidden',
+        overflow: 'clip', // not 'hidden': hidden would stop the sticky lane label from sticking
       }}
     >
       <style>{CSS}</style>
@@ -719,7 +728,7 @@ export default function ProfessionalExperience() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.5, ease: E }}
-          className="flex gap-10"
+          className="flex flex-wrap gap-x-10 gap-y-6"
           style={{ fontFamily: "'JetBrains Mono', monospace" }}
         >
           {[
@@ -787,13 +796,12 @@ export default function ProfessionalExperience() {
             {/* Sticky vertical label that follows you down the lane */}
             <div
               aria-hidden
-              className="hidden md:block"
               style={{ position: 'absolute', left: `calc(${LANE_X} + 10px)`, top: 0, bottom: 0, width: 14, pointerEvents: 'none' }}
             >
               <div
                 style={{
                   position: 'sticky',
-                  top: '38vh',
+                  top: '38svh',
                   writingMode: 'vertical-rl',
                   transform: 'rotate(180deg)',
                   fontFamily: "'JetBrains Mono', monospace",

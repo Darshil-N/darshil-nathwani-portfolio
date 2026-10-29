@@ -185,6 +185,7 @@ export default function Navbar() {
 
       <motion.header
         className="fixed left-0 right-0 top-0 z-50 pointer-events-none"
+        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <motion.nav
           className="pointer-events-auto mx-auto flex items-center justify-between"
@@ -378,7 +379,7 @@ export default function Navbar() {
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: reduce ? 0 : 0.7, ease: E }}
             className="md:hidden fixed inset-0 z-40 flex flex-col"
-            style={{ backgroundColor: '#0C0C0E', padding: '6.5rem 1.5rem 2rem' }}
+            style={{ backgroundColor: '#0C0C0E', padding: 'calc(6.5rem + env(safe-area-inset-top, 0px)) 1.5rem calc(2rem + env(safe-area-inset-bottom, 0px))' }}
           >
             {/* Lime glow */}
             <div
@@ -448,6 +449,17 @@ export default function Navbar() {
               >
                 darshilnathwani@gmail.com <ArrowUpRight className="w-3.5 h-3.5 text-[#A3E635]" />
               </a>
+              {/* ⌘K doesn't exist on a phone, so the command palette gets a button here */}
+              <button
+                onClick={() => {
+                  sound.playClick();
+                  setIsMenuOpen(false);
+                  setIsCmdOpen(true);
+                }}
+                className="inline-flex items-center gap-2 self-start text-[11px] tracking-[0.14em] uppercase text-white/70"
+              >
+                <Terminal className="w-3.5 h-3.5 text-[#A3E635]" /> Command menu
+              </button>
               <div className="flex items-center justify-between">
                 <button
                   onClick={handleResumeDownload}

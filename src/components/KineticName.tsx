@@ -13,12 +13,15 @@
  */
 
 import React, { useEffect, useRef } from 'react';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import {
   motion,
   useMotionValue,
   useSpring,
   useTransform,
   useReducedMotion,
+  animate,
+  type AnimationPlaybackControls,
   type MotionValue,
 } from 'framer-motion';
 import { sound } from '../lib/sound';
@@ -171,6 +174,11 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
   const box = useRef<HTMLDivElement>(null);
   const letters = useRef<(HTMLSpanElement | null)[]>([]);
   const centers = useRef<number[]>([]);
+  const coarse = useMediaQuery('(pointer: coarse)'); // phones and tablets: no cursor
+  const touching = useRef(false);
+  const visible = useRef(true);
+  const sweepCtrl = useRef<AnimationPlaybackControls>();
+  const sweepTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const mx = useMotionValue(OFFSCREEN);
   const my = useMotionValue(OFFSCREEN);
@@ -199,7 +207,11 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
     });
   };
 
-  const onEnter = () => {
+  const onEnter = (e: React.PointerEvent) => {
+    if (e.pointerType === 'touch') {
+      touching.current = true;
+      sweepCtrl.current?.stop(); // a finger takes over from the auto-sweep
+    }
     measure();
     box.current?.setAttribute('data-active', 'true');
     live.current.forEach((a) => a.cancel());
@@ -220,6 +232,7 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
   };
 
   const onLeave = () => {
+    touching.current = false;
     const b = box.current;
     b?.setAttribute('data-active', 'false');
     b?.style.setProperty('--mx', `${OFFSCREEN}px`);
@@ -236,7 +249,7 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
     let timer: ReturnType<typeof setTimeout>;
     const tick = () => {
       const b = box.current;
-      if (b && b.getAttribute('data-active') === 'false' && !document.hidden) {
+      if (b && b.getAttribute('data-active') === 'false' && !document.hidden && visible.current) {
         const els = letters.current.filter((el): el is HTMLSpanElement => !!el);
         const n = Math.random() < 0.25 ? 2 : 1;
         for (let k = 0; k < n && els.length; k++) {
@@ -252,6 +265,78 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
       running.forEach((a) => a.cancel());
     };
   }, [reduce]);
+
+  /* Only do work while the name is on screen. */
+  useEffect(() => {
+    const b = box.current;
+    if (!b) return;
+    const io = new IntersectionObserver(([entry]) => {
+      visible.current = entry.isIntersecting;
+    });
+    io.observe(b);
+    return () => io.disconnect();
+  }, []);
+
+  /* On touch devices there is no cursor, so the torch sweeps across the name on its
+     own every few seconds. Touching the name hands control to your finger. */
+  useEffect(() => {
+    if (!coarse || reduce) return;
+
+    const park = () => {
+      const b = box.current;
+      if (!b) return;
+      if (!touching.current) b.setAttribute('data-active', 'false');
+      b.style.setProperty('--mx', `${OFFSCREEN}px`);
+      b.style.setProperty('--my', `${OFFSCREEN}px`);
+      mx.set(OFFSCREEN);
+      my.set(OFFSCREEN);
+      glowOpacity.set(0);
+    };
+
+    const schedule = (ms: number) => {
+      sweepTimer.current = setTimeout(sweep, ms);
+    };
+
+    const sweep = () => {
+      const b = box.current;
+      if (!b || !visible.current || touching.current || document.hidden) {
+        schedule(1500);
+        return;
+      }
+      measure();
+      const { width: w, height: h } = b.getBoundingClientRect();
+      b.setAttribute('data-active', 'true');
+      live.current.forEach((a) => a.cancel());
+      glowOpacity.set(1);
+      sweepCtrl.current = animate(0, 1, {
+        duration: 2.8,
+        ease: [0.45, 0, 0.55, 1],
+        onUpdate: (p) => {
+          const x = -0.12 * w + p * 1.24 * w;
+          const y = h * (0.5 + 0.3 * Math.sin(p * Math.PI * 2));
+          b.style.setProperty('--mx', `${x}px`);
+          b.style.setProperty('--my', `${y}px`);
+          mx.set(x);
+          my.set(y);
+        },
+        onComplete: () => {
+          park();
+          schedule(4200);
+        },
+        onStop: () => {
+          if (!touching.current) park();
+        },
+      });
+    };
+
+    schedule(3200);
+    return () => {
+      clearTimeout(sweepTimer.current);
+      sweepCtrl.current?.stop();
+    };
+    // measure/refs are stable for the lifetime of the component
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coarse, reduce]);
 
   let counter = 0;
 
@@ -277,6 +362,7 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
           letterSpacing: '-0.04em',
           fontSize,
           cursor: 'default',
+          touchAction: 'pan-y', // vertical scroll still works; horizontal drags move the torch
           '--torch-r': 'clamp(120px, 15vw, 240px)',
         } as React.CSSProperties
       }

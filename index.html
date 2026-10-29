@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Darshil Nathwani — Software Developer</title>
     <meta name="description" content="Darshil Nathwani — Software Developer based in Bengaluru. Production web applications, mobile ecosystems, and IEEE research." />
     <meta name="author" content="Darshil Nathwani" />
@@ -52,10 +52,12 @@
 
     <!-- Subtle film grain -->
     <style>
+      /* The grain layer is slightly oversized and moved with transform, which the GPU
+         composites. Animating background-position repainted the whole screen. */
       html::after {
         content: '';
         position: fixed;
-        inset: 0;
+        inset: -24px;
         pointer-events: none;
         z-index: 9999;
         opacity: 0.035;
@@ -63,14 +65,14 @@
         background-repeat: repeat;
         background-size: 300px 300px;
         animation: bgGrain 0.35s steps(4) infinite;
-        will-change: background-position;
+        will-change: transform;
       }
       @keyframes bgGrain {
-        0%   { background-position: 0px 0px; }
-        25%  { background-position: -12px 8px; }
-        50%  { background-position: 9px -9px; }
-        75%  { background-position: -6px 12px; }
-        100% { background-position: 0px 0px; }
+        0%   { transform: translate(0px, 0px); }
+        25%  { transform: translate(-12px, 8px); }
+        50%  { transform: translate(9px, -9px); }
+        75%  { transform: translate(-6px, 12px); }
+        100% { transform: translate(0px, 0px); }
       }
     </style>
     

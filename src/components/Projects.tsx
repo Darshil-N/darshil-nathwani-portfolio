@@ -23,6 +23,7 @@ import { projects, type Project } from '../data/projects';
 import ClipLine from './ui/ClipLine';
 import { techIcons } from './techIcons';
 import ProjectModal, { type ModalProject } from './ProjectModal';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 const E = [0.76, 0, 0.24, 1] as const;
 
@@ -208,6 +209,10 @@ export default function Projects() {
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [activeTitle, setActiveTitle] = useState<string | null>(null);
+  // Side-by-side preview needs room AND a pointer that can hover. Phones and tablets
+  // get the same preview inline under the row instead (first tap expands, then open).
+  const sideBySide = useMediaQuery('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+  const [expandedTitle, setExpandedTitle] = useState<string | null>(null);
 
   const counts = useMemo(() => {
     const out: Record<string, number> = { all: projects.length };
@@ -228,6 +233,7 @@ export default function Projects() {
   const handleCategoryChange = (category: Project['category']) => {
     sound.playClick?.();
     setActiveTitle(null);
+    setExpandedTitle(null);
     navigate(category === 'all' ? '/projects' : `/projects?category=${category}`);
   };
 
@@ -252,7 +258,7 @@ export default function Projects() {
   return (
     <section
       style={{
-        minHeight: '100vh',
+        minHeight: '100svh',
         backgroundColor: '#0C0C0E',
         color: '#F8FAFC',
         paddingTop: 'clamp(6rem, 12vw, 10rem)',
@@ -330,11 +336,11 @@ export default function Projects() {
         </div>
 
         {/* INDEX + PREVIEW */}
-        <div className="grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-12 xl:gap-20 items-start">
+        <div className={sideBySide ? 'grid grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-12 xl:gap-20 items-start' : 'block'}>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
             <AnimatePresence initial={false} mode="popLayout">
               {filteredProjects.map((p) => {
-                const isActive = activeProject?.title === p.title;
+                const isActive = sideBySide ? activeProject?.title === p.title : expandedTitle === p.title;
                 return (
                   <motion.li
                     key={p.title}
@@ -347,12 +353,20 @@ export default function Projects() {
                   >
                     <button
                       type="button"
+                      aria-expanded={sideBySide ? undefined : isActive}
                       onPointerEnter={() => {
+                        if (!sideBySide) return;
                         if (!isActive) sound.playHover?.();
                         setActiveTitle(p.title);
                       }}
-                      onFocus={() => setActiveTitle(p.title)}
-                      onClick={() => open(p)}
+                      onFocus={() => sideBySide && setActiveTitle(p.title)}
+                      onClick={() => {
+                        if (sideBySide) open(p);
+                        else {
+                          sound.playClick?.();
+                          setExpandedTitle((cur) => (cur === p.title ? null : p.title));
+                        }
+                      }}
                       data-cursor-text="OPEN"
                       className="group relative w-full text-left grid items-center gap-x-5 grid-cols-[auto_1fr_auto]"
                       style={{ padding: 'clamp(1.1rem, 2.2vw, 1.7rem) clamp(0.4rem, 1vw, 0.9rem)', borderTop: '1px solid rgba(255,255,255,0.1)' }}
@@ -405,6 +419,22 @@ export default function Projects() {
                         <ArrowRight size={16} />
                       </span>
                     </button>
+
+                    <AnimatePresence initial={false}>
+                      {!sideBySide && expandedTitle === p.title && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.45, ease: E }}
+                          style={{ overflow: 'hidden' }}
+                        >
+                          <div style={{ padding: '0.4rem 0.2rem 2rem' }}>
+                            <PreviewCard project={p} onOpen={() => open(p)} />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.li>
                 );
               })}
@@ -412,8 +442,8 @@ export default function Projects() {
           </ul>
 
           {/* Sticky preview (desktop only) */}
-          {activeProject && (
-            <aside className="hidden lg:block lg:sticky" style={{ top: '6.5rem' }} aria-label="Project preview">
+          {sideBySide && activeProject && (
+            <aside className="sticky" style={{ top: '6.5rem' }} aria-label="Project preview">
               <PreviewCard project={activeProject} onOpen={() => open(activeProject)} />
             </aside>
           )}

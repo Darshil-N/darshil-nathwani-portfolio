@@ -232,7 +232,7 @@ export default function Skills() {
             </motion.div>
           </div>
 
-          <div className="flex gap-10" style={{ ...MONO }}>
+          <div className="flex flex-wrap gap-x-10 gap-y-6" style={{ ...MONO }}>
             {[
               { n: totalSkills, l: 'Tools' },
               { n: categories.length, l: 'Domains' },
@@ -318,7 +318,17 @@ export default function Skills() {
           </div>
 
           {/* Skill panel */}
-          <div className="relative" style={{ minHeight: 'clamp(320px, 34vw, 460px)' }} role="tabpanel">
+          <motion.div
+            className="relative"
+            style={{ minHeight: 'clamp(320px, 34vw, 460px)', touchAction: 'pan-y' }}
+            role="tabpanel"
+            onPanEnd={(e, info) => {
+              // Touch: swipe sideways to move between categories (hover isn't available)
+              if (!('pointerType' in e) || e.pointerType !== 'touch') return;
+              if (Math.abs(info.offset.x) < 70 || Math.abs(info.offset.x) < Math.abs(info.offset.y) * 1.4) return;
+              choose((active + (info.offset.x < 0 ? 1 : -1) + categories.length) % categories.length);
+            }}
+          >
             <div
               aria-hidden
               style={{
@@ -352,7 +362,12 @@ export default function Skills() {
                 ))}
               </motion.div>
             </AnimatePresence>
-          </div>
+
+            {/* Touch hint: the index above is hover-driven on desktop */}
+            <div className="lg:hidden flex items-center justify-center gap-3" style={{ ...MONO, marginTop: 18, fontSize: 9.5, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.4)' }}>
+              <span style={{ color: LIME }}>←</span> Swipe to switch <span style={{ color: LIME }}>→</span>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

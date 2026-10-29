@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, lazy, Suspense, useState } from 'react';
 import LoadingScreen from './components/LoadingScreen';
+import TouchFeedback from './components/TouchFeedback';
 import { markSiteReady, LOADING_MS } from './lib/siteReady';
 import './styles/optimizations.css';
 
@@ -88,6 +89,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <TouchFeedback />
         {initialLoad && <LoadingScreen />}
         <Toaster />
         <Sonner />

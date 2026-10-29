@@ -8,7 +8,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring, type PanInfo } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, Github, X } from 'lucide-react';
 import { sound } from '../lib/sound';
 import { techIcons } from './techIcons';
@@ -110,6 +110,14 @@ export default function ProjectModal({ project, position, prev, next, onPrev, on
   const scrollRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
+  // Touch: swipe sideways to go to the next / previous project.
+  const swipe = (e: PointerEvent | MouseEvent | TouchEvent, info: PanInfo) => {
+    if (!('pointerType' in e) || e.pointerType !== 'touch') return;
+    if (Math.abs(info.offset.x) < 80 || Math.abs(info.offset.x) < Math.abs(info.offset.y) * 1.6) return;
+    if (info.offset.x < 0) onNext?.();
+    else onPrev?.();
+  };
+
   // Reading progress of the scrolling panel (not the page).
   const { scrollYProgress } = useScroll({ container: scrollRef });
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
@@ -200,7 +208,7 @@ export default function ProjectModal({ project, position, prev, next, onPrev, on
       />
 
       {/* Top bar */}
-      <div className="flex items-center justify-between gap-4 px-6 sm:px-10 lg:px-16" style={{ height: 72, flexShrink: 0, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="flex items-center justify-between gap-4 px-6 sm:px-10 lg:px-16" style={{ height: 'calc(72px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)', flexShrink: 0, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <div style={{ ...MONO, fontSize: 10, letterSpacing: '0.26em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.55)' }}>
           <span style={{ color: LIME }}>◈</span>&nbsp;&nbsp;Project {position ?? project.number}
         </div>
@@ -232,7 +240,7 @@ export default function ProjectModal({ project, position, prev, next, onPrev, on
 
       {/* Scrolling content */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto custom-scrollbar" style={{ overscrollBehavior: 'contain' }}>
-        <motion.div key={project.title} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="px-6 sm:px-10 lg:px-16 mx-auto relative" style={{ maxWidth: 1500, paddingTop: 'clamp(2.5rem, 6vw, 5rem)', paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
+        <motion.div key={project.title} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} onPanEnd={swipe} className="px-6 sm:px-10 lg:px-16 mx-auto relative" style={{ touchAction: 'pan-y', maxWidth: 1500, paddingTop: 'clamp(2.5rem, 6vw, 5rem)', paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
           {/* Giant number */}
           <div
             aria-hidden

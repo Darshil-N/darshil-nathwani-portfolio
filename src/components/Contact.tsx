@@ -235,7 +235,7 @@ export default function Contact() {
   // Cursor glow: written straight to CSS variables, so nothing re-renders.
   const onMove = (e: React.PointerEvent) => {
     const el = sectionRef.current;
-    if (!el || e.pointerType === 'touch') return;
+    if (!el) return;
     const r = el.getBoundingClientRect();
     el.style.setProperty('--mx', `${e.clientX - r.left}px`);
     el.style.setProperty('--my', `${e.clientY - r.top}px`);
@@ -248,6 +248,7 @@ export default function Contact() {
       ref={sectionRef}
       id="contact"
       onPointerMove={onMove}
+      onPointerDown={onMove}
       style={{
         position: 'relative',
         backgroundColor: '#0C0C0E',

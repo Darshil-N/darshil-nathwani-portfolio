@@ -5,7 +5,8 @@
  * last section slides up like a curtain and uncovers it. A full-width
  * DARSHIL NATHWANI wordmark fills lime as the curtain lifts, and every letter
  * lights up on hover. If the footer is taller than the screen (phones) the
- * curtain is switched off and it behaves like a normal footer.
+ * curtain is replaced by a scroll-linked unveil (the content rises into place as
+ * you arrive), so phones get the same feeling.
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -14,6 +15,7 @@ import { ArrowUp, ArrowUpRight, Download } from 'lucide-react';
 import VisitorCounter from './VisitorCounter';
 import { sound } from '../lib/sound';
 import { useISTClock } from '../hooks/useISTClock';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 const LIME = '#A3E635';
 const MONO: React.CSSProperties = { fontFamily: "'JetBrains Mono', monospace" };
@@ -81,6 +83,9 @@ export default function Footer() {
   // The wordmark fills as the footer is uncovered.
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] });
   const fillPos = useTransform(scrollYProgress, [0.1, 0.95], ['100% 0%', '0% 0%']);
+  // No sticky curtain (phones, or a footer taller than the screen): the content rises into place instead.
+  const unveilY = useTransform(scrollYProgress, [0, 1], ['-16%', '0%']);
+  const small = useMediaQuery('(max-width: 640px)');
 
   const scrollToSection = (id: string) => {
     sound.playClick?.();
@@ -102,6 +107,7 @@ export default function Footer() {
         overflow: 'hidden',
       }}
     >
+      <motion.div style={{ y: curtain || reduce ? 0 : unveilY }}>
       <div
         aria-hidden
         style={{
@@ -205,14 +211,15 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Full-width wordmark: fills lime as the curtain lifts; letters light up on hover */}
+      {/* Full-width wordmark: fills lime as the footer is revealed; letters light up on hover/tap.
+          On phones it stacks onto two lines so it stays huge. */}
       <div aria-hidden className="relative select-none" style={{ lineHeight: 0.8, padding: '0 clamp(0.5rem, 1.5vw, 1.5rem)', whiteSpace: 'nowrap', textAlign: 'center' }}>
         <motion.div
           style={{
             display: 'inline-block',
             fontFamily: "'Inter Tight', sans-serif",
             fontWeight: 900,
-            fontSize: '9.4vw',
+            fontSize: small ? '19vw' : '9.4vw',
             letterSpacing: '-0.05em',
             color: 'transparent',
             WebkitTextFillColor: 'transparent',
@@ -225,25 +232,30 @@ export default function Footer() {
             backgroundClip: 'text',
           }}
         >
-          {NAME.split('').map((ch, i) =>
-            ch === ' ' ? (
-              <span key={i}>&nbsp;</span>
-            ) : (
-              <span key={i} className="inline-block transition-transform duration-300 hover:-translate-y-[6%]">
-                {ch}
-              </span>
-            )
-          )}
+          {(small ? NAME.split(' ') : [NAME]).map((line, li) => (
+            <div key={li} style={{ marginTop: li ? '0.05em' : 0 }}>
+              {line.split('').map((ch, i) =>
+                ch === ' ' ? (
+                  <span key={i}>&nbsp;</span>
+                ) : (
+                  <span key={i} className="inline-block transition-transform duration-300 hover:-translate-y-[6%] active:-translate-y-[6%]">
+                    {ch}
+                  </span>
+                )
+              )}
+            </div>
+          ))}
         </motion.div>
       </div>
 
       {/* Bottom bar */}
-      <div className="relative px-6 sm:px-10 lg:px-16 max-w-[1700px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ padding: 'clamp(1.4rem, 2.4vw, 2rem) clamp(1.5rem, 4vw, 4rem)', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: 'clamp(1rem, 2vw, 1.6rem)' }}>
+      <div className="relative px-6 sm:px-10 lg:px-16 max-w-[1700px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ paddingTop: 'clamp(1.4rem, 2.4vw, 2rem)', paddingLeft: 'clamp(1.5rem, 4vw, 4rem)', paddingRight: 'clamp(1.5rem, 4vw, 4rem)', paddingBottom: 'calc(clamp(1.4rem, 2.4vw, 2rem) + env(safe-area-inset-bottom, 0px))', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: 'clamp(1rem, 2vw, 1.6rem)' }}>
         <p style={{ ...MONO, fontSize: 10, letterSpacing: '0.06em', color: 'rgba(248,250,252,0.4)' }}>
           © {year} Darshil Nathwani · Built with React, TypeScript, Framer Motion
         </p>
         <VisitorCounter />
       </div>
+      </motion.div>
     </footer>
   );
 }

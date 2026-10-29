@@ -6,9 +6,10 @@
  * the original section: college, programme, city, 2024 to present.
  */
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   motion,
+  animate,
   useMotionTemplate,
   useMotionValue,
   useReducedMotion,
@@ -17,6 +18,7 @@ import {
 } from 'framer-motion';
 import ClipLine from './ui/ClipLine';
 import { sound } from '../lib/sound';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 const E = [0.76, 0, 0.24, 1] as const;
 const LIME = '#A3E635';
@@ -52,8 +54,21 @@ function IdCard() {
   const gy = useTransform(my, [-0.5, 0.5], [0, 100]);
   const glare = useMotionTemplate`radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.24), rgba(255,255,255,0) 55%)`;
 
+  // Touch has no hover, so the card sways gently by itself until a finger takes over.
+  const coarse = useMediaQuery('(pointer: coarse)');
+  const [swaying, setSwaying] = useState(true);
+  useEffect(() => {
+    if (!coarse || reduce || !swaying) return;
+    const a = animate(mx, 0.28, { duration: 3.4, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' });
+    const b = animate(my, -0.16, { duration: 4.3, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' });
+    return () => {
+      a.stop();
+      b.stop();
+    };
+  }, [coarse, reduce, swaying, mx, my]);
+
   const onMove = (e: React.PointerEvent) => {
-    if (reduce || e.pointerType === 'touch' || !ref.current) return;
+    if (reduce || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
     mx.set((e.clientX - r.left) / r.width - 0.5);
     my.set((e.clientY - r.top) / r.height - 0.5);
@@ -61,6 +76,7 @@ function IdCard() {
   const reset = () => {
     mx.set(0);
     my.set(0);
+    setSwaying(true);
   };
 
   return (
@@ -69,12 +85,14 @@ function IdCard() {
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={reset}
+        onPointerCancel={reset}
+        onPointerDown={(e) => e.pointerType === 'touch' && setSwaying(false)}
         onPointerEnter={() => sound.playHover?.()}
         initial={reduce ? false : { opacity: 0, y: 60, rotateX: 28 }}
         whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
         viewport={{ once: true, margin: '-80px' }}
         transition={{ duration: 1.1, ease: E }}
-        style={{ width: 'min(100%, 360px)' }}
+        style={{ width: 'min(100%, 360px)', touchAction: 'pan-y' }}
       >
         <motion.div
           style={{

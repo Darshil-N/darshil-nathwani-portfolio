@@ -41,7 +41,7 @@ const STEPS = [
   { at: 100, text: 'READY' },
 ];
 
-const NAME_SIZE = 'clamp(3.2rem, min(12.5vw, 19vh), 12rem)';
+const NAME_SIZE = 'clamp(3.2rem, min(12.5vw, 19svh), 12rem)';
 
 function Corner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
   const s: React.CSSProperties = { position: 'absolute', width: 22, height: 22, borderColor: LIME, borderStyle: 'solid', borderWidth: 0, opacity: 0.7 };
@@ -146,7 +146,7 @@ export default function LoadingScreen() {
           <Corner pos="br" />
 
           {/* HUD */}
-          <div className="absolute left-0 right-0 flex items-center justify-between" style={{ top: 'clamp(1.6rem, 3vw, 2.4rem)', padding: '0 clamp(2.4rem, 5vw, 4.5rem)', ...MONO, fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.55)' }}>
+          <div className="absolute left-0 right-0 flex items-center justify-between" style={{ top: 'calc(clamp(1.6rem, 3vw, 2.4rem) + env(safe-area-inset-top, 0px))', padding: '0 clamp(2.4rem, 5vw, 4.5rem)', ...MONO, fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.55)' }}>
             <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4, ease: E }} className="flex items-center gap-3">
               <span style={{ width: 30, height: 30, border: '1px solid rgba(255,255,255,0.25)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, fontSize: 12, letterSpacing: '-0.04em', color: '#F8FAFC' }}>
                 DN
@@ -160,7 +160,7 @@ export default function LoadingScreen() {
           </div>
 
           {/* Name */}
-          <div className="absolute inset-x-0 top-0 flex flex-col justify-start" style={{ padding: 'clamp(5.5rem, 16vh, 9rem) clamp(2.4rem, 5vw, 4.5rem) 0' }}>
+          <div className="absolute inset-x-0 top-0 flex flex-col justify-start" style={{ padding: 'calc(clamp(5.5rem, 16svh, 9rem) + env(safe-area-inset-top, 0px)) clamp(2.4rem, 5vw, 4.5rem) 0' }}>
             <div style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.86, letterSpacing: '-0.045em', fontSize: NAME_SIZE }}>
               <div style={{ overflow: 'hidden', paddingBottom: '0.04em' }}>
                 <motion.div initial={{ y: '110%' }} animate={{ y: '0%' }} transition={{ duration: 1.1, delay: 0.2, ease: E }}>
@@ -183,7 +183,7 @@ export default function LoadingScreen() {
           <div
             aria-hidden
             className="absolute"
-            style={{ right: 'clamp(2rem, 4vw, 4rem)', bottom: 'clamp(5rem, 11vh, 7.5rem)', fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, fontSize: 'clamp(4.5rem, min(14vw, 21vh), 13rem)', lineHeight: 0.8, letterSpacing: '-0.04em', display: 'flex', alignItems: 'flex-start' }}
+            style={{ right: 'clamp(2rem, 4vw, 4rem)', bottom: 'calc(clamp(5rem, 11svh, 7.5rem) + env(safe-area-inset-bottom, 0px))', fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, fontSize: 'clamp(4.5rem, min(14vw, 21svh), 13rem)', lineHeight: 0.8, letterSpacing: '-0.04em', display: 'flex', alignItems: 'flex-start' }}
           >
             <span style={{ position: 'relative', display: 'inline-flex' }}>
               <span style={{ display: 'inline-flex' }}>
@@ -201,7 +201,7 @@ export default function LoadingScreen() {
           </div>
 
           {/* Status + progress bar */}
-          <div className="absolute left-0 right-0" style={{ bottom: 'clamp(1.8rem, 3vw, 2.6rem)', padding: '0 clamp(2.4rem, 5vw, 4.5rem)' }}>
+          <div className="absolute left-0 right-0" style={{ bottom: 'calc(clamp(1.8rem, 3vw, 2.6rem) + env(safe-area-inset-bottom, 0px))', padding: '0 clamp(2.4rem, 5vw, 4.5rem)' }}>
             <div style={{ ...MONO, fontSize: 'clamp(10px, 1vw, 12px)', letterSpacing: '0.24em', color: '#F8FAFC', marginBottom: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.7rem', height: 18 }}>
               <span style={{ color: LIME }}>›</span>
               <motion.span key={step} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>

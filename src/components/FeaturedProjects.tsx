@@ -128,7 +128,7 @@ function ProjectRow({ project, index }: { project: FeaturedProject; index: numbe
         </div>
 
         {/* Tech stack */}
-        <div className="hidden lg:flex flex-wrap gap-1.5 max-w-[260px] justify-end">
+        <div className="flex flex-wrap gap-1.5 lg:max-w-[260px] lg:justify-end">
           {project.techStack.slice(0, 4).map((tech) => (
             <span
               key={tech}

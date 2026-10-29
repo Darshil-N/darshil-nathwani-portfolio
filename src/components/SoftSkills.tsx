@@ -62,12 +62,14 @@ function MarqueeRow({
 }) {
   const reduce = useReducedMotion();
   const x = useMotionValue(0);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const visible = useInView(rowRef); // pause the loop while off screen
   const track = useRef<HTMLDivElement>(null);
   const held = useRef(false);
   const speed = useRef(1); // eased 0..1 multiplier so stopping/starting is smooth
 
   useAnimationFrame((_, delta) => {
-    if (reduce || !track.current) return;
+    if (reduce || !visible || !track.current) return;
     const half = track.current.scrollWidth / 2;
     if (half <= 0) return;
     speed.current += ((held.current ? 0 : 1) - speed.current) * Math.min(1, delta / 200);
@@ -82,6 +84,7 @@ function MarqueeRow({
 
   return (
     <motion.div
+      ref={rowRef}
       style={{ overflow: 'hidden', skewX: reduce ? 0 : skew, padding: '0.4rem 0' }}
       onPointerEnter={() => {
         held.current = true;

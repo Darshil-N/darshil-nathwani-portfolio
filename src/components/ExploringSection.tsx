@@ -66,11 +66,11 @@ function useDesktop() {
   return desktop;
 }
 
-function IntroPanel({ desktop }: { desktop: boolean }) {
+function IntroPanel({ wide, pinned }: { wide: boolean; pinned: boolean }) {
   return (
     <div
       className="flex flex-col justify-center flex-shrink-0"
-      style={desktop ? { width: 'min(62vw, 880px)' } : undefined}
+      style={pinned ? { width: wide ? 'min(62vw, 880px)' : 'min(84vw, 460px)' } : undefined}
     >
       <ClipLine delay={0.1}>
         <div style={{ ...MONO, fontSize: 10, letterSpacing: '0.26em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
@@ -102,7 +102,7 @@ function IntroPanel({ desktop }: { desktop: boolean }) {
         </p>
       </motion.div>
 
-      {desktop && (
+      {pinned && (
         <div className="inline-flex items-center gap-3" style={{ ...MONO, marginTop: '2.6rem', fontSize: 10, letterSpacing: '0.26em', textTransform: 'uppercase', color: LIME }}>
           Keep scrolling
           <motion.span animate={{ x: [0, 10, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}>
@@ -114,15 +114,15 @@ function IntroPanel({ desktop }: { desktop: boolean }) {
   );
 }
 
-function TrackPanel({ cat, index, desktop }: { cat: Category; index: number; desktop: boolean }) {
+function TrackPanel({ cat, index, wide, pinned }: { cat: Category; index: number; wide: boolean; pinned: boolean }) {
   const Icon = cat.icon;
   const num = String(index + 1).padStart(2, '0');
   return (
     <article
       className="relative flex flex-col flex-shrink-0 overflow-hidden"
       style={{
-        ...(desktop ? { width: 'min(50vw, 700px)', height: '100%' } : {}),
-        padding: 'clamp(1.4rem, min(3vw, 4.5vh), 3rem)',
+        ...(pinned ? { width: wide ? 'min(50vw, 700px)' : 'min(84vw, 440px)', height: '100%' } : {}),
+        padding: 'clamp(1.4rem, min(3vw, 4.5svh), 3rem)',
         backgroundColor: '#0C0C0E',
         border: '1px solid rgba(255,255,255,0.12)',
       }}
@@ -165,10 +165,10 @@ function TrackPanel({ cat, index, desktop }: { cat: Category; index: number; des
           fontFamily: "'Inter Tight', sans-serif",
           fontWeight: 900,
           textTransform: 'uppercase',
-          fontSize: 'clamp(1.6rem, min(3.8vw, 6.2vh), 3.4rem)',
+          fontSize: 'clamp(1.6rem, min(3.8vw, 6.2svh), 3.4rem)',
           lineHeight: 0.96,
           letterSpacing: '-0.04em',
-          marginBottom: 'clamp(1rem, 2vh, 2rem)',
+          marginBottom: 'clamp(1rem, 2svh, 2rem)',
           maxWidth: '90%',
         }}
       >
@@ -181,7 +181,7 @@ function TrackPanel({ cat, index, desktop }: { cat: Category; index: number; des
             key={item}
             onMouseEnter={() => sound.playHover?.()}
             className="group flex items-baseline gap-3 transition-colors duration-300"
-            style={{ padding: 'clamp(0.4rem, 1vh, 0.7rem) 0', borderTop: '1px solid rgba(255,255,255,0.09)' }}
+            style={{ padding: 'clamp(0.4rem, 1svh, 0.7rem) 0', borderTop: '1px solid rgba(255,255,255,0.09)' }}
           >
             <span style={{ ...MONO, fontSize: 9, letterSpacing: '0.18em', color: 'rgba(248,250,252,0.3)' }}>{String(i + 1).padStart(2, '0')}</span>
             <span
@@ -197,9 +197,9 @@ function TrackPanel({ cat, index, desktop }: { cat: Category; index: number; des
   );
 }
 
-function OutroPanel({ desktop }: { desktop: boolean }) {
+function OutroPanel({ wide, pinned }: { wide: boolean; pinned: boolean }) {
   return (
-    <div className="flex flex-col justify-center flex-shrink-0" style={desktop ? { width: 'min(60vw, 840px)' } : undefined}>
+    <div className="flex flex-col justify-center flex-shrink-0" style={pinned ? { width: wide ? 'min(60vw, 840px)' : 'min(84vw, 460px)' } : undefined}>
       <Rocket size={26} style={{ color: LIME, marginBottom: '1.6rem' }} />
       <div style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.92, letterSpacing: '-0.045em', fontSize: 'clamp(2.4rem, 6.4vw, 5.8rem)' }}>
         {OUTRO_LINES.map((line, i) => (
@@ -215,12 +215,13 @@ function OutroPanel({ desktop }: { desktop: boolean }) {
 export default function ExploringSection() {
   const reduce = useReducedMotion();
   const desktopQuery = useDesktop();
-  const pinned = desktopQuery && !reduce;
+  // The pinned rail now runs on phones as well: only reduced motion falls back to a stack.
+  const pinned = !reduce;
 
   const sectionRef = useRef<HTMLElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const shift = useRef(0);
-  const [height, setHeight] = useState<number | undefined>(undefined);
+  const [shiftPx, setShiftPx] = useState<number | undefined>(undefined);
   const [step, setStep] = useState(0);
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end end'] });
@@ -237,7 +238,7 @@ export default function ExploringSection() {
     if (!rail) return;
     const next = Math.max(0, rail.scrollWidth - window.innerWidth);
     shift.current = next;
-    setHeight((h) => (h === next + window.innerHeight ? h : next + window.innerHeight));
+    setShiftPx((h) => (h === next ? h : next));
   }, []);
 
   useLayoutEffect(() => {
@@ -258,11 +259,11 @@ export default function ExploringSection() {
 
   const header = (
     <>
-      <IntroPanel desktop={pinned} />
+      <IntroPanel wide={desktopQuery} pinned={pinned} />
       {categories.map((cat, i) => (
-        <TrackPanel key={cat.title} cat={cat} index={i} desktop={pinned} />
+        <TrackPanel key={cat.title} cat={cat} index={i} wide={desktopQuery} pinned={pinned} />
       ))}
-      <OutroPanel desktop={pinned} />
+      <OutroPanel wide={desktopQuery} pinned={pinned} />
     </>
   );
 
@@ -282,9 +283,9 @@ export default function ExploringSection() {
     <section
       ref={sectionRef}
       id="exploring"
-      style={{ position: 'relative', backgroundColor: '#0C0C0E', color: '#F8FAFC', height: height ?? '420vh', overflowX: 'clip' }}
+      style={{ position: 'relative', backgroundColor: '#0C0C0E', color: '#F8FAFC', height: shiftPx === undefined ? '420svh' : `calc(${shiftPx}px + 100svh)`, overflowX: 'clip' }}
     >
-      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+      <div style={{ position: 'sticky', top: 0, height: '100svh', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
         {/* Slow background word */}
         <motion.div
           aria-hidden
@@ -322,7 +323,7 @@ export default function ExploringSection() {
             gap: '4vw',
             padding: '0 8vw',
             width: 'max-content',
-            height: 'min(78vh, 700px)',
+            height: 'min(78svh, 700px)',
           }}
         >
           {header}
@@ -331,7 +332,7 @@ export default function ExploringSection() {
         {/* HUD */}
         <div
           className="absolute left-0 right-0 bottom-0 px-6 sm:px-10 lg:px-16 flex items-center gap-6"
-          style={{ zIndex: 5, paddingBottom: '2rem', ...MONO, fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.55)' }}
+          style={{ zIndex: 5, paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))', ...MONO, fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.55)' }}
         >
           <span style={{ color: LIME, minWidth: 64 }}>
             {step === 0 ? 'Intro' : step === panelCount - 1 ? 'End' : `${String(step).padStart(2, '0')} / ${String(categories.length).padStart(2, '0')}`}

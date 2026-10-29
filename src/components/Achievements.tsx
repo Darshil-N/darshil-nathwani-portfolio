@@ -22,6 +22,7 @@ import {
 import { Trophy, Award, X, ExternalLink, Users, Calendar, Sparkles, Medal, Star, Crown, ArrowUpRight } from 'lucide-react';
 import { sound } from '../lib/sound';
 import { achievements, type Achievement } from '../data/achievements';
+import { useCanHover } from '../hooks/useMediaQuery';
 
 const E = [0.76, 0, 0.24, 1] as const;
 
@@ -388,78 +389,133 @@ function LedgerRow({
   index,
   onOpen,
   onHover,
+  canHover,
+  expanded,
+  onToggle,
 }: {
   achievement: Achievement;
   index: number;
   onOpen: () => void;
   onHover: (a: Achievement | null) => void;
+  canHover: boolean;
+  expanded: boolean;
+  onToggle: () => void;
 }) {
   return (
-    <motion.button
-      type="button"
-      onClick={() => {
-        sound.playClick?.();
-        onOpen();
-      }}
-      onPointerEnter={() => {
-        onHover(achievement);
-        sound.playHover?.();
-      }}
-      onPointerLeave={() => onHover(null)}
-      onFocus={() => onHover(achievement)}
-      onBlur={() => onHover(null)}
-      data-cursor-text="OPEN"
+    <motion.div
       initial={{ opacity: 0, y: 36 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.7, ease: E }}
-      className="group relative w-full text-left grid items-center gap-x-6 gap-y-3 grid-cols-[auto_1fr] md:grid-cols-[48px_1fr_230px_42px]"
-      style={{ padding: 'clamp(1.2rem, 2.4vw, 1.9rem) clamp(0.5rem, 1.2vw, 1rem)', borderTop: '1px solid rgba(255,255,255,0.1)' }}
+      style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}
     >
-      {/* Lime bar that grows on hover */}
-      <span
-        aria-hidden
-        className="absolute left-0 top-0 h-full w-[3px] origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500"
-        style={{ backgroundColor: LIME, transitionTimingFunction: 'cubic-bezier(0.76,0,0.24,1)' }}
-      />
-
-      <span style={{ ...MONO, fontSize: 11, letterSpacing: '0.2em', color: 'rgba(248,250,252,0.35)' }}>
-        {String(index + 1).padStart(2, '0')}
-      </span>
-
-      <span className="block min-w-0 transition-transform duration-500 group-hover:translate-x-3" style={{ transitionTimingFunction: 'cubic-bezier(0.76,0,0.24,1)' }}>
-        <span
-          className="block"
-          style={{
-            fontFamily: "'Inter Tight', sans-serif",
-            fontWeight: 900,
-            textTransform: 'uppercase',
-            fontSize: 'clamp(1.3rem, 2.7vw, 2.3rem)',
-            lineHeight: 1,
-            letterSpacing: '-0.035em',
-            color: '#F8FAFC',
-            overflowWrap: 'anywhere',
-          }}
-        >
-          {achievement.title}
-        </span>
-        <span className="block" style={{ ...MONO, marginTop: 10, fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.45)' }}>
-          {achievement.organizer} &middot; {achievement.date}
-        </span>
-      </span>
-
-      <span className="col-span-2 md:col-span-1 flex md:flex-col md:items-start items-center justify-between gap-3">
-        <span style={{ ...MONO, fontSize: 11, letterSpacing: '0.22em', color: LIME }}>{achievement.rank}</span>
-        <Pips lit={TIER_METER[achievement.tier]} />
-      </span>
-
-      <span
-        className="hidden md:flex items-center justify-center transition-all duration-500 group-hover:rotate-45 group-hover:bg-[#A3E635] group-hover:text-[#0C0C0E] group-hover:border-[#A3E635]"
-        style={{ width: 42, height: 42, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.25)', color: '#F8FAFC' }}
+      <button
+        type="button"
+        aria-expanded={canHover ? undefined : expanded}
+        onClick={() => {
+          sound.playClick?.();
+          // Mouse: the preview follows the cursor, so a click opens the details.
+          // Touch: there is no hover, so the first tap expands the row inline instead.
+          if (canHover) onOpen();
+          else onToggle();
+        }}
+        onPointerEnter={() => {
+          if (!canHover) return;
+          onHover(achievement);
+          sound.playHover?.();
+        }}
+        onPointerLeave={() => canHover && onHover(null)}
+        onFocus={() => canHover && onHover(achievement)}
+        onBlur={() => canHover && onHover(null)}
+        data-cursor-text="OPEN"
+        className="group relative w-full text-left grid items-center gap-x-6 gap-y-3 grid-cols-[auto_1fr] md:grid-cols-[48px_1fr_230px_42px]"
+        style={{ padding: 'clamp(1.2rem, 2.4vw, 1.9rem) clamp(0.5rem, 1.2vw, 1rem)' }}
       >
-        <ArrowUpRight size={16} />
-      </span>
-    </motion.button>
+        {/* Lime bar that grows on hover (or stays lit while expanded on touch) */}
+        <span
+          aria-hidden
+          className={`absolute left-0 top-0 h-full w-[3px] origin-top transition-transform duration-500 ${expanded ? 'scale-y-100' : 'scale-y-0 group-hover:scale-y-100'}`}
+          style={{ backgroundColor: LIME, transitionTimingFunction: 'cubic-bezier(0.76,0,0.24,1)' }}
+        />
+
+        <span style={{ ...MONO, fontSize: 11, letterSpacing: '0.2em', color: expanded ? LIME : 'rgba(248,250,252,0.35)' }}>
+          {String(index + 1).padStart(2, '0')}
+        </span>
+
+        <span
+          className={`block min-w-0 transition-transform duration-500 ${expanded ? 'translate-x-3' : 'group-hover:translate-x-3'}`}
+          style={{ transitionTimingFunction: 'cubic-bezier(0.76,0,0.24,1)' }}
+        >
+          <span
+            className="block"
+            style={{
+              fontFamily: "'Inter Tight', sans-serif",
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              fontSize: 'clamp(1.3rem, 2.7vw, 2.3rem)',
+              lineHeight: 1,
+              letterSpacing: '-0.035em',
+              color: '#F8FAFC',
+              overflowWrap: 'anywhere',
+            }}
+          >
+            {achievement.title}
+          </span>
+          <span className="block" style={{ ...MONO, marginTop: 10, fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.45)' }}>
+            {achievement.organizer} &middot; {achievement.date}
+          </span>
+        </span>
+
+        <span className="col-span-2 md:col-span-1 flex md:flex-col md:items-start items-center justify-between gap-3">
+          <span style={{ ...MONO, fontSize: 11, letterSpacing: '0.22em', color: LIME }}>{achievement.rank}</span>
+          <Pips lit={TIER_METER[achievement.tier]} />
+        </span>
+
+        <span
+          className={`hidden md:flex items-center justify-center transition-all duration-500 ${expanded ? 'rotate-45 bg-[#A3E635] text-[#0C0C0E] border-[#A3E635]' : 'group-hover:rotate-45 group-hover:bg-[#A3E635] group-hover:text-[#0C0C0E] group-hover:border-[#A3E635]'}`}
+          style={{ width: 42, height: 42, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.25)', color: '#F8FAFC' }}
+        >
+          <ArrowUpRight size={16} />
+        </span>
+      </button>
+
+      {/* Touch: the preview that the cursor card shows on desktop opens inline under the row */}
+      <AnimatePresence initial={false}>
+        {!canHover && expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.45, ease: E }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{ padding: '0.2rem 0.6rem 1.7rem 2.6rem' }}>
+              <p style={{ fontSize: 14, lineHeight: 1.7, color: 'rgba(248,250,252,0.72)' }}>{achievement.description}</p>
+              {achievement.technologies && achievement.technologies.length > 0 && (
+                <div className="flex flex-wrap gap-1.5" style={{ marginTop: 14 }}>
+                  {achievement.technologies.slice(0, 6).map((t) => (
+                    <span key={t} style={{ ...MONO, fontSize: 9.5, letterSpacing: '0.08em', padding: '0.35rem 0.6rem', border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(248,250,252,0.7)' }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  sound.playClick?.();
+                  onOpen();
+                }}
+                className="inline-flex items-center gap-2"
+                style={{ ...MONO, marginTop: 18, padding: '0.8rem 1.3rem', backgroundColor: LIME, color: '#0C0C0E', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}
+              >
+                Full details <ArrowUpRight size={14} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -470,6 +526,9 @@ function LedgerGroup({
   start,
   onOpen,
   onHover,
+  canHover,
+  expandedId,
+  onToggle,
 }: {
   numeral: string;
   label: string;
@@ -477,24 +536,28 @@ function LedgerGroup({
   start: number;
   onOpen: (a: Achievement) => void;
   onHover: (a: Achievement | null) => void;
+  canHover: boolean;
+  expandedId: string | null;
+  onToggle: (id: string) => void;
 }) {
   if (items.length === 0) return null;
   return (
-    <div className="grid lg:grid-cols-[260px_1fr] gap-x-10 gap-y-6" style={{ marginBottom: 'clamp(3.5rem, 6vw, 6rem)' }}>
-      {/* Sticky tier label */}
-      <div className="lg:self-start lg:sticky" style={{ top: '7rem' }}>
+    <div className="lg:grid lg:grid-cols-[260px_1fr] gap-x-10 lg:gap-y-6" style={{ marginBottom: 'clamp(3.5rem, 6vw, 6rem)' }}>
+      {/* Sticky tier label: a column on desktop, a compact bar under the navbar on phones */}
+      <div className="sticky z-20 top-[4.9rem] lg:top-28 lg:self-start py-3 lg:py-0 bg-[#0C0C0E] lg:bg-transparent">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: E }}
+          className="flex items-center gap-4 lg:block"
         >
           <div
             aria-hidden
             style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontWeight: 900,
-              fontSize: 'clamp(4.5rem, 10vw, 8.5rem)',
+              fontSize: 'clamp(3rem, 10vw, 8.5rem)',
               lineHeight: 0.85,
               letterSpacing: '-0.06em',
               color: 'transparent',
@@ -503,18 +566,29 @@ function LedgerGroup({
           >
             {numeral}
           </div>
-          <div style={{ ...MONO, marginTop: 14, fontSize: 10, letterSpacing: '0.26em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.85)' }}>
-            {label}
-          </div>
-          <div style={{ ...MONO, marginTop: 6, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.4)' }}>
-            {String(items.length).padStart(2, '0')} {items.length === 1 ? 'event' : 'events'}
+          <div>
+            <div style={{ ...MONO, marginTop: 0, fontSize: 10, letterSpacing: '0.26em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.85)' }} className="lg:mt-3.5">
+              {label}
+            </div>
+            <div style={{ ...MONO, marginTop: 6, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.4)' }}>
+              {String(items.length).padStart(2, '0')} {items.length === 1 ? 'event' : 'events'}
+            </div>
           </div>
         </motion.div>
       </div>
 
       <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
         {items.map((a, i) => (
-          <LedgerRow key={a.id} achievement={a} index={start + i} onOpen={() => onOpen(a)} onHover={onHover} />
+          <LedgerRow
+            key={a.id}
+            achievement={a}
+            index={start + i}
+            onOpen={() => onOpen(a)}
+            onHover={onHover}
+            canHover={canHover}
+            expanded={expandedId === a.id}
+            onToggle={() => onToggle(a.id)}
+          />
         ))}
       </div>
     </div>
@@ -576,6 +650,9 @@ function CursorPreview({ item, x, y }: { item: Achievement | null; x: MotionValu
 export default function Achievements() {
   const [selected, setSelected] = useState<Achievement | null>(null);
   const [hovered, setHovered] = useState<Achievement | null>(null);
+  const canHover = useCanHover();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const toggleExpanded = (id: string) => setExpandedId((cur) => (cur === id ? null : id));
 
   // Cursor-following preview position (spring-smoothed, flips near screen edges).
   const px = useMotionValue(0);
@@ -606,7 +683,7 @@ export default function Achievements() {
         backgroundColor: '#0C0C0E',
         color: '#F8FAFC',
         padding: 'clamp(5rem, 10vw, 10rem) 0',
-        overflow: 'hidden',
+        overflow: 'clip', // not 'hidden': hidden would stop the sticky tier labels from sticking
       }}
     >
       {/* Ambient glow */}
@@ -675,7 +752,7 @@ export default function Achievements() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.55, ease: E }}
-            className="flex gap-10 sm:gap-14"
+            className="flex flex-wrap gap-x-10 sm:gap-x-14 gap-y-6"
           >
             {[
               { n: achievements.length, l: 'Events entered' },
@@ -711,13 +788,13 @@ export default function Achievements() {
 
         {/* LEDGER */}
         <div onPointerMove={onMove}>
-          <LedgerGroup numeral="10" label="Top 10 finishes" items={top10} start={0} onOpen={setSelected} onHover={setHovered} />
-          <LedgerGroup numeral="20" label="Top 20 finishes" items={top20} start={top10.length} onOpen={setSelected} onHover={setHovered} />
-          <LedgerGroup numeral="25+" label="Also competed" items={rest} start={top10.length + top20.length} onOpen={setSelected} onHover={setHovered} />
+          <LedgerGroup numeral="10" label="Top 10 finishes" items={top10} start={0} onOpen={setSelected} onHover={setHovered} canHover={canHover} expandedId={expandedId} onToggle={toggleExpanded} />
+          <LedgerGroup numeral="20" label="Top 20 finishes" items={top20} start={top10.length} onOpen={setSelected} onHover={setHovered} canHover={canHover} expandedId={expandedId} onToggle={toggleExpanded} />
+          <LedgerGroup numeral="25+" label="Also competed" items={rest} start={top10.length + top20.length} onOpen={setSelected} onHover={setHovered} canHover={canHover} expandedId={expandedId} onToggle={toggleExpanded} />
         </div>
       </div>
 
-      <CursorPreview item={hovered} x={sx} y={sy} />
+      {canHover && <CursorPreview item={hovered} x={sx} y={sy} />}
 
       {/* MODAL */}
       <AnimatePresence>
@@ -766,7 +843,7 @@ function AchievementModal({ achievement, onClose }: { achievement: Achievement; 
         style={{
           maxWidth: '950px',
           width: '100%',
-          maxHeight: '92vh',
+          maxHeight: '92svh',
           overflowY: 'auto',
           backgroundColor: '#0C0C0E',
           border: `3px solid ${isResearch ? 'rgba(163,230,53,0.4)' : isWinner ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.18)'}`,
