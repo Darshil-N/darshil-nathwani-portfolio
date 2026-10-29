@@ -75,25 +75,25 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             className="relative z-10 flex flex-col items-center text-center max-w-md w-full"
           >
             {/* Monogram Badge */}
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 p-[1px] mb-8 shadow-xl shadow-sky-500/20">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-lime-400 to-lime-600 p-[1px] mb-8 shadow-xl shadow-lime-400/20">
               <div className="w-full h-full bg-[#050609] rounded-2xl flex items-center justify-center">
-                <span className="font-syne font-black text-sm text-sky-400">DN</span>
+                <span className="font-sans font-black text-sm text-lime-400">DN</span>
               </div>
             </div>
 
             {/* Title */}
-            <h1 className="font-syne font-black text-3xl sm:text-4xl text-white tracking-tight mb-2 uppercase">
+            <h1 className="font-sans font-black text-3xl sm:text-4xl text-white tracking-tight mb-2 uppercase">
               Darshil Nathwani
             </h1>
 
-            <p className="font-mono text-xs text-sky-400 uppercase tracking-widest mb-8">
+            <p className="font-mono text-xs text-lime-400 uppercase tracking-widest mb-8">
               Portfolio 2026 / 2027
             </p>
 
             {/* Progress Track */}
             <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-4 relative">
               <motion.div 
-                className="h-full bg-gradient-to-r from-sky-400 via-indigo-400 to-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.8)]"
+                className="h-full bg-gradient-to-r from-lime-500 via-lime-400 to-lime-300 shadow-[0_0_15px_rgba(163,230,53,0.8)]"
                 style={{ width: `${count}%` }}
               />
             </div>

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, lazy, Suspense, useState } from 'react';
 import LoadingScreen from './components/LoadingScreen';
+import { markSiteReady, LOADING_MS } from './lib/siteReady';
 import './styles/optimizations.css';
 
 const Index = lazy(() => import('./pages/Index'));
@@ -16,7 +17,7 @@ const queryClient = new QueryClient();
 
 const Fallback = () => (
   <div className="min-h-screen bg-[#080808] flex items-center justify-center">
-    <div className="w-8 h-8 rounded-full border border-purple/30 border-t-purple animate-spin" />
+    <div className="w-8 h-8 rounded-full border border-white/20 border-t-[#A3E635] animate-spin" />
   </div>
 );
 
@@ -77,7 +78,11 @@ const App = () => {
 
   useEffect(() => {
     // Show loading screen on EVERY page load/refresh
-    setTimeout(() => setInitialLoad(false), 7400); // Match loading duration
+    const id = setTimeout(() => {
+      setInitialLoad(false);
+      markSiteReady(); // intro animations (e.g. hero decrypt) wait for this
+    }, LOADING_MS); // Match the loading screen's duration
+    return () => clearTimeout(id);
   }, []);
 
   return (

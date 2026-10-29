@@ -49,7 +49,8 @@ const Index = () => {
             className="flex flex-col min-h-screen bg-[#000000] relative overflow-x-clip text-[#FFFFFF]"
           >
             <Navbar />
-            <main>
+            {/* Opaque and above the footer, so the footer's curtain reveal works */}
+            <main style={{ position: 'relative', zIndex: 1, backgroundColor: '#0C0C0E' }}>
               <Hero />
               <FeaturedProjects />
               <ProfessionalExperience />

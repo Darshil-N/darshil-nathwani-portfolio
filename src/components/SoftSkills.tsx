@@ -1,22 +1,34 @@
 /**
- * SoftSkills.tsx — Diagonal split layout with staggered reveals
+ * SoftSkills.tsx — Scroll-velocity marquee
  *
- * SIGNATURE BOLDNESS: Cards arranged in diagonal cascading layout
- * Each card slides in from alternating directions creating visual flow
- * Inspired by: A Love Hate Story's asymmetric grids + Trevor Noah's editorial cards
- * 
- * UNIQUE ELEMENTS:
- * - Diagonal/offset grid creates visual rhythm
- * - Cards slide from alternating L/R with rotation
- * - Massive index numbers with gradient fills
- * - Icon boxes that expand on hover revealing more info
+ * SIGNATURE: two rows of giant outline words drift in opposite directions.
+ * Scroll fast and they speed up and lean into the motion; hover and they ease
+ * to a stop. The word under the cursor fills lime and its line of text appears
+ * in the caption below. Left alone, it cycles through the words itself.
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useAnimationFrame,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  useVelocity,
+  type MotionValue,
+} from 'framer-motion';
 import { Users, Lightbulb, MessageCircle, Clock, Search, Target, Brain, TrendingUp } from 'lucide-react';
+import { sound } from '../lib/sound';
+import ClipLine from './ui/ClipLine';
 
 const E = [0.76, 0, 0.24, 1] as const;
+const LIME = '#A3E635';
+const MONO: React.CSSProperties = { fontFamily: "'JetBrains Mono', monospace" };
+const CYCLE_MS = 3200;
 
 const softSkills = [
   { num: '01', icon: Search, label: 'Problem Solving', desc: 'Breaking complexity into clear, solvable parts.' },
@@ -29,46 +41,132 @@ const softSkills = [
   { num: '08', icon: Clock, label: 'Time Management', desc: 'Ship what counts, on time, every time.' },
 ];
 
-function ClipLine({ children, delay }: { children: React.ReactNode; delay: number }) {
+type SoftSkill = (typeof softSkills)[number];
+
+function MarqueeRow({
+  items,
+  dir,
+  active,
+  onPick,
+  onHold,
+  boost,
+  skew,
+}: {
+  items: SoftSkill[];
+  dir: 1 | -1;
+  active: string;
+  onPick: (num: string) => void;
+  onHold: (held: boolean) => void;
+  boost: MotionValue<number>;
+  skew: MotionValue<number>;
+}) {
+  const reduce = useReducedMotion();
+  const x = useMotionValue(0);
+  const track = useRef<HTMLDivElement>(null);
+  const held = useRef(false);
+  const speed = useRef(1); // eased 0..1 multiplier so stopping/starting is smooth
+
+  useAnimationFrame((_, delta) => {
+    if (reduce || !track.current) return;
+    const half = track.current.scrollWidth / 2;
+    if (half <= 0) return;
+    speed.current += ((held.current ? 0 : 1) - speed.current) * Math.min(1, delta / 200);
+    const pxPerSec = (55 + Math.min(Math.abs(boost.get()) * 0.22, 700)) * speed.current;
+    let nx = x.get() - dir * pxPerSec * (delta / 1000);
+    nx = nx % half;
+    if (nx > 0) nx -= half;
+    x.set(nx);
+  });
+
+  const loop = [...items, ...items];
+
   return (
-    <div style={{ overflow: 'hidden' }}>
-      <motion.div
-        initial={{ y: '110%' }}
-        animate={{ y: '0%' }}
-        transition={{ duration: 1.05, delay, ease: E }}
-      >
-        {children}
+    <motion.div
+      style={{ overflow: 'hidden', skewX: reduce ? 0 : skew, padding: '0.4rem 0' }}
+      onPointerEnter={() => {
+        held.current = true;
+        onHold(true);
+      }}
+      onPointerLeave={() => {
+        held.current = false;
+        onHold(false);
+      }}
+    >
+      <motion.div ref={track} style={{ x, display: 'flex', width: 'max-content', alignItems: 'center' }}>
+        {loop.map((s, i) => {
+          const isActive = s.num === active;
+          return (
+            <React.Fragment key={`${s.num}-${i}`}>
+              <button
+                type="button"
+                onPointerEnter={() => {
+                  if (s.num !== active) sound.playHover?.();
+                  onPick(s.num);
+                }}
+                onFocus={() => onPick(s.num)}
+                onClick={() => onPick(s.num)}
+                data-cursor-text="READ"
+                aria-label={`${s.label}: ${s.desc}`}
+                aria-pressed={isActive}
+                style={{
+                  fontFamily: "'Inter Tight', sans-serif",
+                  fontWeight: 900,
+                  textTransform: 'uppercase',
+                  whiteSpace: 'nowrap',
+                  fontSize: 'clamp(3rem, 8.5vw, 7.5rem)',
+                  lineHeight: 1,
+                  letterSpacing: '-0.045em',
+                  padding: '0 clamp(1rem, 2.5vw, 2.4rem)',
+                  color: isActive ? LIME : 'transparent',
+                  WebkitTextStroke: isActive ? '1.5px transparent' : '1.5px rgba(248,250,252,0.42)',
+                  transition: 'color 0.35s, -webkit-text-stroke 0.35s, text-shadow 0.35s',
+                  textShadow: isActive ? '0 0 42px rgba(163,230,53,0.45)' : 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                {s.label}
+              </button>
+              <span aria-hidden style={{ color: LIME, fontSize: 'clamp(1rem, 2vw, 1.8rem)', opacity: 0.7 }}>
+                ✦
+              </span>
+            </React.Fragment>
+          );
+        })}
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 
-function useInView(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Toggle inView based on whether element is intersecting
-        setInView(entry.isIntersecting);
-      },
-      { threshold }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold]);
-
-  return { ref, inView };
-}
-
 export default function SoftSkills() {
-  const { ref: gridRef, inView: gridInView } = useInView(0.05);
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { amount: 0.25 });
+  const reduce = useReducedMotion();
+  const [activeNum, setActiveNum] = useState(softSkills[0].num);
+  const [held, setHeld] = useState(false);
+
+  // Scroll velocity drives both the marquee speed and the lean.
+  const { scrollY } = useScroll();
+  const velocity = useSpring(useVelocity(scrollY), { stiffness: 90, damping: 28 });
+  const skew = useTransform(velocity, [-3000, 3000], [9, -9], { clamp: true });
+
+  // Cycle on its own until the visitor hovers.
+  useEffect(() => {
+    if (held || !inView || reduce) return;
+    const id = setInterval(() => {
+      setActiveNum((n) => {
+        const i = softSkills.findIndex((s) => s.num === n);
+        return softSkills[(i + 1) % softSkills.length].num;
+      });
+    }, CYCLE_MS);
+    return () => clearInterval(id);
+  }, [held, inView, reduce]);
+
+  const active = softSkills.find((s) => s.num === activeNum) ?? softSkills[0];
+  const Icon = active.icon;
 
   return (
     <section
+      ref={sectionRef}
       id="softskills"
       style={{
         position: 'relative',
@@ -78,8 +176,8 @@ export default function SoftSkills() {
         overflow: 'hidden',
       }}
     >
-      {/* Radial glow */}
       <div
+        aria-hidden
         style={{
           position: 'absolute',
           top: '20%',
@@ -87,184 +185,134 @@ export default function SoftSkills() {
           transform: 'translateX(-50%)',
           width: '60%',
           height: '60%',
-          background: 'radial-gradient(ellipse, rgba(163,230,53,0.04), transparent 60%)',
+          background: 'radial-gradient(ellipse, rgba(163,230,53,0.05), transparent 60%)',
           pointerEvents: 'none',
         }}
       />
 
       <div className="px-6 sm:px-10 lg:px-16 max-w-[1500px] mx-auto">
         {/* HEADER */}
-        <div className="mb-20">
+        <div className="mb-14 md:mb-20">
           <ClipLine delay={0.1}>
-            <div
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '10px',
-                letterSpacing: '0.26em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.28)',
-                marginBottom: '1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.8rem',
-              }}
-            >
-              <span style={{ color: '#A3E635', fontSize: 12 }}>◈</span>
+            <div style={{ ...MONO, fontSize: 10, letterSpacing: '0.26em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+              <span style={{ color: LIME, fontSize: 12 }}>◈</span>
               <span>Human Stack</span>
             </div>
           </ClipLine>
 
           <div style={{ fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.88, letterSpacing: '-0.04em', fontFamily: "'Inter Tight', sans-serif" }}>
             <ClipLine delay={0.2}>
-              <div style={{ fontSize: 'clamp(2.5rem, 7vw, 6.5rem)', color: '#F8FAFC' }}>
-                Beyond
-              </div>
+              <div style={{ fontSize: 'clamp(2.5rem, 7vw, 6.5rem)', color: '#F8FAFC' }}>Beyond</div>
             </ClipLine>
             <ClipLine delay={0.35}>
-              <div style={{ fontSize: 'clamp(2.5rem, 7vw, 6.5rem)', color: 'transparent', WebkitTextStroke: '1.5px rgba(248,250,252,0.35)' }}>
-                The Syntax
-              </div>
+              <div style={{ fontSize: 'clamp(2.5rem, 7vw, 6.5rem)', color: 'transparent', WebkitTextStroke: '1.5px rgba(248,250,252,0.35)' }}>The Syntax</div>
             </ClipLine>
           </div>
 
-          <div style={{ marginTop: 'clamp(1.8rem, 3vw, 2.8rem)', overflow: 'hidden' }}>
-            <motion.div
-              initial={{ y: '110%' }}
-              animate={{ y: '0%' }}
-              transition={{ duration: 0.9, delay: 0.5, ease: E }}
-              className="flex items-start gap-6"
-            >
-              <motion.div
-                style={{ height: 1, backgroundColor: '#A3E635', flexShrink: 0 }}
-                initial={{ width: 0 }}
-                animate={{ width: 50 }}
-                transition={{ duration: 0.7, delay: 0.75, ease: E }}
-              />
-              <p style={{ fontSize: 'clamp(0.88rem, 1.1vw, 1rem)', color: 'rgba(248,250,252,0.45)', lineHeight: 1.7, maxWidth: '42rem' }}>
-                Technical skills get you in the room. These keep you there.
-              </p>
-            </motion.div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.5, ease: E }}
+            className="flex items-start gap-6"
+            style={{ marginTop: 'clamp(1.8rem, 3vw, 2.8rem)' }}
+          >
+            <div style={{ width: 50, height: 1, backgroundColor: LIME, flexShrink: 0, marginTop: '0.8rem' }} />
+            <p style={{ fontSize: 'clamp(0.88rem, 1.1vw, 1rem)', color: 'rgba(248,250,252,0.5)', lineHeight: 1.7, maxWidth: '36rem' }}>
+              Technical skills get you in the room. These keep you there.
+            </p>
+          </motion.div>
         </div>
+      </div>
 
-        {/* DIAGONAL OFFSET GRID */}
-        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {softSkills.map((skill, index) => {
-            const Icon = skill.icon;
-            const isLeft = index % 2 === 0;
-            
-            return (
+      {/* MARQUEE: full bleed */}
+      <div role="group" aria-label="Soft skills">
+        <MarqueeRow
+          items={softSkills.slice(0, 4)}
+          dir={1}
+          active={activeNum}
+          onPick={setActiveNum}
+          onHold={setHeld}
+          boost={velocity}
+          skew={skew}
+        />
+        <MarqueeRow
+          items={softSkills.slice(4)}
+          dir={-1}
+          active={activeNum}
+          onPick={setActiveNum}
+          onHold={setHeld}
+          boost={velocity}
+          skew={skew}
+        />
+      </div>
+
+      {/* CAPTION */}
+      <div className="px-6 sm:px-10 lg:px-16 max-w-[1500px] mx-auto" style={{ marginTop: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 'clamp(1.8rem, 3vw, 2.6rem)' }}>
+          <div style={{ minHeight: 'clamp(150px, 16vw, 190px)' }} aria-live="polite">
+            <AnimatePresence mode="wait">
               <motion.div
-                key={skill.num}
-                initial={{
-                  opacity: 0,
-                  x: isLeft ? -80 : 80,
-                  y: 60,
-                  rotate: isLeft ? -3 : 3,
-                }}
-                animate={gridInView ? {
-                  opacity: 1,
-                  x: 0,
-                  y: 0,
-                  rotate: 0,
-                } : {}}
-                transition={{
-                  duration: 1,
-                  delay: index * 0.08,
-                  ease: E,
-                }}
-                whileHover={{
-                  y: -8,
-                  scale: 1.02,
-                  transition: { duration: 0.3 }
-                }}
-                style={{
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  backgroundColor: 'rgba(255,255,255,0.01)',
-                  padding: 'clamp(2rem, 3vw, 2.5rem)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  cursor: 'default',
-                }}
+                key={active.num}
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -14 }}
+                transition={{ duration: 0.4, ease: E }}
+                className="grid md:grid-cols-[auto_1fr] gap-x-10 gap-y-4 items-center"
               >
-                {/* Massive number background */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    right: '-0.5rem',
-                    top: '-0.5rem',
-                    fontFamily: "'Inter Tight', sans-serif",
-                    fontWeight: 900,
-                    fontSize: 'clamp(5rem, 8vw, 6.5rem)',
-                    lineHeight: 0.9,
-                    background: 'linear-gradient(135deg, rgba(163,230,53,0.08), rgba(163,230,53,0.02))',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    userSelect: 'none',
-                    pointerEvents: 'none',
-                  }}
-                >
-                  {skill.num}
+                <div className="flex items-center gap-5">
+                  <span
+                    aria-hidden
+                    style={{
+                      fontFamily: "'Inter Tight', sans-serif",
+                      fontWeight: 900,
+                      fontSize: 'clamp(4rem, 9vw, 7.5rem)',
+                      lineHeight: 0.85,
+                      letterSpacing: '-0.06em',
+                      color: 'transparent',
+                      WebkitTextStroke: `1.5px ${LIME}`,
+                    }}
+                  >
+                    {active.num}
+                  </span>
+                  <span
+                    style={{ width: 52, height: 52, borderRadius: 12, backgroundColor: 'rgba(163,230,53,0.1)', border: '1px solid rgba(163,230,53,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Icon size={22} style={{ color: LIME }} />
+                  </span>
                 </div>
+                <div>
+                  <div style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: 'clamp(1.5rem, 3vw, 2.4rem)', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '0.8rem' }}>
+                    {active.label}
+                  </div>
+                  <p style={{ fontSize: 'clamp(1rem, 1.5vw, 1.25rem)', lineHeight: 1.6, color: 'rgba(248,250,252,0.7)', maxWidth: 640 }}>{active.desc}</p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-                {/* Icon */}
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
+          {/* Progress ticks */}
+          <div className="flex gap-2" style={{ marginTop: '1.4rem' }}>
+            {softSkills.map((s) => (
+              <button
+                key={s.num}
+                type="button"
+                aria-label={s.label}
+                onClick={() => setActiveNum(s.num)}
+                style={{ flex: 1, maxWidth: 70, height: 18, display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+              >
+                <span
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 10,
-                    backgroundColor: 'rgba(163,230,53,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '1.5rem',
-                    border: '1px solid rgba(163,230,53,0.2)',
-                  }}
-                >
-                  <Icon size={20} style={{ color: '#A3E635' }} />
-                </motion.div>
-
-                {/* Label */}
-                <h3
-                  style={{
-                    fontFamily: "'Inter Tight', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 'clamp(1.1rem, 1.3vw, 1.25rem)',
-                    letterSpacing: '-0.01em',
-                    color: '#F8FAFC',
-                    marginBottom: '0.8rem',
-                  }}
-                >
-                  {skill.label}
-                </h3>
-
-                {/* Description */}
-                <p
-                  style={{
-                    fontSize: '0.88rem',
-                    lineHeight: 1.65,
-                    color: 'rgba(248,250,252,0.5)',
-                  }}
-                >
-                  {skill.desc}
-                </p>
-
-                {/* Hover accent line */}
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileHover={{ width: '100%' }}
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    height: 2,
-                    backgroundColor: '#A3E635',
+                    display: 'block',
+                    width: '100%',
+                    height: 3,
+                    backgroundColor: s.num === activeNum ? LIME : 'rgba(255,255,255,0.14)',
+                    transition: 'background-color 0.3s',
                   }}
                 />
-              </motion.div>
-            );
-          })}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </section>

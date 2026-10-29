@@ -14,6 +14,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import { ArrowDown, Check } from 'lucide-react';
 import { sound } from '../lib/sound';
+import { useSiteReady } from '../lib/siteReady';
+import KineticName from './KineticName';
+import DecryptText from './DecryptText';
 
 /* ─────────────────────────────────────────────
    CONSTANTS
@@ -122,6 +125,7 @@ const HERO_PHOTOS = [
 
 export default function Hero() {
   const [copied, setCopied] = useState(false);
+  const siteReady = useSiteReady();
   const heroRef = useRef<HTMLElement>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [photoHovered, setPhotoHovered] = useState(false);
@@ -174,6 +178,18 @@ export default function Hero() {
   /* ─────────────────────────────────────────────
      RENDER
   ───────────────────────────────────────────── */
+  // Hold the whole entrance until the loading screen is gone, so it plays on
+  // screen instead of underneath the overlay. Same box, so nothing jumps.
+  if (!siteReady) {
+    return (
+      <section
+        id="home"
+        aria-hidden
+        style={{ position: 'sticky', top: 0, minHeight: '100vh', width: '100%', backgroundColor: '#0C0C0E', zIndex: 0 }}
+      />
+    );
+  }
+
   return (
     <motion.section
       ref={heroRef}
@@ -376,68 +392,14 @@ export default function Hero() {
           <span>AI Engineer · Full-Stack Developer</span>
         </ClipLine>
 
-        {/* ── MASSIVE NAME BLOCK with interactivity ── */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            fontWeight: 900,
-            textTransform: 'uppercase',
-            lineHeight: 0.86,
-            letterSpacing: '-0.04em',
-          }}
-        >
-          {/* DARSHIL — solid white fill with hover glow */}
-          <ClipLine
-            delay={0.22}
-            style={{
-              display: 'block',
-              fontSize: 'clamp(3.2rem, 9.5vw, 10.5rem)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <motion.span
-              style={{
-                display: 'inline-block',
-                color: '#F8FAFC',
-                cursor: 'default',
-              }}
-              whileHover={{
-                textShadow: '0 0 40px rgba(163,230,53,0.4), 0 0 80px rgba(163,230,53,0.2)',
-                color: '#A3E635',
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              DARSHIL
-            </motion.span>
-          </ClipLine>
-
-          {/* NATHWANI — outlined/stroke only with hover fill */}
-          <ClipLine
-            delay={0.36}
-            style={{
-              display: 'block',
-              fontSize: 'clamp(3.2rem, 9.5vw, 10.5rem)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <motion.span
-              style={{
-                display: 'inline-block',
-                color: 'transparent',
-                WebkitTextStroke: '1.5px rgba(248,250,252,0.42)',
-                cursor: 'default',
-              }}
-              whileHover={{
-                color: '#F8FAFC',
-                WebkitTextStroke: '1.5px #F8FAFC',
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              NATHWANI
-            </motion.span>
-          </ClipLine>
-        </div>
+        {/* ── MASSIVE NAME BLOCK — cursor torch + letter ripple ── */}
+        <KineticName
+          fontSize="clamp(3.2rem, 9.5vw, 10.5rem)"
+          lines={[
+            { text: 'DARSHIL', variant: 'solid', delay: 0.22 },
+            { text: 'NATHWANI', variant: 'outline', delay: 0.36 },
+          ]}
+        />
 
         {/* ── TAGLINE with clearer positioning ── */}
         <div style={{ marginTop: 'clamp(1.8rem, 3.5vw, 3rem)', overflow: 'hidden' }}>
@@ -459,24 +421,29 @@ export default function Hero() {
               animate={{ width: 44 }}
               transition={{ duration: 0.65, delay: 0.82, ease: E }}
             />
-            <p
+            <DecryptText
+              delay={1.3}
+              lines={[
+                [
+                  { text: 'Building production-scale ' },
+                  { text: 'AI/ML', bright: true },
+                  { text: ' and ' },
+                  { text: 'Full-stack systems', bright: true },
+                  { text: '.' },
+                ],
+                [
+                  { text: 'Researcher with a published ' },
+                  { text: 'IEEE paper.', bright: true },
+                ],
+              ]}
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontWeight: 400,
                 fontSize: 'clamp(0.78rem, 1.1vw, 1rem)',
-                color: 'rgba(248,250,252,0.42)',
                 letterSpacing: '0.015em',
                 lineHeight: 1.6,
               }}
-            >
-              Building production-scale{' '}
-              <span style={{ color: 'rgba(248,250,252,0.7)' }}>AI/ML </span> and{' '}
-              <span style={{ color: 'rgba(248,250,252,0.7)' }}>Full-stack systems</span>.
-              <br />
-              Researcher with a published{' '}
-              <span style={{ color: 'rgba(248,250,252,0.7)' }}>IEEE paper.</span> {' '}
-             
-            </p>
+            />
           </motion.div>
         </div>
       </div>

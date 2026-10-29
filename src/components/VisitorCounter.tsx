@@ -9,7 +9,7 @@ const VisitorCounter: React.FC = () => {
     <div className="flex items-center gap-1 text-gray-500 text-sm">
       <span className="text-gray-500">Views:</span>
       <img
-        src={`https://hits.sh/${HITS_KEY}.svg?style=flat&color=6d28d9&label=`}
+        src={`https://hits.sh/${HITS_KEY}.svg?style=flat&color=A3E635&label=`}
         alt="Visitor count"
         className="h-5"
       />

@@ -6,14 +6,13 @@ const publicDir = resolve(rootDir, 'public');
 
 mkdirSync(publicDir, { recursive: true });
 
-const baseUrl = (process.env.SITE_URL || process.env.VITE_SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL || 'http://localhost:8080')
+const baseUrl = (process.env.SITE_URL || process.env.VITE_SITE_URL || process.env.URL || process.env.DEPLOY_PRIME_URL || 'https://darshilnathwani.netlify.app')
   .trim()
   .replace(/\/+$/, '');
 
 const routes = [
   { loc: '/', changefreq: 'weekly', priority: '1.0' },
   { loc: '/projects', changefreq: 'monthly', priority: '0.8' },
-  { loc: '/resume/Minimalist White and Grey Professional Resume.pdf', changefreq: 'yearly', priority: '0.4' },
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

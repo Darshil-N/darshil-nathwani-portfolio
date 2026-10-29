@@ -1,317 +1,61 @@
 /**
- * Achievements.tsx — Tiered achievements with visual hierarchy
+ * Achievements.tsx — Trophy-room scoreboard
  *
- * VISUAL HIERARCHY: Research hero > 1st Place premium > TOP 10 > TOP 20 > TOP 25 > Participation
- * Each tier has distinct styling reflecting achievement level
- * 
- * UNIQUE ELEMENTS:
- * - Research paper: Full-width hero with animated background
- * - 1st Place: Large card with gold accents, spans 2 columns
- * - TOP 10/20: Medium cards with lime accents
- * - TOP 25/Participation: Standard cards
+ * SIGNATURE: a stat wall that counts up, the IEEE paper as a giant outline
+ * with a PUBLISHED stamp that slams down, a gold 1ST for the championship,
+ * and everything else as a ranked ledger: bold rows, a placement meter, a
+ * sticky tier label, and a preview card that trails the cursor.
  */
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  motion,
+  AnimatePresence,
+  animate,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from 'framer-motion';
 import { Trophy, Award, X, ExternalLink, Users, Calendar, Sparkles, Medal, Star, Crown, ArrowUpRight } from 'lucide-react';
 import { sound } from '../lib/sound';
+import { achievements, type Achievement } from '../data/achievements';
 
 const E = [0.76, 0, 0.24, 1] as const;
 
-interface Achievement {
-  id: string;
-  title: string;
-  rank: string;
-  date: string;
-  organizer: string;
-  type: 'hackathon' | 'publication' | 'competition';
-  description: string;
-  highlights: string[];
-  features?: string[];
-  team?: string[];
-  technologies?: string[];
-  link?: string;
-  tier: 'research' | 'winner' | 'top10' | 'top20' | 'top25' | 'participation';
-}
-
-const achievements: Achievement[] = [
-  // RESEARCH PUBLICATION
-  {
-    id: 'research1',
-    title: 'IEEE TENCON 2026',
-    rank: 'PUBLISHED',
-    date: '2026',
-    organizer: 'IEEE International Conference',
-    type: 'publication',
-    tier: 'research',
-    description: 'Research paper on Drishti AI accepted and published. Natural language to SQL semantic parser achieving 93% accuracy and CCTV video retrieval systems with 73% cache hit rate. Presented findings on campus surveillance optimization.',
-    highlights: [
-      'Peer-reviewed IEEE publication',
-      'International conference presentation',
-      'NL-to-SQL semantic parser (93% accuracy)',
-      'CCTV retrieval pipeline with caching (73% hit rate)',
-      'Campus surveillance system optimization',
-    ],
-    features: [
-      'Natural language query interface for campus surveillance',
-      'Multi-stage semantic parsing pipeline',
-      'Intelligent caching system for video retrieval',
-      'Production-scale system validation',
-    ],
-    technologies: ['Python', 'DeepSeek', 'PostgreSQL', 'YOLOv8', 'OpenCV', 'Flask'],
-    link: '#achievements',
-  },
-
-  // 1ST PLACE - WINNER TIER
-  {
-    id: 'win1',
-    title: 'Indian Chess Academy Hackathon',
-    rank: '1ST PLACE',
-    date: '2026',
-    organizer: 'Vina EduTech',
-    type: 'hackathon',
-    tier: 'winner',
-    description: 'Team Madoss secured 1st place for delivering a polished and reliable platform with a strong balance of usability, security, and technical execution. Led to one-month training program and internship pathway.',
-    highlights: [
-      'Awarded 1st place out of all competing teams',
-      'Recognized for balancing product usability with robust security',
-      'Delivered strong technical execution with dependable platform behavior',
-      'Qualified for one-month training program post-hackathon',
-      'Internship opportunity based on training performance',
-    ],
-    features: [
-      'Collaborative end-to-end product build with clear ownership',
-      'Reliable platform workflows with production-minded implementation',
-      'Security-aware design choices aligned with hackathon goals',
-      'Post-win pathway to internship opportunities',
-    ],
-    team: ['Darshil Nathwani', 'Rigved', 'Shrinidhi Patil', 'Aadya Baranwal'],
-    technologies: ['React', 'TypeScript', 'Firebase', 'Security-First Design'],
-  },
-
-  // TOP 10 TIER
-  {
-    id: 'top10-1',
-    title: 'Nasiko × Devaarambh Buildathon',
-    rank: 'TOP 10',
-    date: '2026',
-    organizer: 'Microsoft Reactor',
-    type: 'hackathon',
-    tier: 'top10',
-    description: 'Built resilient multi-agent request layer with Redis queues, Docker orchestration, and API routing. Top 10 out of 200+ builders.',
-    highlights: [
-      'Multi-agent systems architecture',
-      'Redis queue management',
-      'Mentorship from industry experts',
-      'Open-source contributions',
-    ],
-    technologies: ['Redis', 'Docker', 'FastAPI', 'Multi-Agent Systems'],
-  },
-  {
-    id: 'top10-2',
-    title: 'Athermex Hackathon',
-    rank: 'TOP 10',
-    date: '2026',
-    organizer: 'BMSCE × DSCE',
-    type: 'hackathon',
-    tier: 'top10',
-    description: 'Antraa: 100% local synthetic data generator with differential privacy. Top 10 out of 150+ teams (450+ participants).',
-    highlights: [
-      'Differential privacy implementation',
-      'Healthcare/fintech focus',
-      '450+ participants',
-      'Privacy-preserving technology',
-    ],
-    team: ['Team Baazigar'],
-    technologies: ['Python', 'Differential Privacy', 'Synthetic Data Generation'],
-  },
-
-  // TOP 20 TIER
-  {
-    id: 'top20-1',
-    title: 'CICADA Hackathon',
-    rank: 'TOP 20',
-    date: '2026',
-    organizer: 'Mastersolis @ Atria University',
-    type: 'hackathon',
-    tier: 'top20',
-    description: 'KARM AI: 22-hour sprint building placement portal + Chrome extension. Multi-role access, AI resume parsing. TOP 20 among 150+ teams.',
-    highlights: [
-      'Secured TOP 20 finish among 150+ teams',
-      'Completed end-to-end architecture in 22 hours',
-      'Built production-style multi-role placement workflow',
-      'Sustained clean code through overnight sprint',
-    ],
-    features: [
-      'Multi-role portal access for Students, HOD, and TPO',
-      'AI-powered resume parsing and scoring',
-      'Automated placement drive lifecycle',
-      'Real-time analytics dashboard',
-      'Chrome extension for form auto-fill',
-    ],
-    team: ['Aadya Baranwal', 'Musaddik Jamadar', 'Shreyash J S'],
-    technologies: ['React', 'FastAPI', 'Firebase', 'Gemini API', 'Chrome Extension'],
-  },
-
-  // TOP 25 TIER
-  {
-    id: 'top25-1',
-    title: 'Google DeepMind Hackathon',
-    rank: 'TOP 25',
-    date: '2026',
-    organizer: 'Google DeepMind Bangalore',
-    type: 'hackathon',
-    tier: 'top25',
-    description: 'Solo 1-day sprint building AI agent with Gemini API. Top 25 finish out of 100+ participants.',
-    highlights: [
-      'Solo developer achievement',
-      'Rapid prototyping',
-      'Agentic system design',
-      'Gemini API integration',
-    ],
-    technologies: ['Gemini API', 'Python', 'FastAPI'],
-  },
-
-  // PARTICIPATION / QUALIFIED TIER
-  {
-    id: 'part1',
-    title: 'SIH Internal Round',
-    rank: 'QUALIFIED',
-    date: '2024',
-    organizer: 'Smart India Hackathon',
-    type: 'competition',
-    tier: 'participation',
-    description: 'Team Paradox advanced with AI-powered tourist safety monitoring using geo-fencing and blockchain.',
-    highlights: [
-      'AI monitoring system',
-      'Geo-fencing technology',
-      'Blockchain digital ID',
-      'National competition',
-    ],
-    team: ['Team Paradox'],
-    technologies: ['AI', 'Blockchain', 'Geo-fencing'],
-  },
-  {
-    id: 'part2',
-    title: 'HackMan v.8',
-    rank: 'PARTICIPATION',
-    date: 'Oct 31 - Nov 1, 2025',
-    organizer: 'DSCE',
-    type: 'hackathon',
-    tier: 'participation',
-    description: 'Kriti (कृति) - Decentralized Career Identity Platform. 24-hour sleepless build sprint solving hiring trust crisis through blockchain-backed verifiable credentials and AI-powered ATS resume generation.',
-    highlights: [
-      '24-hour sleepless build sprint as Team Lead',
-      'Built B2B/B2C architecture from whiteboard to prototype',
-      'Focused on solving fake resumes and verification delays',
-      'Strong learning outcome',
-    ],
-    features: [
-      'Blockchain-backed verifiable credentials',
-      'Tamper-proof trust layer for career records',
-      'AI engine for ATS-optimized resume creation',
-      'Instant candidate verification for recruiters',
-    ],
-    team: ['Dhruva K R', 'Aadya Baranwal', 'Utsav Patel'],
-    technologies: ['Blockchain', 'Verifiable Credentials', 'AI', 'React', 'Node.js'],
-  },
-  {
-    id: 'part3',
-    title: 'Aegis Cybersecurity Hackathon',
-    rank: 'PARTICIPATION',
-    date: '24-Hour Sprint',
-    organizer: 'Aegis at DSCE',
-    type: 'hackathon',
-    tier: 'participation',
-    description: 'Kavach - AI Security Copilot. Built AI that watches AI-generated code in real time, blocks risky commands, detects dependency attacks, scans file changes, protects secrets.',
-    highlights: [
-      'Delivered fully local AI security workflow in 24 hours',
-      'Focused on making vibe coding safer through proactive guardrails',
-      'Combined threat detection, intent control, and rollback safety',
-      'Validated end-to-end implementation under extreme pressure',
-    ],
-    features: [
-      'Terminal interception to block dangerous commands',
-      'Phantom dependency blocker',
-      'Live security scanner for injections and secrets',
-      'Secret Shield for credentials protection',
-      'Intent Guard to prevent over-scoped AI actions',
-      'RAG-powered codebase security analysis',
-    ],
-    team: ['Arpit Ravi', 'Arya Dudalkar', 'Rigved Tamkoria'],
-    technologies: ['Ollama', 'phi4-mini', 'Semgrep', 'XGBoost', 'ChromaDB', 'FastAPI', 'TypeScript'],
-  },
-  {
-    id: 'part4',
-    title: 'Hackverse 24-Hour Hackathon',
-    rank: 'PARTICIPATION',
-    date: '2024',
-    organizer: 'DSATM Techfusion',
-    type: 'hackathon',
-    tier: 'participation',
-    description: 'Kara-AI: Multi-Modal AI Interview Coach. Led team Jugaadu to deliver full-stack AI interview coaching prototype.',
-    highlights: [
-      'First online hackathon experience',
-      'Team leadership under 24-hour deadline',
-      'Full-stack AI project delivery',
-    ],
-    features: [
-      'Dynamic context-aware interview questions',
-      'Live video and audio analysis',
-      'Real-time feedback system',
-    ],
-    team: ['Aadya B.', 'Musaddik Jamadar'],
-    technologies: ['React', 'Python', 'OpenCV', 'AI Models'],
-  },
-  {
-    id: 'part5',
-    title: 'TechTrek Hackathon',
-    rank: 'PARTICIPATION',
-    date: 'March 29, 2025',
-    organizer: 'DSCE ACM Student Chapter',
-    type: 'hackathon',
-    tier: 'participation',
-    description: 'PG Finder Web Application. Designed and developed MERN stack web application in 8-hour sprint.',
-    highlights: [
-      'Built complete MERN stack application',
-      'Implemented location-based PG search',
-      'Improved execution under strict time pressure',
-    ],
-    team: ['Midde Jayanth', 'Anshuman Pati', 'Aman Kumar Singh'],
-    technologies: ['MongoDB', 'Express.js', 'React', 'Node.js'],
-  },
-  {
-    id: 'part6',
-    title: 'Hackoasis v2',
-    rank: 'PARTICIPATION',
-    date: 'November 29, 2024',
-    organizer: 'Hackoasis',
-    type: 'hackathon',
-    tier: 'participation',
-    description: 'First-ever hackathon participation. Built prototype using Wix, kickstarting competitive building journey.',
-    highlights: [
-      'First-ever hackathon participation',
-      'Built and presented no-code prototype',
-      'Learned team coordination under event timelines',
-    ],
-    technologies: ['Wix'],
-  },
-];
-
 // Separate by tier
-const researchPaper = achievements.find(a => a.tier === 'research')!;
-const firstPlace = achievements.filter(a => a.tier === 'winner');
-const top10 = achievements.filter(a => a.tier === 'top10');
-const top20 = achievements.filter(a => a.tier === 'top20');
-const top25 = achievements.filter(a => a.tier === 'top25');
-const participation = achievements.filter(a => a.tier === 'participation');
+const researchPaper = achievements.find((a) => a.tier === 'research')!;
+const firstPlace = achievements.filter((a) => a.tier === 'winner');
+const top10 = achievements.filter((a) => a.tier === 'top10');
+const top20 = achievements.filter((a) => a.tier === 'top20');
+const top25 = achievements.filter((a) => a.tier === 'top25');
+const participation = achievements.filter((a) => a.tier === 'participation');
 
+const GOLD = '#FBBF24';
+const LIME = '#A3E635';
+
+// How many of 5 pips light up for each placement tier (decorative, not a score).
+const TIER_METER: Record<Achievement['tier'], number> = {
+  research: 5,
+  winner: 5,
+  top10: 4,
+  top20: 3,
+  top25: 2,
+  participation: 1,
+};
+
+/** Slide-up reveal. Watches the visible wrapper: the moving child starts fully
+ *  clipped, and clipped content never counts as "in view". */
 function ClipLine({ children, delay }: { children: React.ReactNode; delay: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true });
   return (
-    <div style={{ overflow: 'hidden' }}>
+    <div ref={ref} style={{ overflow: 'hidden' }}>
       <motion.div
         initial={{ y: '110%' }}
-        animate={{ y: '0%' }}
+        animate={{ y: inView ? '0%' : '110%' }}
         transition={{ duration: 1.05, delay, ease: E }}
       >
         {children}
@@ -320,568 +64,677 @@ function ClipLine({ children, delay }: { children: React.ReactNode; delay: numbe
   );
 }
 
-// Research Paper - Folded Paper Document Design
-function ResearchCard({ achievement, onClick }: { achievement: Achievement; onClick: () => void }) {
-  const [isHovered, setIsHovered] = React.useState(false);
+/** Counts up from 0 when scrolled into view. With `replay`, resets and counts again every time. */
+function CountUp({ to, suffix = '', duration = 1.6, replay = false }: { to: number; suffix?: string; duration?: number; replay?: boolean }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: !replay, margin: '-60px' });
+  const reduce = useReducedMotion();
+  const mv = useMotionValue(0);
+  const text = useTransform(mv, (v) => `${Math.round(v)}${suffix}`);
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, margin: '-100px' }}
-      transition={{ duration: 1, ease: E }}
-      onMouseEnter={() => { setIsHovered(true); sound.playHover?.(); }}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => {
-        sound.playClick?.();
-        onClick();
-      }}
-      style={{
-        position: 'relative',
-        marginBottom: '4rem',
-        cursor: 'pointer',
-        perspective: '2000px',
-      }}
-    >
-      {/* Paper document container */}
-      <motion.div
-        animate={{
-          rotateX: isHovered ? -2 : 0,
-          z: isHovered ? 20 : 0,
-        }}
-        transition={{ duration: 0.4, ease: E }}
-        style={{
-          position: 'relative',
-          background: 'linear-gradient(135deg, rgba(248,250,252,0.08) 0%, rgba(163,230,53,0.08) 100%)',
-          border: '2px solid rgba(163,230,53,0.3)',
-          padding: 'clamp(2.5rem, 5vw, 4rem)',
-          transformStyle: 'preserve-3d',
-          boxShadow: isHovered 
-            ? '0 20px 60px rgba(163,230,53,0.2), inset 0 0 60px rgba(163,230,53,0.05)'
-            : '0 10px 30px rgba(0,0,0,0.3)',
-        }}
-      >
-        {/* Folded corner effect */}
-        <motion.div
-          animate={{
-            width: isHovered ? '120px' : '80px',
-            height: isHovered ? '120px' : '80px',
-          }}
-          transition={{ duration: 0.4, ease: E }}
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            background: 'linear-gradient(135deg, transparent 50%, rgba(163,230,53,0.3) 50%)',
-            borderLeft: '2px solid rgba(163,230,53,0.4)',
-            borderBottom: '2px solid rgba(163,230,53,0.4)',
-            transformOrigin: 'top right',
-          }}
-        />
+  useEffect(() => {
+    if (!inView) {
+      if (replay) mv.set(0);
+      return;
+    }
+    if (reduce) {
+      mv.set(to);
+      return;
+    }
+    // Wait for the stamp to land before the numbers start (matters on replay too).
+    const controls = animate(mv, to, { duration, delay: replay ? 0.6 : 0, ease: [0.16, 1, 0.3, 1] });
+    return () => controls.stop();
+  }, [inView, to, reduce, mv, duration, replay]);
 
-        {/* IEEE Badge - looks like a stamp */}
-        <motion.div
-          animate={{
-            rotate: isHovered ? -2 : -8,
-            scale: isHovered ? 1.05 : 1,
-          }}
-          transition={{ duration: 0.3 }}
-          style={{
-            position: 'absolute',
-            top: '2rem',
-            left: '2rem',
-            padding: '0.8rem 1.2rem',
-            border: '3px dashed rgba(163,230,53,0.5)',
-            background: 'rgba(163,230,53,0.1)',
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '10px',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: '#A3E635',
-            fontWeight: 800,
-            transform: 'rotate(-8deg)',
-          }}
-        >
-          <Award size={14} style={{ display: 'inline', marginRight: '0.5rem' }} />
-          IEEE PUBLISHED
-        </motion.div>
-
-        {/* Content */}
-        <div style={{ position: 'relative', zIndex: 1, marginTop: '3rem' }}>
-          {/* Conference line */}
-          <div
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '11px',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: 'rgba(163,230,53,0.8)',
-              marginBottom: '1.5rem',
-            }}
-          >
-            {achievement.organizer}
-          </div>
-
-          {/* Title with paper lines effect */}
-          <div style={{ position: 'relative' }}>
-            <h2
-              style={{
-                fontFamily: "'Inter Tight', sans-serif",
-                fontWeight: 900,
-                fontSize: 'clamp(2rem, 4vw, 3.5rem)',
-                lineHeight: 1.2,
-                letterSpacing: '-0.03em',
-                color: '#F8FAFC',
-                marginBottom: '2rem',
-                textTransform: 'uppercase',
-                textShadow: isHovered ? '0 0 20px rgba(163,230,53,0.3)' : 'none',
-              }}
-            >
-              {achievement.title}
-            </h2>
-            
-            {/* Decorative lines like ruled paper */}
-            <div style={{ position: 'absolute', left: 0, right: 0, bottom: '-0.5rem', height: '2px', background: 'repeating-linear-gradient(90deg, rgba(163,230,53,0.2) 0px, rgba(163,230,53,0.2) 10px, transparent 10px, transparent 20px)' }} />
-          </div>
-
-          {/* Abstract excerpt */}
-          <p
-            style={{
-              fontSize: '1rem',
-              lineHeight: 1.8,
-              color: 'rgba(248,250,252,0.7)',
-              marginBottom: '2rem',
-              maxWidth: '85%',
-            }}
-          >
-            {achievement.description}
-          </p>
-
-          {/* Research metrics in grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-            {achievement.highlights.slice(0, 4).map((highlight, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.5, delay: 0.6 + i * 0.1 }}
-                style={{
-                  padding: '1rem',
-                  background: 'rgba(163,230,53,0.05)',
-                  border: '1px solid rgba(163,230,53,0.2)',
-                  fontSize: '0.85rem',
-                  color: 'rgba(248,250,252,0.7)',
-                  lineHeight: 1.5,
-                }}
-              >
-                {highlight}
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Interactive hint with page icon */}
-          <motion.div
-            animate={{ x: isHovered ? 5 : 0 }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.8rem',
-              marginTop: '2rem',
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '10px',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: '#A3E635',
-            }}
-          >
-            <ExternalLink size={14} />
-            Click to Read Full Publication
-          </motion.div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
+  return <motion.span ref={ref}>{text}</motion.span>;
 }
 
-// Winner Card - Minimalist Prestige (like Apple awards)
-function WinnerCard({ achievement, index, onClick }: { achievement: Achievement; index: number; onClick: () => void }) {
-  const [isHovered, setIsHovered] = React.useState(false);
+const MONO: React.CSSProperties = { fontFamily: "'JetBrains Mono', monospace" };
 
+/* ── Featured: IEEE paper ──────────────────────────────────────── */
+
+function ResearchSlab({ achievement, onOpen }: { achievement: Achievement; onOpen: () => void }) {
+  const reduce = useReducedMotion();
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, margin: '-80px' }}
-      transition={{ duration: 0.9, delay: index * 0.1, ease: E }}
-      onMouseEnter={() => { setIsHovered(true); sound.playHover?.(); }}
-      onMouseLeave={() => setIsHovered(false)}
+    <motion.article
+      role="button"
+      tabIndex={0}
+      aria-label={`${achievement.title}: open details`}
       onClick={() => {
         sound.playClick?.();
-        onClick();
+        onOpen();
       }}
+      onKeyDown={(e) => e.key === 'Enter' && onOpen()}
+      onMouseEnter={() => sound.playHover?.()}
+      data-cursor-text="OPEN"
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 1, ease: E }}
+      className="group relative grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center cursor-pointer"
       style={{
-        cursor: 'pointer',
-        position: 'relative',
-        gridColumn: 'span 2',
+        padding: 'clamp(2rem, 4vw, 3.5rem) 0',
+        borderTop: '1px solid rgba(255,255,255,0.12)',
+        borderBottom: '1px solid rgba(255,255,255,0.12)',
+        marginBottom: 'clamp(4rem, 8vw, 7rem)',
       }}
     >
-      <div
-        style={{
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(12,12,14,0.95) 60%)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          padding: 'clamp(3rem, 5vw, 4rem)',
-          minHeight: '420px',
-          display: 'flex',
-          flexDirection: 'column',
-          transition: 'all 0.6s cubic-bezier(0.76, 0, 0.24, 1)',
-          transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
-          boxShadow: isHovered 
-            ? '0 24px 56px rgba(0,0,0,0.5), 0 0 0 1px rgba(251,191,36,0.3)'
-            : '0 8px 16px rgba(0,0,0,0.2)',
-        }}
-      >
-        {/* Top gold line */}
-        <div
+      {/* Stage: giant IEEE + slamming stamp */}
+      <div className="relative" style={{ minHeight: 'clamp(200px, 26vw, 340px)' }}>
+        <motion.div
+          initial={{ backgroundPosition: '100% 0%' }}
+          whileInView={{ backgroundPosition: '0% 0%' }}
+          viewport={{ once: false, amount: 0.5 }}
+          transition={{ duration: reduce ? 0 : 1.8, ease: E, delay: 0.2 }}
+          aria-hidden
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '2px',
-            background: 'linear-gradient(90deg, #FFC107, rgba(251,191,36,0.3))',
-            transition: 'height 0.3s ease',
-            ...(isHovered && { height: '3px' }),
+            fontFamily: "'Inter Tight', sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(6.5rem, 19vw, 16rem)',
+            lineHeight: 0.85,
+            letterSpacing: '-0.06em',
+            color: 'transparent',
+            WebkitTextFillColor: 'transparent',
+            WebkitTextStroke: '1.5px rgba(163,230,53,0.45)',
+            backgroundImage: `linear-gradient(90deg, ${LIME} 0%, ${LIME} 46%, rgba(163,230,53,0) 54%, rgba(163,230,53,0) 100%)`,
+            backgroundSize: '220% 100%',
+            backgroundRepeat: 'no-repeat',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            userSelect: 'none',
           }}
-        />
+        >
+          IEEE
+        </motion.div>
 
-        {/* Header */}
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <div
+        {/* Stamp + shockwave share one anchor, so the ring is centred on the stamp */}
+        <div style={{ position: 'absolute', right: '2%', bottom: '4%' }}>
+          {!reduce && (
+            <motion.span
+              aria-hidden
+              initial={{ scale: 0.4, opacity: 0 }}
+              whileInView={{ scale: 2.6, opacity: [0, 0.65, 0] }}
+              viewport={{ once: false, amount: 0.5 }}
+              transition={{ duration: 0.9, delay: 1.25, ease: 'easeOut' }}
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '9px',
-                letterSpacing: '0.3em',
-                textTransform: 'uppercase',
-                color: 'rgba(251,191,36,0.6)',
-                marginBottom: '0.8rem',
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                width: 150,
+                height: 150,
+                marginLeft: -75,
+                marginTop: -75,
+                borderRadius: '50%',
+                border: `2px solid ${LIME}`,
+                pointerEvents: 'none',
               }}
-            >
-              Championship
-            </div>
-            <div
-              style={{
-                fontFamily: "'Inter Tight', sans-serif",
-                fontWeight: 900,
-                fontSize: 'clamp(2.8rem, 5vw, 4rem)',
-                lineHeight: 1,
-                letterSpacing: '-0.04em',
-                color: 'rgba(251,191,36,0.15)',
-                WebkitTextStroke: '1.5px rgba(251,191,36,0.8)',
-                marginBottom: '0.5rem',
-              }}
-            >
-              01
-            </div>
-          </div>
+            />
+          )}
 
-          <div
+          {/* The stamp */}
+          <motion.div
+            initial={reduce ? false : { scale: 2.6, rotate: -26, opacity: 0 }}
+            whileInView={{ scale: 1, rotate: -9, opacity: 1 }}
+            viewport={{ once: false, amount: 0.5 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 16, delay: 1.1 }}
             style={{
-              padding: '0.6rem 1.2rem',
-              background: 'rgba(251,191,36,0.08)',
-              border: '1px solid rgba(251,191,36,0.2)',
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '10px',
-              letterSpacing: '0.15em',
-              color: '#FFC107',
-              fontWeight: 600,
+              ...MONO,
+              position: 'relative',
+              padding: '0.9rem 1.5rem',
+              border: `3px solid ${LIME}`,
+              color: LIME,
+              fontSize: 'clamp(0.9rem, 1.6vw, 1.3rem)',
+              fontWeight: 700,
+              letterSpacing: '0.28em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap',
+              backgroundColor: 'rgba(12,12,14,0.85)',
+              boxShadow: '0 0 30px rgba(163,230,53,0.25), inset 0 0 18px rgba(163,230,53,0.12)',
             }}
           >
             {achievement.rank}
-          </div>
+          </motion.div>
         </div>
+      </div>
 
-        {/* Content */}
-        <div style={{ flex: 1 }}>
-          <h3
+      {/* Copy */}
+      <div>
+        <div
+          style={{ ...MONO, fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: LIME, marginBottom: '1.4rem' }}
+        >
+          Peer-reviewed publication &middot; {achievement.date}
+        </div>
+        <h3
+          style={{
+            fontFamily: "'Inter Tight', sans-serif",
+            fontWeight: 900,
+            textTransform: 'uppercase',
+            fontSize: 'clamp(2.2rem, 4.6vw, 4.2rem)',
+            lineHeight: 0.95,
+            letterSpacing: '-0.04em',
+            marginBottom: '0.9rem',
+          }}
+        >
+          {achievement.title}
+        </h3>
+        <div style={{ ...MONO, fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.55)', marginBottom: '1.6rem' }}>
+          {achievement.organizer}
+        </div>
+        <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'rgba(248,250,252,0.72)', maxWidth: 560 }}>
+          {achievement.description}
+        </p>
+
+        {achievement.metrics && (
+          <div className="flex flex-wrap gap-x-12 gap-y-6" style={{ marginTop: '2rem' }}>
+            {achievement.metrics.map((m) => (
+              <div key={m.label}>
+                <div
+                  style={{
+                    fontFamily: "'Inter Tight', sans-serif",
+                    fontWeight: 900,
+                    fontSize: 'clamp(2.6rem, 5vw, 4rem)',
+                    letterSpacing: '-0.04em',
+                    lineHeight: 1,
+                    color: '#F8FAFC',
+                  }}
+                >
+                  <CountUp to={m.value} suffix={m.suffix} replay />
+                </div>
+                <div style={{ ...MONO, marginTop: 8, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.5)' }}>
+                  {m.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div
+          className="inline-flex items-center gap-3 transition-colors group-hover:text-[#A3E635]"
+          style={{ ...MONO, marginTop: '2.2rem', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.7)' }}
+        >
+          Read the full details
+          <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+/* ── Featured: championship ────────────────────────────────────── */
+
+function WinnerSlab({ achievement, onOpen }: { achievement: Achievement; onOpen: () => void }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.article
+      role="button"
+      tabIndex={0}
+      aria-label={`${achievement.title}: open details`}
+      onClick={() => {
+        sound.playClick?.();
+        onOpen();
+      }}
+      onKeyDown={(e) => e.key === 'Enter' && onOpen()}
+      onMouseEnter={() => sound.playHover?.()}
+      data-cursor-text="OPEN"
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 1, ease: E }}
+      className="group relative grid lg:grid-cols-[1fr_1.05fr] gap-10 lg:gap-16 items-center cursor-pointer"
+      style={{
+        padding: 'clamp(2rem, 4vw, 3.5rem) 0',
+        borderBottom: '1px solid rgba(255,255,255,0.12)',
+        marginBottom: 'clamp(4rem, 8vw, 7rem)',
+      }}
+    >
+      {/* Copy first on desktop, numeral second */}
+      <div className="order-2 lg:order-1">
+        <div className="inline-flex items-center gap-3" style={{ ...MONO, fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: GOLD, marginBottom: '1.4rem' }}>
+          <Crown size={14} /> Championship win &middot; {achievement.date}
+        </div>
+        <h3
+          style={{
+            fontFamily: "'Inter Tight', sans-serif",
+            fontWeight: 900,
+            textTransform: 'uppercase',
+            fontSize: 'clamp(2.2rem, 4.6vw, 4.2rem)',
+            lineHeight: 0.95,
+            letterSpacing: '-0.04em',
+            marginBottom: '0.9rem',
+          }}
+        >
+          {achievement.title}
+        </h3>
+        <div style={{ ...MONO, fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.55)', marginBottom: '1.6rem' }}>
+          {achievement.organizer}
+        </div>
+        <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'rgba(248,250,252,0.72)', maxWidth: 560 }}>
+          {achievement.description}
+        </p>
+        <div
+          className="inline-flex items-center gap-3 transition-colors group-hover:text-[#FBBF24]"
+          style={{ ...MONO, marginTop: '2.2rem', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.7)' }}
+        >
+          Read the full details
+          <ArrowUpRight size={14} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+        </div>
+      </div>
+
+      {/* Giant gold 1ST with a one-shot shimmer */}
+      <div className="order-1 lg:order-2 relative flex justify-center lg:justify-end" aria-hidden>
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            inset: '10% 5%',
+            background: 'radial-gradient(ellipse, rgba(251,191,36,0.18), transparent 65%)',
+            filter: 'blur(50px)',
+            pointerEvents: 'none',
+          }}
+        />
+        <motion.div
+          initial={{ backgroundPosition: '100% 0%' }}
+          whileInView={{ backgroundPosition: '0% 0%' }}
+          whileHover={{ backgroundPosition: '100% 0%' }}
+          viewport={{ once: false, amount: 0.5 }}
+          transition={{ duration: reduce ? 0 : 1.6, ease: E, delay: 0.2 }}
+          style={{
+            position: 'relative',
+            fontFamily: "'Inter Tight', sans-serif",
+            fontWeight: 900,
+            fontSize: 'clamp(8rem, 24vw, 21rem)',
+            lineHeight: 0.8,
+            letterSpacing: '-0.07em',
+            color: 'transparent',
+            WebkitTextFillColor: 'transparent',
+            WebkitTextStroke: '1.5px rgba(251,191,36,0.5)',
+            backgroundImage:
+              'linear-gradient(100deg, #B45309 0%, #FBBF24 28%, #FFF4C2 42%, #FBBF24 56%, rgba(251,191,36,0) 56.5%, rgba(251,191,36,0) 100%)',
+            backgroundSize: '240% 100%',
+            backgroundRepeat: 'no-repeat',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            userSelect: 'none',
+          }}
+        >
+          1ST
+        </motion.div>
+      </div>
+    </motion.article>
+  );
+}
+
+/* ── Ledger ────────────────────────────────────────────────────── */
+
+function Pips({ lit }: { lit: number }) {
+  return (
+    <span className="inline-flex gap-1.5" aria-hidden>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <motion.span
+          key={i}
+          initial={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+          whileInView={{ backgroundColor: i < lit ? LIME : 'rgba(255,255,255,0.1)' }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.25 + i * 0.09 }}
+          style={{ width: 22, height: 5, display: 'block' }}
+        />
+      ))}
+    </span>
+  );
+}
+
+function LedgerRow({
+  achievement,
+  index,
+  onOpen,
+  onHover,
+}: {
+  achievement: Achievement;
+  index: number;
+  onOpen: () => void;
+  onHover: (a: Achievement | null) => void;
+}) {
+  return (
+    <motion.button
+      type="button"
+      onClick={() => {
+        sound.playClick?.();
+        onOpen();
+      }}
+      onPointerEnter={() => {
+        onHover(achievement);
+        sound.playHover?.();
+      }}
+      onPointerLeave={() => onHover(null)}
+      onFocus={() => onHover(achievement)}
+      onBlur={() => onHover(null)}
+      data-cursor-text="OPEN"
+      initial={{ opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.7, ease: E }}
+      className="group relative w-full text-left grid items-center gap-x-6 gap-y-3 grid-cols-[auto_1fr] md:grid-cols-[48px_1fr_230px_42px]"
+      style={{ padding: 'clamp(1.2rem, 2.4vw, 1.9rem) clamp(0.5rem, 1.2vw, 1rem)', borderTop: '1px solid rgba(255,255,255,0.1)' }}
+    >
+      {/* Lime bar that grows on hover */}
+      <span
+        aria-hidden
+        className="absolute left-0 top-0 h-full w-[3px] origin-top scale-y-0 group-hover:scale-y-100 transition-transform duration-500"
+        style={{ backgroundColor: LIME, transitionTimingFunction: 'cubic-bezier(0.76,0,0.24,1)' }}
+      />
+
+      <span style={{ ...MONO, fontSize: 11, letterSpacing: '0.2em', color: 'rgba(248,250,252,0.35)' }}>
+        {String(index + 1).padStart(2, '0')}
+      </span>
+
+      <span className="block min-w-0 transition-transform duration-500 group-hover:translate-x-3" style={{ transitionTimingFunction: 'cubic-bezier(0.76,0,0.24,1)' }}>
+        <span
+          className="block"
+          style={{
+            fontFamily: "'Inter Tight', sans-serif",
+            fontWeight: 900,
+            textTransform: 'uppercase',
+            fontSize: 'clamp(1.3rem, 2.7vw, 2.3rem)',
+            lineHeight: 1,
+            letterSpacing: '-0.035em',
+            color: '#F8FAFC',
+            overflowWrap: 'anywhere',
+          }}
+        >
+          {achievement.title}
+        </span>
+        <span className="block" style={{ ...MONO, marginTop: 10, fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.45)' }}>
+          {achievement.organizer} &middot; {achievement.date}
+        </span>
+      </span>
+
+      <span className="col-span-2 md:col-span-1 flex md:flex-col md:items-start items-center justify-between gap-3">
+        <span style={{ ...MONO, fontSize: 11, letterSpacing: '0.22em', color: LIME }}>{achievement.rank}</span>
+        <Pips lit={TIER_METER[achievement.tier]} />
+      </span>
+
+      <span
+        className="hidden md:flex items-center justify-center transition-all duration-500 group-hover:rotate-45 group-hover:bg-[#A3E635] group-hover:text-[#0C0C0E] group-hover:border-[#A3E635]"
+        style={{ width: 42, height: 42, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.25)', color: '#F8FAFC' }}
+      >
+        <ArrowUpRight size={16} />
+      </span>
+    </motion.button>
+  );
+}
+
+function LedgerGroup({
+  numeral,
+  label,
+  items,
+  start,
+  onOpen,
+  onHover,
+}: {
+  numeral: string;
+  label: string;
+  items: Achievement[];
+  start: number;
+  onOpen: (a: Achievement) => void;
+  onHover: (a: Achievement | null) => void;
+}) {
+  if (items.length === 0) return null;
+  return (
+    <div className="grid lg:grid-cols-[260px_1fr] gap-x-10 gap-y-6" style={{ marginBottom: 'clamp(3.5rem, 6vw, 6rem)' }}>
+      {/* Sticky tier label */}
+      <div className="lg:self-start lg:sticky" style={{ top: '7rem' }}>
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: E }}
+        >
+          <div
+            aria-hidden
             style={{
               fontFamily: "'Inter Tight', sans-serif",
               fontWeight: 900,
-              fontSize: 'clamp(1.8rem, 2.8vw, 2.5rem)',
-              lineHeight: 1.2,
-              letterSpacing: '-0.025em',
-              color: '#F8FAFC',
-              marginBottom: '1.5rem',
+              fontSize: 'clamp(4.5rem, 10vw, 8.5rem)',
+              lineHeight: 0.85,
+              letterSpacing: '-0.06em',
+              color: 'transparent',
+              WebkitTextStroke: `1.5px ${LIME}`,
             }}
           >
-            {achievement.title}
-          </h3>
-
-          <div className="flex items-center gap-3 mb-4" style={{ paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '11px',
-                color: 'rgba(248,250,252,0.5)',
-              }}
-            >
-              {achievement.organizer}
-            </span>
-            <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '11px',
-                color: 'rgba(248,250,252,0.4)',
-              }}
-            >
-              {achievement.date}
-            </span>
+            {numeral}
           </div>
-
-          <p
-            style={{
-              fontSize: '1rem',
-              lineHeight: 1.7,
-              color: 'rgba(248,250,252,0.6)',
-              marginBottom: '2rem',
-            }}
-          >
-            {achievement.description}
-          </p>
-
-          {achievement.team && (
-            <div className="flex items-center gap-2 mb-4">
-              <Users size={13} style={{ color: 'rgba(251,191,36,0.7)' }} />
-              <span
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: '10px',
-                  letterSpacing: '0.08em',
-                  color: 'rgba(248,250,252,0.45)',
-                }}
-              >
-                Team Achievement
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <motion.div
-          animate={{ x: isHovered ? 4 : 0 }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.6rem',
-            paddingTop: '2rem',
-            borderTop: '1px solid rgba(255,255,255,0.06)',
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '10px',
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: 'rgba(251,191,36,0.8)',
-          }}
-        >
-          View Details
-          <ArrowUpRight size={14} />
+          <div style={{ ...MONO, marginTop: 14, fontSize: 10, letterSpacing: '0.26em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.85)' }}>
+            {label}
+          </div>
+          <div style={{ ...MONO, marginTop: 6, fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.4)' }}>
+            {String(items.length).padStart(2, '0')} {items.length === 1 ? 'event' : 'events'}
+          </div>
         </motion.div>
       </div>
+
+      <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        {items.map((a, i) => (
+          <LedgerRow key={a.id} achievement={a} index={start + i} onOpen={() => onOpen(a)} onHover={onHover} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Preview card that trails the cursor while a ledger row is hovered. */
+function CursorPreview({ item, x, y }: { item: Achievement | null; x: MotionValue<number>; y: MotionValue<number> }) {
+  return (
+    <motion.div
+      aria-hidden
+      animate={{ opacity: item ? 1 : 0, scale: item ? 1 : 0.94 }}
+      transition={{ duration: 0.2 }}
+      className="hidden md:block"
+      style={{
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        x,
+        y,
+        width: 340,
+        zIndex: 60,
+        pointerEvents: 'none',
+        padding: '1.2rem 1.3rem',
+        backgroundColor: 'rgba(12,12,14,0.96)',
+        border: '1px solid rgba(163,230,53,0.4)',
+        boxShadow: '0 24px 60px rgba(0,0,0,0.6)',
+        backdropFilter: 'blur(10px)',
+      }}
+    >
+      {item && (
+        <>
+          <div style={{ ...MONO, fontSize: 9, letterSpacing: '0.24em', textTransform: 'uppercase', color: LIME, marginBottom: 10 }}>
+            {item.rank} &middot; {item.organizer}
+          </div>
+          <p style={{ fontSize: 13, lineHeight: 1.6, color: 'rgba(248,250,252,0.8)' }}>
+            {item.description.length > 170 ? `${item.description.slice(0, 167).trimEnd()}…` : item.description}
+          </p>
+          {item.technologies && item.technologies.length > 0 && (
+            <div className="flex flex-wrap gap-1.5" style={{ marginTop: 12 }}>
+              {item.technologies.slice(0, 5).map((t) => (
+                <span key={t} style={{ ...MONO, fontSize: 9, letterSpacing: '0.1em', padding: '0.3rem 0.55rem', border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(248,250,252,0.65)' }}>
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+          <div style={{ ...MONO, marginTop: 12, fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.4)' }}>
+            Click for details
+          </div>
+        </>
+      )}
     </motion.div>
   );
 }
 
-// Regular Achievement Card (with tier styling)
-const AchievementCard = React.memo(({ achievement, index, onClick }: { achievement: Achievement; index: number; onClick: () => void }) => {
-  const tierConfig = {
-    top10: {
-      borderColor: 'rgba(163,230,53,0.35)',
-      bgGradient: 'linear-gradient(135deg, rgba(163,230,53,0.08) 0%, rgba(12,12,14,0.9) 60%)',
-      iconBg: 'rgba(163,230,53,0.15)',
-      iconBorder: 'rgba(163,230,53,0.35)',
-      badgeBorder: 'rgba(163,230,53,0.35)',
-      badgeBg: 'rgba(163,230,53,0.1)',
-      badgeColor: '#A3E635',
-      icon: <Medal size={22} style={{ color: '#A3E635' }} />,
-    },
-    top20: {
-      borderColor: 'rgba(163,230,53,0.25)',
-      bgGradient: 'linear-gradient(135deg, rgba(163,230,53,0.05) 0%, rgba(12,12,14,0.9) 60%)',
-      iconBg: 'rgba(163,230,53,0.1)',
-      iconBorder: 'rgba(163,230,53,0.25)',
-      badgeBorder: 'rgba(163,230,53,0.25)',
-      badgeBg: 'rgba(163,230,53,0.08)',
-      badgeColor: 'rgba(163,230,53,0.9)',
-      icon: <Star size={20} style={{ color: '#A3E635' }} />,
-    },
-    top25: {
-      borderColor: 'rgba(255,255,255,0.15)',
-      bgGradient: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(12,12,14,0.85) 60%)',
-      iconBg: 'rgba(163,230,53,0.08)',
-      iconBorder: 'rgba(255,255,255,0.15)',
-      badgeBorder: 'rgba(255,255,255,0.2)',
-      badgeBg: 'rgba(255,255,255,0.05)',
-      badgeColor: 'rgba(248,250,252,0.7)',
-      icon: <Trophy size={19} style={{ color: 'rgba(163,230,53,0.8)' }} />,
-    },
-    participation: {
-      borderColor: 'rgba(255,255,255,0.1)',
-      bgGradient: 'linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(12,12,14,0.8) 60%)',
-      iconBg: 'rgba(255,255,255,0.04)',
-      iconBorder: 'rgba(255,255,255,0.1)',
-      badgeBorder: 'rgba(255,255,255,0.15)',
-      badgeBg: 'rgba(255,255,255,0.03)',
-      badgeColor: 'rgba(248,250,252,0.5)',
-      icon: <Trophy size={18} style={{ color: 'rgba(163,230,53,0.6)' }} />,
-    },
+/* ── Section ───────────────────────────────────────────────────── */
+
+export default function Achievements() {
+  const [selected, setSelected] = useState<Achievement | null>(null);
+  const [hovered, setHovered] = useState<Achievement | null>(null);
+
+  // Cursor-following preview position (spring-smoothed, flips near screen edges).
+  const px = useMotionValue(0);
+  const py = useMotionValue(0);
+  const sx = useSpring(px, { stiffness: 260, damping: 28, mass: 0.5 });
+  const sy = useSpring(py, { stiffness: 260, damping: 28, mass: 0.5 });
+  const onMove = (e: React.PointerEvent) => {
+    if (e.pointerType === 'touch') return;
+    const W = 340;
+    const H = 230;
+    let nx = e.clientX + 26;
+    let ny = e.clientY + 22;
+    if (nx + W > window.innerWidth - 12) nx = e.clientX - W - 26;
+    if (ny + H > window.innerHeight - 12) ny = Math.max(12, e.clientY - H - 22);
+    px.set(nx);
+    py.set(ny);
   };
 
-  const config = tierConfig[achievement.tier as keyof typeof tierConfig];
+  const publications = achievements.filter((a) => a.type === 'publication').length;
+  const topTen = firstPlace.length + top10.length;
+  const rest = [...top25, ...participation];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, margin: '-80px' }}
-      transition={{ duration: 0.9, delay: index * 0.08, ease: E }}
-      onClick={() => {
-        sound.playClick?.();
-        onClick();
-      }}
-      whileHover={{ y: -6, scale: 1.02 }}
+    <section
+      id="achievements"
       style={{
-        border: `2px solid ${config.borderColor}`,
-        background: config.bgGradient,
-        padding: 'clamp(2rem, 3.5vw, 3rem)',
-        cursor: 'pointer',
         position: 'relative',
+        backgroundColor: '#0C0C0E',
+        color: '#F8FAFC',
+        padding: 'clamp(5rem, 10vw, 10rem) 0',
         overflow: 'hidden',
-        minHeight: '380px',
-        display: 'flex',
-        flexDirection: 'column',
       }}
     >
-      {/* Icon + Rank badge */}
-      <div className="flex items-center justify-between mb-4">
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: 8,
-            background: config.iconBg,
-            border: `1px solid ${config.iconBorder}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {config.icon}
-        </div>
-
-        <div
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '9px',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: config.badgeColor,
-            padding: '0.5rem 1rem',
-            border: `1px solid ${config.badgeBorder}`,
-            background: config.badgeBg,
-          }}
-        >
-          {achievement.rank}
-        </div>
-      </div>
-
-      {/* Title */}
-      <h3
-        style={{
-          fontFamily: "'Inter Tight', sans-serif",
-          fontWeight: 900,
-          fontSize: 'clamp(1.4rem, 2vw, 1.8rem)',
-          lineHeight: 1.2,
-          letterSpacing: '-0.02em',
-          color: '#F8FAFC',
-          marginBottom: '1rem',
-          textTransform: 'uppercase',
-        }}
-      >
-        {achievement.title}
-      </h3>
-
-      {/* Organizer + Date */}
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        <span
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '10px',
-            letterSpacing: '0.05em',
-            color: 'rgba(248,250,252,0.5)',
-          }}
-        >
-          {achievement.organizer}
-        </span>
-        <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
-        <span
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: '10px',
-            color: 'rgba(248,250,252,0.4)',
-          }}
-        >
-          {achievement.date}
-        </span>
-      </div>
-
-      {/* Description */}
-      <p
-        style={{
-          fontSize: '0.9rem',
-          lineHeight: 1.7,
-          color: 'rgba(248,250,252,0.6)',
-          marginBottom: '1.5rem',
-          flex: 1,
-        }}
-      >
-        {achievement.description}
-      </p>
-
-      {/* Team indicator */}
-      {achievement.team && (
-        <div className="flex items-center gap-2 mb-4">
-          <Users size={13} style={{ color: 'rgba(163,230,53,0.7)' }} />
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '9px',
-              letterSpacing: '0.08em',
-              color: 'rgba(248,250,252,0.45)',
-            }}
-          >
-            Team Project
-          </span>
-        </div>
-      )}
-
-      {/* Click hint */}
+      {/* Ambient glow */}
       <div
+        aria-hidden
         style={{
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: '9px',
-          letterSpacing: '0.15em',
-          textTransform: 'uppercase',
-          color: config.badgeColor,
+          position: 'absolute',
+          top: '15%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '70%',
+          height: '60%',
+          background: 'radial-gradient(ellipse, rgba(163,230,53,0.06), transparent 70%)',
+          filter: 'blur(100px)',
+          pointerEvents: 'none',
         }}
-      >
-        View Details →
-      </div>
-    </motion.div>
-  );
-});
+      />
 
-// Modal (reuse from previous - same component)
+      <div className="px-6 sm:px-10 lg:px-16 max-w-[1500px] mx-auto">
+        {/* HEADER + stat wall */}
+        <div className="mb-20 md:mb-28 flex flex-col lg:flex-row lg:items-end justify-between gap-12">
+          <div>
+            <ClipLine delay={0.1}>
+              <div
+                style={{
+                  ...MONO,
+                  fontSize: 10,
+                  letterSpacing: '0.3em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.4)',
+                  marginBottom: '2rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                }}
+              >
+                <div style={{ width: 40, height: 1, background: LIME }} />
+                <span>Competitive Track Record</span>
+              </div>
+            </ClipLine>
+
+            <div style={{ fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.85, letterSpacing: '-0.045em', fontFamily: "'Inter Tight', sans-serif" }}>
+              <ClipLine delay={0.2}>
+                <div style={{ fontSize: 'clamp(3rem, 8vw, 7rem)', color: '#F8FAFC' }}>Achievements</div>
+              </ClipLine>
+              <ClipLine delay={0.35}>
+                <div style={{ fontSize: 'clamp(3rem, 8vw, 7rem)', color: 'transparent', WebkitTextStroke: `2px ${LIME}`, marginTop: '-0.5rem' }}>
+                  &amp; Recognition
+                </div>
+              </ClipLine>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.5, ease: E }}
+              style={{ marginTop: 'clamp(1.8rem, 3vw, 2.6rem)', fontSize: 'clamp(0.95rem, 1.2vw, 1.05rem)', color: 'rgba(248,250,252,0.55)', lineHeight: 1.8, maxWidth: '40rem' }}
+            >
+              From a peer-reviewed IEEE publication to a championship win and top finishes across hackathons with Microsoft, Google DeepMind and leading institutions.
+            </motion.p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.55, ease: E }}
+            className="flex gap-10 sm:gap-14"
+          >
+            {[
+              { n: achievements.length, l: 'Events entered' },
+              { n: topTen, l: 'Top-10 or better' },
+              { n: publications, l: 'IEEE paper' },
+            ].map((s) => (
+              <div key={s.l}>
+                <div
+                  style={{
+                    fontFamily: "'Inter Tight', sans-serif",
+                    fontWeight: 900,
+                    fontSize: 'clamp(2.8rem, 5vw, 4.4rem)',
+                    letterSpacing: '-0.05em',
+                    lineHeight: 1,
+                    color: '#F8FAFC',
+                  }}
+                >
+                  <CountUp to={s.n} />
+                </div>
+                <div style={{ ...MONO, marginTop: 10, fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)' }}>
+                  {s.l}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* FEATURED */}
+        <ResearchSlab achievement={researchPaper} onOpen={() => setSelected(researchPaper)} />
+        {firstPlace.map((a) => (
+          <WinnerSlab key={a.id} achievement={a} onOpen={() => setSelected(a)} />
+        ))}
+
+        {/* LEDGER */}
+        <div onPointerMove={onMove}>
+          <LedgerGroup numeral="10" label="Top 10 finishes" items={top10} start={0} onOpen={setSelected} onHover={setHovered} />
+          <LedgerGroup numeral="20" label="Top 20 finishes" items={top20} start={top10.length} onOpen={setSelected} onHover={setHovered} />
+          <LedgerGroup numeral="25+" label="Also competed" items={rest} start={top10.length + top20.length} onOpen={setSelected} onHover={setHovered} />
+        </div>
+      </div>
+
+      <CursorPreview item={hovered} x={sx} y={sy} />
+
+      {/* MODAL */}
+      <AnimatePresence>
+        {selected && <AchievementModal achievement={selected} onClose={() => setSelected(null)} />}
+      </AnimatePresence>
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(163,230,53,0.3); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(163,230,53,0.5); }
+      `}</style>
+    </section>
+  );
+}
+
+
 function AchievementModal({ achievement, onClose }: { achievement: Achievement; onClose: () => void }) {
   const isResearch = achievement.tier === 'research';
   const isWinner = achievement.tier === 'winner';
@@ -1159,194 +1012,5 @@ function AchievementModal({ achievement, onClose }: { achievement: Achievement; 
         )}
       </motion.div>
     </motion.div>
-  );
-}
-
-export default function Achievements() {
-  const [selected, setSelected] = useState<Achievement | null>(null);
-
-  return (
-    <section
-      id="achievements"
-      style={{
-        position: 'relative',
-        backgroundColor: '#0C0C0E',
-        color: '#F8FAFC',
-        padding: 'clamp(5rem, 10vw, 10rem) 0',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Background gradient */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '15%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '70%',
-          height: '60%',
-          background: 'radial-gradient(ellipse, rgba(163,230,53,0.06), transparent 70%)',
-          filter: 'blur(100px)',
-          pointerEvents: 'none',
-        }}
-      />
-
-      <div className="px-6 sm:px-10 lg:px-16 max-w-[1700px] mx-auto">
-        {/* HEADER */}
-        <div className="mb-24">
-          <ClipLine delay={0.1}>
-            <div
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '10px',
-                letterSpacing: '0.3em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.28)',
-                marginBottom: '2rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-              }}
-            >
-              <div style={{ width: 40, height: 1, background: '#A3E635' }} />
-              <span>Competitive Track Record</span>
-            </div>
-          </ClipLine>
-
-          <div style={{ fontWeight: 900, textTransform: 'uppercase', lineHeight: 0.85, letterSpacing: '-0.045em', fontFamily: "'Inter Tight', sans-serif" }}>
-            <ClipLine delay={0.2}>
-              <div style={{ fontSize: 'clamp(3rem, 8vw, 7rem)', color: '#F8FAFC' }}>
-                Achievements
-              </div>
-            </ClipLine>
-            <ClipLine delay={0.35}>
-              <div style={{ fontSize: 'clamp(3rem, 8vw, 7rem)', color: 'transparent', WebkitTextStroke: '2px #A3E635', marginTop: '-0.5rem' }}>
-                & Recognition
-              </div>
-            </ClipLine>
-          </div>
-
-          <div style={{ marginTop: 'clamp(2rem, 3.5vw, 3rem)', overflow: 'hidden' }}>
-            <motion.div
-              initial={{ y: '110%' }}
-              animate={{ y: '0%' }}
-              transition={{ duration: 0.9, delay: 0.5, ease: E }}
-              className="flex items-start gap-6"
-            >
-              <motion.div
-                style={{ height: 1, backgroundColor: '#A3E635', flexShrink: 0 }}
-                initial={{ width: 0 }}
-                animate={{ width: 50 }}
-                transition={{ duration: 0.7, delay: 0.75, ease: E }}
-              />
-              <p style={{ fontSize: 'clamp(0.95rem, 1.2vw, 1.05rem)', color: 'rgba(248,250,252,0.5)', lineHeight: 1.8, maxWidth: '52rem' }}>
-                From peer-reviewed IEEE publications to championship wins and top finishes across hackathons with Microsoft, Google DeepMind, and leading institutions.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* RESEARCH PAPER HERO */}
-        <ResearchCard
-          achievement={researchPaper}
-          onClick={() => setSelected(researchPaper)}
-        />
-
-        {/* 1ST PLACE WINNER */}
-        <div className="mb-16">
-          <h3 style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', color: '#F8FAFC', marginBottom: '2rem', textTransform: 'uppercase' }}>
-            Championship Win
-          </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {firstPlace.map((achievement, index) => (
-              <WinnerCard
-                key={achievement.id}
-                achievement={achievement}
-                index={index}
-                onClick={() => setSelected(achievement)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* TOP 10 */}
-        {top10.length > 0 && (
-          <div className="mb-16">
-            <h3 style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', color: '#F8FAFC', marginBottom: '2rem', textTransform: 'uppercase' }}>
-              TOP 10 Finishes
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {top10.map((achievement, index) => (
-                <AchievementCard
-                  key={achievement.id}
-                  achievement={achievement}
-                  index={index}
-                  onClick={() => setSelected(achievement)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* TOP 20 */}
-        {top20.length > 0 && (
-          <div className="mb-16">
-            <h3 style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', color: '#F8FAFC', marginBottom: '2rem', textTransform: 'uppercase' }}>
-              TOP 20 Finishes
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {top20.map((achievement, index) => (
-                <AchievementCard
-                  key={achievement.id}
-                  achievement={achievement}
-                  index={index}
-                  onClick={() => setSelected(achievement)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* TOP 25 & PARTICIPATION */}
-        {(top25.length > 0 || participation.length > 0) && (
-          <div>
-            <h3 style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', color: '#F8FAFC', marginBottom: '2rem', textTransform: 'uppercase' }}>
-              Additional Highlights & Participation
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...top25, ...participation].map((achievement, index) => (
-                <AchievementCard
-                  key={achievement.id}
-                  achievement={achievement}
-                  index={index}
-                  onClick={() => setSelected(achievement)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* MODAL */}
-      <AnimatePresence>
-        {selected && <AchievementModal achievement={selected} onClose={() => setSelected(null)} />}
-      </AnimatePresence>
-
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255,255,255,0.02);
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(163,230,53,0.3);
-          border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(163,230,53,0.5);
-        }
-      `}</style>
-    </section>
   );
 }

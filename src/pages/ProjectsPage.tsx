@@ -12,7 +12,8 @@ const ProjectsPage = () => {
     <div className="flex flex-col min-h-screen bg-dark">
       <CustomCursor />
       <Navbar />
-      <main>
+      {/* Opaque and above the footer, so the footer's curtain reveal works */}
+      <main style={{ position: 'relative', zIndex: 1, backgroundColor: '#0C0C0E' }}>
         <Projects />
       </main>
       <Footer />

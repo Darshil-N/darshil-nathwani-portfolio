@@ -28,4 +28,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: http://localhost:8080/sitemap.xml
+Sitemap: https://darshilnathwani.netlify.app/sitemap.xml

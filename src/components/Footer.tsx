@@ -1,33 +1,92 @@
 /**
- * Footer.tsx — Minimal end statement
+ * Footer.tsx — Curtain reveal
  *
- * SIGNATURE BOLDNESS: Massive name watermark with clean link grid
- * Inspired by: Paul Kalkbrenner's minimal footer + Dan Mall's editorial end
- * 
- * UNIQUE ELEMENTS:
- * - Oversized "DARSHIL" watermark background
- * - Clean horizontal link layout
- * - Green accent line divider
- * - Back to top with smooth animation
+ * SIGNATURE: the footer sits underneath the page. When you reach the end the
+ * last section slides up like a curtain and uncovers it. A full-width
+ * DARSHIL NATHWANI wordmark fills lime as the curtain lifts, and every letter
+ * lights up on hover. If the footer is taller than the screen (phones) the
+ * curtain is switched off and it behaves like a normal footer.
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, ArrowUp, Download } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { ArrowUp, ArrowUpRight, Download } from 'lucide-react';
 import VisitorCounter from './VisitorCounter';
 import { sound } from '../lib/sound';
+import { useISTClock } from '../hooks/useISTClock';
+
+const LIME = '#A3E635';
+const MONO: React.CSSProperties = { fontFamily: "'JetBrains Mono', monospace" };
+const RESUME_URL = '/resume/Minimalist White and Grey Professional Resume.pdf';
+
+const NAV = [
+  { label: 'Work', id: 'work' },
+  { label: 'Experience', id: 'experience' },
+  { label: 'Honors', id: 'achievements' },
+  { label: 'Skills', id: 'skills' },
+  { label: 'Contact', id: 'contact' },
+];
+
+const CONNECT = [
+  { label: 'GitHub', href: 'https://github.com/Darshil-N' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/darshil-nathwani-bba698307' },
+  { label: 'Email', href: 'mailto:darshilnathwani@gmail.com' },
+];
+
+const NAME = 'DARSHIL NATHWANI';
+
+function FooterLink({ children, onClick, href, external }: { children: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }) {
+  const inner = (
+    <span className="group relative inline-flex items-center gap-2" style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700, fontSize: 'clamp(1.05rem, 1.5vw, 1.35rem)', letterSpacing: '-0.015em', color: 'rgba(248,250,252,0.78)' }}>
+      <span className="transition-colors duration-300 group-hover:text-[#A3E635]">{children}</span>
+      {external && <ArrowUpRight size={15} className="opacity-0 -translate-x-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 text-[#A3E635]" />}
+      <span aria-hidden className="absolute left-0 -bottom-0.5 h-px w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" style={{ backgroundColor: LIME }} />
+    </span>
+  );
+  const common = { onMouseEnter: () => sound.playHover?.(), className: 'inline-flex py-1.5 text-left' };
+  return href ? (
+    <a href={href} target={external ? '_blank' : undefined} rel="noopener noreferrer" {...common}>
+      {inner}
+    </a>
+  ) : (
+    <button type="button" onClick={onClick} {...common}>
+      {inner}
+    </button>
+  );
+}
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const time = useISTClock();
+  const reduce = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+  const [curtain, setCurtain] = useState(false);
+
+  // The curtain only works when the whole footer fits on screen.
+  useEffect(() => {
+    const check = () => {
+      const h = ref.current?.offsetHeight ?? 0;
+      setCurtain(window.innerWidth >= 768 && h > 0 && h <= window.innerHeight);
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    if (ref.current) ro.observe(ref.current);
+    window.addEventListener('resize', check);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', check);
+    };
+  }, []);
+
+  // The wordmark fills as the footer is uncovered.
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] });
+  const fillPos = useTransform(scrollYProgress, [0.1, 0.95], ['100% 0%', '0% 0%']);
 
   const scrollToSection = (id: string) => {
     sound.playClick?.();
     const el = document.getElementById(id);
-    if (el) {
-      window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
-    }
+    if (el) window.scrollTo({ top: id === 'home' ? 0 : el.offsetTop - 80, behavior: 'smooth' });
   };
-
   const scrollToTop = () => {
     sound.playClick?.();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -35,257 +94,155 @@ export default function Footer() {
 
   return (
     <footer
+      ref={ref}
       style={{
-        position: 'relative',
+        ...(curtain ? { position: 'sticky', bottom: 0, zIndex: 0 } : { position: 'relative' }),
         backgroundColor: '#0C0C0E',
-        borderTop: '1px solid rgba(255,255,255,0.06)',
+        borderTop: '1px solid rgba(163,230,53,0.25)',
         overflow: 'hidden',
       }}
     >
-      {/* Massive background name */}
       <div
+        aria-hidden
         style={{
           position: 'absolute',
-          top: '50%',
           left: '50%',
-          transform: 'translate(-50%, -50%)',
-          fontFamily: "'Inter Tight', sans-serif",
-          fontWeight: 900,
-          fontSize: 'clamp(8rem, 20vw, 18rem)',
-          lineHeight: 1,
-          color: 'transparent',
-          WebkitTextStroke: '1px rgba(163,230,53,0.02)',
-          whiteSpace: 'nowrap',
-          userSelect: 'none',
+          bottom: '-20%',
+          width: '80%',
+          height: '60%',
+          transform: 'translateX(-50%)',
+          background: 'radial-gradient(ellipse, rgba(163,230,53,0.09), transparent 65%)',
           pointerEvents: 'none',
         }}
-      >
-        DARSHIL
-      </div>
+      />
 
-      {/* Content */}
-      <div
-        className="px-6 sm:px-10 lg:px-16 max-w-[1500px] mx-auto relative z-10"
-        style={{ padding: 'clamp(4rem, 8vw, 6rem) clamp(1.5rem, 4vw, 4rem)' }}
-      >
-        {/* Top: Name + Back to top */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-8 mb-12">
-          {/* Name */}
+      <div className="relative px-6 sm:px-10 lg:px-16 max-w-[1700px] mx-auto" style={{ paddingTop: 'clamp(3rem, 6vw, 5rem)' }}>
+        {/* Top: pitch + back to top */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8" style={{ marginBottom: 'clamp(2.5rem, 5vw, 4rem)' }}>
           <div>
-            <h3
-              style={{
-                fontFamily: "'Inter Tight', sans-serif",
-                fontWeight: 900,
-                fontSize: 'clamp(2rem, 4.5vw, 3.5rem)',
-                lineHeight: 1,
-                letterSpacing: '-0.03em',
-                color: '#F8FAFC',
-                marginBottom: '0.8rem',
-              }}
+            <div style={{ ...MONO, fontSize: 10, letterSpacing: '0.26em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.4)', marginBottom: '1rem' }}>
+              <span style={{ color: LIME }}>◈</span>&nbsp;&nbsp;Have an idea?
+            </div>
+            <button
+              type="button"
+              onClick={() => scrollToSection('contact')}
+              onMouseEnter={() => sound.playHover?.()}
+              data-cursor-text="TALK"
+              className="group text-left"
+              style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, textTransform: 'uppercase', fontSize: 'clamp(1.8rem, 4vw, 3.4rem)', lineHeight: 0.95, letterSpacing: '-0.04em', color: '#F8FAFC' }}
             >
-              Darshil Nathwani
-            </h3>
-            <p
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '11px',
-                letterSpacing: '0.08em',
-                color: 'rgba(248,250,252,0.4)',
-              }}
-            >
-              AI/ML Engineer · Full-Stack Developer · Research Author
-            </p>
+              Let&apos;s build it{' '}
+              <span className="inline-flex align-middle transition-all duration-500 group-hover:translate-x-2 group-hover:-translate-y-1 group-hover:text-[#A3E635]">
+                <ArrowUpRight size={40} />
+              </span>
+            </button>
           </div>
 
-          {/* Back to top */}
           <motion.button
+            type="button"
             onClick={scrollToTop}
             onMouseEnter={() => sound.playHover?.()}
-            whileHover={{ y: -4 }}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.8rem 1.5rem',
-              border: '1px solid rgba(255,255,255,0.1)',
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '9px',
-              letterSpacing: '0.16em',
-              textTransform: 'uppercase',
-              color: 'rgba(248,250,252,0.5)',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-            }}
-            className="hover:!border-[#A3E635] hover:!text-[#F8FAFC]"
+            whileHover={{ y: -6 }}
+            aria-label="Back to top"
+            data-cursor-text="TOP"
+            className="group flex items-center justify-center self-start md:self-auto flex-shrink-0 transition-colors duration-300 hover:bg-[#A3E635] hover:border-[#A3E635]"
+            style={{ width: 72, height: 72, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.3)', color: '#F8FAFC' }}
           >
-            <ArrowUp size={12} />
-            <span>Top</span>
+            <ArrowUp size={26} className="transition-colors duration-300 group-hover:text-[#0C0C0E]" />
           </motion.button>
         </div>
 
-        {/* Green divider line */}
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: '100%' }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-          style={{
-            height: 1,
-            backgroundColor: 'rgba(163,230,53,0.2)',
-            marginBottom: '3rem',
-          }}
-        />
-
-        {/* Links Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-          {/* Navigate */}
-          <div>
-            <p
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '9px',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: 'rgba(248,250,252,0.3)',
-                marginBottom: '1.5rem',
-              }}
-            >
-              Navigate
+        {/* Links */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-10" style={{ paddingTop: 'clamp(1.8rem, 3vw, 2.6rem)', borderTop: '1px solid rgba(255,255,255,0.1)', marginBottom: 'clamp(2rem, 4vw, 3.5rem)' }}>
+          <div className="col-span-2 md:col-span-1">
+            <p style={{ ...MONO, fontSize: 9, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.35)', marginBottom: '1rem' }}>Based in</p>
+            <p style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700, fontSize: 'clamp(1.05rem, 1.5vw, 1.35rem)', color: 'rgba(248,250,252,0.78)', lineHeight: 1.4 }}>
+              Bengaluru, India
             </p>
-            <div className="space-y-2">
-              {[
-                { label: 'Work', id: 'work' },
-                { label: 'Experience', id: 'experience' },
-                { label: 'Skills', id: 'skills' },
-                { label: 'Contact', id: 'contact' },
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  onMouseEnter={() => sound.playHover?.()}
-                  style={{
-                    display: 'block',
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: '13px',
-                    color: 'rgba(248,250,252,0.5)',
-                    textAlign: 'left',
-                    background: 'none',
-                    border: 'none',
-                    padding: '0.4rem 0',
-                    cursor: 'pointer',
-                    transition: 'color 0.3s ease',
-                  }}
-                  className="hover:!text-[#A3E635]"
-                >
-                  {item.label}
-                </button>
+            {time && (
+              <p className="inline-flex items-center gap-2" style={{ ...MONO, marginTop: 8, fontSize: 11, letterSpacing: '0.1em', color: 'rgba(248,250,252,0.5)' }}>
+                <span className="animate-pulse" style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: LIME }} />
+                {time} IST
+              </p>
+            )}
+          </div>
+
+          <div>
+            <p style={{ ...MONO, fontSize: 9, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.35)', marginBottom: '0.8rem' }}>Navigate</p>
+            <div className="flex flex-col">
+              {NAV.map((n) => (
+                <FooterLink key={n.id} onClick={() => scrollToSection(n.id)}>
+                  {n.label}
+                </FooterLink>
               ))}
             </div>
           </div>
 
-          {/* Connect */}
           <div>
-            <p
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '9px',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: 'rgba(248,250,252,0.3)',
-                marginBottom: '1.5rem',
-              }}
-            >
-              Connect
-            </p>
-            <div className="space-y-2">
-              {[
-                { label: 'GitHub', href: 'https://github.com/Darshil-N', icon: Github },
-                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/darshil-nathwani-bba698307', icon: Linkedin },
-                { label: 'Email', href: 'mailto:darshilnathwani@gmail.com', icon: Mail },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target={item.href.startsWith('http') ? '_blank' : undefined}
-                    rel="noopener noreferrer"
-                    onMouseEnter={() => sound.playHover?.()}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.6rem',
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: '13px',
-                      color: 'rgba(248,250,252,0.5)',
-                      padding: '0.4rem 0',
-                      textDecoration: 'none',
-                      transition: 'color 0.3s ease',
-                    }}
-                    className="hover:!text-[#A3E635]"
-                  >
-                    <Icon size={14} />
-                    <span>{item.label}</span>
-                  </a>
-                );
-              })}
+            <p style={{ ...MONO, fontSize: 9, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.35)', marginBottom: '0.8rem' }}>Connect</p>
+            <div className="flex flex-col">
+              {CONNECT.map((c) => (
+                <FooterLink key={c.label} href={c.href} external={c.href.startsWith('http')}>
+                  {c.label}
+                </FooterLink>
+              ))}
             </div>
           </div>
 
-          {/* Resources */}
           <div>
-            <p
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '9px',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                color: 'rgba(248,250,252,0.3)',
-                marginBottom: '1.5rem',
-              }}
-            >
-              Resources
-            </p>
+            <p style={{ ...MONO, fontSize: 9, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(248,250,252,0.35)', marginBottom: '0.8rem' }}>Resources</p>
             <a
-              href="/resume/Minimalist White and Grey Professional Resume.pdf"
+              href={RESUME_URL}
               download="Darshil_Nathwani_Resume.pdf"
               onMouseEnter={() => sound.playHover?.()}
               onClick={() => sound.playChime?.()}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '13px',
-                color: 'rgba(248,250,252,0.5)',
-                padding: '0.4rem 0',
-                textDecoration: 'none',
-                transition: 'color 0.3s ease',
-              }}
-              className="hover:!text-[#A3E635]"
+              className="group inline-flex items-center gap-2 py-1.5 transition-colors duration-300 hover:text-[#A3E635]"
+              style={{ fontFamily: "'Inter Tight', sans-serif", fontWeight: 700, fontSize: 'clamp(1.05rem, 1.5vw, 1.35rem)', color: 'rgba(248,250,252,0.78)' }}
             >
-              <Download size={14} />
-              <span>Resume</span>
+              <Download size={16} /> Resume
             </a>
           </div>
         </div>
+      </div>
 
-        {/* Bottom: Copyright + Visitor */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-8 border-t border-white/[0.06]">
-          <p
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '10px',
-              letterSpacing: '0.05em',
-              color: 'rgba(248,250,252,0.3)',
-            }}
-          >
-            © {year} Darshil Nathwani · Built with React, TypeScript, Framer Motion
-          </p>
+      {/* Full-width wordmark: fills lime as the curtain lifts; letters light up on hover */}
+      <div aria-hidden className="relative select-none" style={{ lineHeight: 0.8, padding: '0 clamp(0.5rem, 1.5vw, 1.5rem)', whiteSpace: 'nowrap', textAlign: 'center' }}>
+        <motion.div
+          style={{
+            display: 'inline-block',
+            fontFamily: "'Inter Tight', sans-serif",
+            fontWeight: 900,
+            fontSize: '9.4vw',
+            letterSpacing: '-0.05em',
+            color: 'transparent',
+            WebkitTextFillColor: 'transparent',
+            WebkitTextStroke: '1.5px rgba(248,250,252,0.3)',
+            backgroundImage: `linear-gradient(90deg, ${LIME} 0%, ${LIME} 46%, rgba(163,230,53,0) 54%, rgba(163,230,53,0) 100%)`,
+            backgroundSize: '220% 100%',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: reduce ? '0% 0%' : fillPos,
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+          }}
+        >
+          {NAME.split('').map((ch, i) =>
+            ch === ' ' ? (
+              <span key={i}>&nbsp;</span>
+            ) : (
+              <span key={i} className="inline-block transition-transform duration-300 hover:-translate-y-[6%]">
+                {ch}
+              </span>
+            )
+          )}
+        </motion.div>
+      </div>
 
-          <VisitorCounter />
-        </div>
+      {/* Bottom bar */}
+      <div className="relative px-6 sm:px-10 lg:px-16 max-w-[1700px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ padding: 'clamp(1.4rem, 2.4vw, 2rem) clamp(1.5rem, 4vw, 4rem)', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: 'clamp(1rem, 2vw, 1.6rem)' }}>
+        <p style={{ ...MONO, fontSize: 10, letterSpacing: '0.06em', color: 'rgba(248,250,252,0.4)' }}>
+          © {year} Darshil Nathwani · Built with React, TypeScript, Framer Motion
+        </p>
+        <VisitorCounter />
       </div>
     </footer>
   );
