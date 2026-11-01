@@ -150,18 +150,19 @@ function MarqueeTicker() {
    HERO
 ───────────────────────────────────────────── */
 
-// `focus` keeps the face in frame when a photo is cropped to the tall card (like object-position, 0-1).
-// `caption` is the bold line (keep it under ~20 characters so it fits on one line); `sub` says what and where.
+// `face` is where the face is in the photo and `aspect` its width / height; the card works out the rest so every face
+// lands in the same spot. `zoom` brings in the full-body shots. `caption` is the bold line (under ~20 characters so it
+// fits on one line) and `sub` says what and where.
 const GLASS_PHOTOS: (GlassPhoto & { caption: string; sub: string })[] = [
-  { src: '/Images/darshil.jpg', focus: { x: 0.66, y: 0.3 }, caption: "Don't drop the mic.", sub: 'Nasiko Hackathon · Microsoft office' },
-  { src: '/Images/mixer.jpg', focus: { x: 0.65, y: 0.3 }, caption: 'Ideas, out loud.', sub: 'Devfolio Student Mixer' },
-  { src: '/Images/darshil2.jpg', focus: { x: 0.25, y: 0.3 }, caption: 'Explain it simply.', sub: 'IEEE TENCON 2026 · Poster session' },
-  { src: '/Images/deepmind.jpg', focus: { x: 0.45, y: 0.3 }, caption: 'Forty tabs. One bug.', sub: 'Google DeepMind Hackathon' },
-  { src: '/Images/judges.jpg', focus: { x: 0.21, y: 0.3 }, caption: 'Five minutes. Go.', sub: 'HackMan V8 · Pitching to the judges' },
-  { src: '/Images/darshil1.jpg', focus: { x: 0.25, y: 0.3 }, caption: 'Hm. Good question.', sub: 'IEEE TENCON 2026 · Poster session' },
-  { src: '/Images/darshil3.jpg', focus: { x: 0.2, y: 0.3 }, caption: 'Poster duty.', sub: 'IEEE TENCON 2026' },
-  { src: '/Images/cisco.jpg', focus: { x: 0.9, y: 0.3 }, caption: 'Meet the packets.', sub: 'Cisco · Mega Industrial Visit 2026' },
-  { src: '/Images/google.jpg', focus: { x: 0.5, y: 0.3 }, caption: 'Agents, assemble.', sub: 'Google Kyoto · Agent Premier League' },
+  { src: '/Images/darshil.jpg', face: { x: 0.57, y: 0.4 }, aspect: 0.75, zoom: 1.2, caption: "Don't drop the mic.", sub: 'Nasiko Hackathon · Microsoft office' },
+  { src: '/Images/mixer.jpg', face: { x: 0.6, y: 0.26 }, aspect: 1.778, caption: 'Ideas, out loud.', sub: 'Devfolio Student Mixer' },
+  { src: '/Images/darshil2.jpg', face: { x: 0.25, y: 0.37 }, aspect: 0.75, zoom: 1.9, caption: 'Explain it simply.', sub: 'IEEE TENCON 2026 · Poster session' },
+  { src: '/Images/deepmind.jpg', face: { x: 0.5, y: 0.42 }, aspect: 1.501, zoom: 1.2, caption: 'Forty tabs. One bug.', sub: 'Google DeepMind Hackathon' },
+  { src: '/Images/judges.jpg', face: { x: 0.38, y: 0.44 }, aspect: 1.5, zoom: 1.4, caption: 'Five minutes. Go.', sub: 'HackMan V8 · Pitching to the judges' },
+  { src: '/Images/darshil1.jpg', face: { x: 0.25, y: 0.37 }, aspect: 0.75, zoom: 1.9, caption: 'Hm. Good question.', sub: 'IEEE TENCON 2026 · Poster session' },
+  { src: '/Images/darshil3.jpg', face: { x: 0.17, y: 0.39 }, aspect: 0.75, zoom: 2.3, caption: 'Poster duty.', sub: 'IEEE TENCON 2026' },
+  { src: '/Images/cisco.jpg', face: { x: 0.64, y: 0.5 }, aspect: 0.75, zoom: 2, caption: 'Meet the packets.', sub: 'Cisco · Mega Industrial Visit 2026' },
+  { src: '/Images/google.jpg', face: { x: 0.5, y: 0.54 }, aspect: 0.75, zoom: 2, caption: 'Agents, assemble.', sub: 'Google Kyoto · Agent Premier League' },
 ];
 const CAPTIONS = GLASS_PHOTOS.map((p) => ({ title: p.caption, sub: p.sub }));
 

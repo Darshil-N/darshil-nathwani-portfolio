@@ -151,7 +151,7 @@ export default function LoadingScreen() {
               <span style={{ width: 30, height: 30, border: '1px solid rgba(255,255,255,0.25)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter Tight', sans-serif", fontWeight: 900, fontSize: 12, letterSpacing: '-0.04em', color: '#F8FAFC' }}>
                 DN
               </span>
-              <span>Portfolio 2026 / 27</span>
+              <span>Portfolio</span>
             </motion.div>
             <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.5, ease: E }} className="hidden sm:flex items-center gap-3">
               <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: LIME }} className="animate-pulse" />

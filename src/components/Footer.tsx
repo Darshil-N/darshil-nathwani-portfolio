@@ -58,7 +58,6 @@ function FooterLink({ children, onClick, href, external }: { children: React.Rea
 }
 
 export default function Footer() {
-  const year = new Date().getFullYear();
   const time = useISTClock();
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
@@ -251,7 +250,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="relative px-6 sm:px-10 lg:px-16 max-w-[1700px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4" style={{ paddingTop: 'clamp(1.4rem, 2.4vw, 2rem)', paddingLeft: 'clamp(1.5rem, 4vw, 4rem)', paddingRight: 'clamp(1.5rem, 4vw, 4rem)', paddingBottom: 'calc(clamp(1.4rem, 2.4vw, 2rem) + env(safe-area-inset-bottom, 0px))', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: 'clamp(1rem, 2vw, 1.6rem)' }}>
         <p style={{ ...MONO, fontSize: 10, letterSpacing: '0.06em', color: 'rgba(248,250,252,0.4)' }}>
-          © {year} Darshil Nathwani · Built with React, TypeScript, Framer Motion
+          © Darshil Nathwani
         </p>
         <VisitorCounter />
       </div>

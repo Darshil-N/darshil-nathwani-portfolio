@@ -87,7 +87,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             </h1>
 
             <p className="font-mono text-xs text-lime-400 uppercase tracking-widest mb-8">
-              Portfolio 2026 / 2027
+              Portfolio
             </p>
 
             {/* Progress Track */}
