@@ -14,47 +14,14 @@ const E = [0.76, 0, 0.24, 1] as const;
 
 export interface GlassPhoto {
   src: string;
-  /** where the face is in the photo, as fractions of its width and height */
-  face: { x: number; y: number };
-  /** the photo's width / height */
-  aspect: number;
-  /** zoom in on the face (1 = none); the full-body shots need it, or the face is tiny */
-  zoom?: number;
-}
-
-// Where every face should land in the card: to the right of the lime band, and above the caption.
-const FACE_AT = { x: 0.6, y: 0.36 };
-
-/** Position and zoom a photo so its face lands on FACE_AT, whatever size the card is. */
-function place(photo: GlassPhoto, cardAspect: number) {
-  const z = photo.zoom ?? 1;
-  const clamp = (v: number) => Math.min(1, Math.max(0, v));
-  // object-fit: cover, then object-position chosen to bring the face as near the target as the crop allows
-  let px = 0.5;
-  let py = 0.5;
-  let cx = photo.face.x; // where the face ends up in the card, as a fraction of the card
-  let cy = photo.face.y;
-  if (photo.aspect >= cardAspect) {
-    const sw = photo.aspect / cardAspect; // scaled width, in card widths
-    px = clamp((photo.face.x * sw - FACE_AT.x) / (sw - 1));
-    cx = photo.face.x * sw - px * (sw - 1);
-  } else {
-    const sh = cardAspect / photo.aspect; // scaled height, in card heights
-    py = clamp((photo.face.y * sh - FACE_AT.y) / (sh - 1));
-    cy = photo.face.y * sh - py * (sh - 1);
-  }
-  // then zoom about a point chosen so the face moves the rest of the way to the target
-  const origin = (target: number, at: number) => (z === 1 ? 0.5 : clamp((target - z * at) / (1 - z)));
-  return {
-    objectPosition: `${px * 100}% ${py * 100}%`,
-    transform: z === 1 ? undefined : `scale(${z})`,
-    transformOrigin: `${origin(FACE_AT.x, cx) * 100}% ${origin(FACE_AT.y, cy) * 100}%`,
-  };
+  /** which part of the photo sits in the frame (like object-position), 0–1 */
+  focus: { x: number; y: number };
+  /** push the picture to the right by this fraction of the card (zooms in a little so no gap opens on the left) */
+  shift?: number;
 }
 
 /** A photo in lime-toned monochrome, with ribbed-glass stripes over it. `clean` shows it as it is. */
-function GlassImg({ photo, clean, cardAspect }: { photo: GlassPhoto; clean: boolean; cardAspect: number }) {
-  const at = place(photo, cardAspect);
+function GlassImg({ photo, clean }: { photo: GlassPhoto; clean: boolean }) {
   return (
     <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
       <img
@@ -65,7 +32,9 @@ function GlassImg({ photo, clean, cardAspect }: { photo: GlassPhoto; clean: bool
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          ...at,
+          objectPosition: `${photo.focus.x * 100}% ${photo.focus.y * 100}%`,
+          transform: photo.shift ? `translateX(${photo.shift * 100}%) scale(${1 + photo.shift * 2})` : undefined,
+          transformOrigin: '0% 50%',
           filter: clean ? 'grayscale(0) contrast(1.02) brightness(0.96)' : 'grayscale(1) contrast(1.25) brightness(0.7)',
           transition: 'filter .7s ease',
         }}
@@ -144,19 +113,6 @@ export default function PhotoWipe({
   const w = useMotionValue(0); // 0 → 1: the bar grows across; 1 → 2: it slides off the other side
   const clip = useTransform(w, (v) => (v <= 1 ? `inset(0 ${100 - v * 100}% 0 0)` : `inset(0 0 0 ${(v - 1) * 100}%)`));
   const first = useRef(true);
-  const box = useRef<HTMLDivElement>(null);
-  const [cardAspect, setCardAspect] = useState(0.7);
-
-  // the card's shape changes with the window, and so does where a face lands in it
-  useEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const measure = () => el.clientHeight && setCardAspect(el.clientWidth / el.clientHeight);
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   // load every photo up front so none of them pops in when the bar uncovers it
   useEffect(() => {
@@ -181,8 +137,8 @@ export default function PhotoWipe({
   }, [index, w]);
 
   return (
-    <div ref={box} style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-      <GlassImg photo={photos[shown]} clean={clean} cardAspect={cardAspect} />
+    <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+      <GlassImg photo={photos[shown]} clean={clean} />
 
       {/* the caption that stays: white, in place once the bar has gone (it is swapped while the bar covers it) */}
       {captions && (
