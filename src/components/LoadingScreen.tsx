@@ -226,7 +226,7 @@ export default function LoadingScreen() {
       <motion.div
         aria-hidden
         initial={{ y: '100%' }}
-        animate={{ y: phase === 'run' ? '100%' : phase === 'wipe' ? '0%' : '-100%' }}
+        animate={{ y: phase === 'run' ? '100%' : '0%' }} // stays covering: the hero's own lime panel takes over and shrinks into the name
         transition={{ duration: phase === 'wipe' ? 0.5 : 0.65, ease: E }}
         className="absolute inset-0 flex items-center justify-center"
         style={{ backgroundColor: LIME }}

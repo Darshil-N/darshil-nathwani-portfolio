@@ -79,11 +79,15 @@ const App = () => {
 
   useEffect(() => {
     // Show loading screen on EVERY page load/refresh
-    const id = setTimeout(() => {
-      setInitialLoad(false);
-      markSiteReady(); // intro animations (e.g. hero decrypt) wait for this
-    }, LOADING_MS); // Match the loading screen's duration
-    return () => clearTimeout(id);
+    // The loader hands over to the hero's own lime panel at LOADING_MS - 700, so it can go a moment later.
+    const id = setTimeout(() => setInitialLoad(false), LOADING_MS - 550);
+    // The hero's entrance starts as the lime panel begins to lift away (the loader's REVEAL_AT),
+    // not after it has gone, so the reveal and the name arriving are one motion with no empty beat.
+    const ready = setTimeout(markSiteReady, LOADING_MS - 700);
+    return () => {
+      clearTimeout(id);
+      clearTimeout(ready);
+    };
   }, []);
 
   return (

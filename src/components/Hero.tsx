@@ -11,17 +11,50 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ArrowDown, Check } from 'lucide-react';
 import { sound } from '../lib/sound';
 import { useSiteReady } from '../lib/siteReady';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import KineticName from './KineticName';
+import PhotoWipe, { type GlassPhoto } from './PhotoWipe';
+import LimeHandoff, { HANDOFF_LANDS_AT } from './LimeHandoff';
 import DecryptText from './DecryptText';
 
 /* ─────────────────────────────────────────────
    CONSTANTS
 ───────────────────────────────────────────── */
+
+/** One number that rolls up when it changes, like an odometer */
+function Roll({ value }: { value: string }) {
+  return (
+    <span style={{ display: 'inline-block', overflow: 'hidden', height: '1.25em', verticalAlign: 'bottom' }}>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={value}
+          initial={{ y: '100%' }}
+          animate={{ y: '0%' }}
+          exit={{ y: '-100%' }}
+          transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+          style={{ display: 'inline-block' }}
+        >
+          {value}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+const AUTOPLAY_MS = 5200;
+
+// The photo card's left edge is cut at an angle and followed by a lime band that carries the counter.
+const SLANT_INDENT = 14; // % of the card's width the top of the cut is indented by
+const EDGE_CLIP = `polygon(${SLANT_INDENT}% 0%, 100% 0%, 100% 100%, 0% 100%)`;
+const BAND_TEXT = 'Proof, not promises';
+// The caption and counter sit a fixed gap to the right of the band, measured where they are: roughly 72% of the way
+// down, where the slanted cut has moved 28% of the way back out of its indent. Band width 46px + gap 30px.
+// (written out in full on purpose: Tailwind only generates classes it can find as whole strings; 3.9% = SLANT_INDENT x 0.28)
+const LEFT = 'lg:left-[calc(3.9%+76px)]';
 
 /** Snappy premium ease — matches Awwwards studios */
 const E = [0.76, 0, 0.24, 1] as const;
@@ -117,42 +150,47 @@ function MarqueeTicker() {
    HERO
 ───────────────────────────────────────────── */
 
-const HERO_PHOTOS = [
-  '/Images/darshil.jpg',
-  '/Images/darshil1.jpg',
-  '/Images/darshil2.jpg',
-  '/Images/darshil3.jpg',
+// `focus` keeps the face in frame when a photo is cropped to the tall card (like object-position, 0-1).
+// `caption` is the bold line (keep it under ~20 characters so it fits on one line); `sub` says what and where.
+const GLASS_PHOTOS: (GlassPhoto & { caption: string; sub: string })[] = [
+  { src: '/Images/darshil.jpg', focus: { x: 0.66, y: 0.3 }, caption: "Don't drop the mic.", sub: 'Nasiko Hackathon · Microsoft office' },
+  { src: '/Images/mixer.jpg', focus: { x: 0.65, y: 0.3 }, caption: 'Ideas, out loud.', sub: 'Devfolio Student Mixer' },
+  { src: '/Images/darshil2.jpg', focus: { x: 0.25, y: 0.3 }, caption: 'Explain it simply.', sub: 'IEEE TENCON 2026 · Poster session' },
+  { src: '/Images/deepmind.jpg', focus: { x: 0.45, y: 0.3 }, caption: 'Forty tabs. One bug.', sub: 'Google DeepMind Hackathon' },
+  { src: '/Images/judges.jpg', focus: { x: 0.21, y: 0.3 }, caption: 'Five minutes. Go.', sub: 'HackMan V8 · Pitching to the judges' },
+  { src: '/Images/darshil1.jpg', focus: { x: 0.25, y: 0.3 }, caption: 'Hm. Good question.', sub: 'IEEE TENCON 2026 · Poster session' },
+  { src: '/Images/darshil3.jpg', focus: { x: 0.2, y: 0.3 }, caption: 'Poster duty.', sub: 'IEEE TENCON 2026' },
+  { src: '/Images/cisco.jpg', focus: { x: 0.9, y: 0.3 }, caption: 'Meet the packets.', sub: 'Cisco · Mega Industrial Visit 2026' },
+  { src: '/Images/google.jpg', focus: { x: 0.5, y: 0.3 }, caption: 'Agents, assemble.', sub: 'Google Kyoto · Agent Premier League' },
 ];
+const CAPTIONS = GLASS_PHOTOS.map((p) => ({ title: p.caption, sub: p.sub }));
 
 export default function Hero() {
   const [copied, setCopied] = useState(false);
   const siteReady = useSiteReady();
   const heroRef = useRef<HTMLElement>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [photoHovered, setPhotoHovered] = useState(false);
+  // On a fresh page load the loading screen's lime panel shrinks into the D and the N; the entrance waits for it.
+  const [panel, setPanel] = useState(!siteReady);
+  const lag = useRef(siteReady ? 0 : HANDOFF_LANDS_AT - 0.2).current;
 
+  const [paused, setPaused] = useState(false);
+  const go = (dir: 1 | -1) => setPhotoIndex((i) => (i + dir + GLASS_PHOTOS.length) % GLASS_PHOTOS.length);
   useEffect(() => {
-    const id = setInterval(() => {
-      setPhotoIndex((i) => (i + 1) % HERO_PHOTOS.length);
-    }, 4800);
-    return () => clearInterval(id);
-  }, []);
+    // keeps running while you hover (hover only clears the tint)
+    const id = setTimeout(() => go(1), AUTOPLAY_MS);
+    return () => clearTimeout(id);
+  }, [photoIndex]);
 
-  // Touch devices can't hover the photo, so it flushes into colour on its own as it changes.
-  const coarse = useMediaQuery('(pointer: coarse)');
   const phoneLayout = useMediaQuery('(max-width: 1023px)');
+  // the band's text leans to match the angled cut, which depends on the card's size
+  const [slantDeg, setSlantDeg] = useState(5);
   useEffect(() => {
-    if (!coarse) return;
-    let off: ReturnType<typeof setTimeout>;
-    const id = setInterval(() => {
-      setPhotoHovered(true);
-      off = setTimeout(() => setPhotoHovered(false), 2000);
-    }, 4800);
-    return () => {
-      clearInterval(id);
-      clearTimeout(off);
-    };
-  }, [coarse]);
+    const fit = () => setSlantDeg((Math.atan((SLANT_INDENT / 100) * 0.44 * window.innerWidth / window.innerHeight) * 180) / Math.PI);
+    fit();
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, []);
 
   /* ── Subtle parallax on mouse move (photo layer only) ── */
   const mouseX = useMotionValue(0);
@@ -226,126 +264,72 @@ export default function Hero() {
         zIndex: 0,
       }}
     >
+      {panel && <LimeHandoff onDone={() => setPanel(false)} />}
+
       {/* ══════════════════════════════════════════════
           01. EDITORIAL PHOTO — raw, no card, no border.
               Positioned absolutely on right edge.
               Desktop only.
       ══════════════════════════════════════════════ */}
       <motion.div
-        className="absolute inset-x-0 top-0 h-[62svh] lg:inset-x-auto lg:right-0 lg:bottom-0 lg:h-auto lg:w-[40%]"
+        className="absolute inset-x-0 top-0 h-[62svh] lg:inset-x-auto lg:right-0 lg:bottom-0 lg:h-auto lg:w-[44%]"
         data-cursor-grow
-        onMouseEnter={() => setPhotoHovered(true)}
-        onMouseLeave={() => setPhotoHovered(false)}
-        onPointerDown={(e) => e.pointerType === 'touch' && setPhotoHovered(true)}
-        onPointerUp={(e) => e.pointerType === 'touch' && setPhotoHovered(false)}
-        onPointerCancel={() => setPhotoHovered(false)}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
         style={{
           x: photoX,
           WebkitTouchCallout: 'none',
           y: photoY,
           zIndex: 1,
           overflow: 'hidden',
+          clipPath: phoneLayout ? undefined : EDGE_CLIP,
         }}
         initial={{ opacity: 0, scale: 1.05 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 1.8, delay: 0.6 + lag, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        {/* Crossfading photo stack */}
-        <AnimatePresence>
-          <motion.img
-            key={HERO_PHOTOS[photoIndex]}
-            src={HERO_PHOTOS[photoIndex]}
-            alt=""
-            draggable={false}
-            initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 1, scale: photoHovered ? 1.04 : 1 }}
-            exit={{ opacity: 0, scale: 1.0 }}
-            transition={{
-              opacity: { duration: 1.4, ease: [0.25, 0.46, 0.45, 0.94] },
-              scale: { duration: 1.6, ease: [0.25, 0.46, 0.45, 0.94] },
-            }}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center top',
-              filter: photoHovered
-                ? 'grayscale(0%) contrast(1.03) brightness(0.95) saturate(1.08)'
-                : 'grayscale(100%) contrast(1.08) brightness(0.62)',
-              transitionProperty: 'filter',
-              transitionDuration: '1.4s',
-              transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              display: 'block',
-              userSelect: 'none',
-            }}
-          />
-        </AnimatePresence>
-
-        {/* Left-edge fade: ultra-smooth blend with many gradient stops (desktop: photo sits on the right) */}
-        <div
-          aria-hidden
-          className="hidden lg:block"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(to right, ' +
-              '#0C0C0E 0%, ' +
-              'rgba(12,12,14,0.98) 5%, ' +
-              'rgba(12,12,14,0.92) 10%, ' +
-              'rgba(12,12,14,0.85) 15%, ' +
-              'rgba(12,12,14,0.75) 20%, ' +
-              'rgba(12,12,14,0.65) 25%, ' +
-              'rgba(12,12,14,0.55) 30%, ' +
-              'rgba(12,12,14,0.45) 35%, ' +
-              'rgba(12,12,14,0.35) 40%, ' +
-              'rgba(12,12,14,0.28) 45%, ' +
-              'rgba(12,12,14,0.22) 50%, ' +
-              'rgba(12,12,14,0.16) 55%, ' +
-              'rgba(12,12,14,0.12) 60%, ' +
-              'rgba(12,12,14,0.08) 65%, ' +
-              'rgba(12,12,14,0.05) 70%, ' +
-              'rgba(12,12,14,0.03) 75%, ' +
-              'rgba(12,12,14,0.015) 80%, ' +
-              'rgba(12,12,14,0.008) 85%, ' +
-              'rgba(12,12,14,0.003) 90%, ' +
-              'transparent 95%)',
-            opacity: photoHovered ? 0.3 : 0.88,
-            transition: 'opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-            pointerEvents: 'none',
-            zIndex: 2,
-          }}
+        {/* The photos; the lime bar sweeps across to change them, and the tint clears while you hover */}
+        <PhotoWipe
+          photos={GLASS_PHOTOS}
+          index={photoIndex}
+          clean={paused}
+          captions={CAPTIONS}
+          captionClass={`left-4 right-4 top-[9rem] lg:top-auto ${LEFT} lg:right-6 lg:bottom-[11.8rem]`}
         />
 
-        {/* Bottom fade - also ultra-smooth */}
-        <div
-          aria-hidden
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: '45%',
-            background:
-              'linear-gradient(to top, ' +
-              '#0C0C0E 0%, ' +
-              'rgba(12,12,14,0.9) 15%, ' +
-              'rgba(12,12,14,0.75) 25%, ' +
-              'rgba(12,12,14,0.6) 35%, ' +
-              'rgba(12,12,14,0.45) 45%, ' +
-              'rgba(12,12,14,0.32) 55%, ' +
-              'rgba(12,12,14,0.22) 65%, ' +
-              'rgba(12,12,14,0.14) 75%, ' +
-              'rgba(12,12,14,0.08) 85%, ' +
-              'transparent 95%)',
-            opacity: photoHovered ? 0.4 : 0.9,
-            transition: 'opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-            pointerEvents: 'none',
-            zIndex: 2,
-          }}
-        />
+        {/* A lime band that follows the angled cut, with its text tilted to match */}
+        <div aria-hidden className="hidden lg:block" style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', inset: 0, background: '#A3E635', clipPath: `polygon(${SLANT_INDENT}% 0%, calc(${SLANT_INDENT}% + 46px) 0%, 46px 100%, 0% 100%)` }} />
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: `calc(${SLANT_INDENT / 2}% + 23px)`,
+                width: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: `rotate(${slantDeg}deg)`,
+              }}
+            >
+              <div
+                style={{
+                  writingMode: 'vertical-rl',
+                  rotate: '180deg',
+                  whiteSpace: 'nowrap',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: '0.34em',
+                  textTransform: 'uppercase',
+                  color: '#0C0C0E',
+                }}
+              >
+                {BAND_TEXT} ✦ {String(photoIndex + 1).padStart(2, '0')} / {String(GLASS_PHOTOS.length).padStart(2, '0')}
+              </div>
+            </div>
+          </div>
 
         {/* Phones: the photo is a full-width banner, so it fades into the page from the bottom and darkens at the top for the navbar */}
         <div
@@ -356,36 +340,46 @@ export default function Hero() {
             inset: 0,
             background:
               'linear-gradient(to top, #0C0C0E 0%, rgba(12,12,14,0.94) 20%, rgba(12,12,14,0.6) 48%, rgba(12,12,14,0.18) 76%, transparent 100%), linear-gradient(to bottom, rgba(12,12,14,0.72) 0%, transparent 26%)',
-            opacity: photoHovered ? 0.55 : 1,
-            transition: 'opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
             pointerEvents: 'none',
-            zIndex: 2,
+            zIndex: 1,
           }}
         />
 
-        {/* Index dots */}
+        {/* Counter, arrows and a progress line (kept above the page's bottom bar) */}
         <div
-          className="top-[5.8rem] right-5 lg:top-auto lg:bottom-[1.4rem] lg:right-[1.4rem]"
-          style={{
-            position: 'absolute',
-            zIndex: 3,
-            display: 'flex',
-            gap: '0.4rem',
-          }}
+          className={`left-4 right-4 top-[6rem] lg:top-auto ${LEFT} lg:right-6 lg:bottom-[9rem]`}
+          style={{ position: 'absolute', zIndex: 3, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}
         >
-          {HERO_PHOTOS.map((src, i) => (
-            <span
-              key={src}
-              style={{
-                width: i === photoIndex ? 16 : 5,
-                height: 5,
-                borderRadius: 999,
-                backgroundColor: i === photoIndex ? '#A3E635' : 'rgba(255,255,255,0.3)',
-                transition: 'all 0.4s ease',
-              }}
-            />
-          ))}
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, letterSpacing: '0.2em', color: '#F8FAFC', display: 'flex', gap: '0.5rem', alignItems: 'baseline' }}>
+            <Roll value={String(photoIndex + 1).padStart(2, '0')} />
+            <span style={{ color: 'rgba(255,255,255,0.45)' }}>/ {String(GLASS_PHOTOS.length).padStart(2, '0')}</span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.4rem' }}>
+            {([-1, 1] as const).map((dir) => (
+              <button
+                key={dir}
+                aria-label={dir === 1 ? 'Next photo' : 'Previous photo'}
+                onClick={() => {
+                  sound.playClick?.();
+                  go(dir);
+                }}
+                style={{ width: 34, height: 34, border: '1px solid rgba(255,255,255,0.22)', background: 'rgba(12,12,14,0.5)', color: '#F8FAFC', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, cursor: 'pointer', minHeight: 0 }}
+                className="hover:bg-[#A3E635] hover:text-black hover:border-[#A3E635] transition-colors"
+              >
+                {dir === 1 ? '→' : '←'}
+              </button>
+            ))}
+          </div>
         </div>
+        <motion.div
+          key={photoIndex}
+          aria-hidden
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: AUTOPLAY_MS / 1000, ease: 'linear' }}
+          className="hidden lg:block lg:bottom-[7.8rem]"
+          style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2, background: '#A3E635', transformOrigin: '0 50%', zIndex: 3 }}
+        />
       </motion.div>
 
       {/* ══════════════════════════════════════════════
@@ -407,7 +401,7 @@ export default function Hero() {
       >
         {/* ── Discipline label ── */}
         <ClipLine
-          delay={0.12}
+          delay={0.12 + lag}
           style={{
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: '10px',
@@ -426,10 +420,10 @@ export default function Hero() {
 
         {/* ── MASSIVE NAME BLOCK — cursor torch + letter ripple ── */}
         <KineticName
-          fontSize={phoneLayout ? 'clamp(3.4rem, 15.5vw, 9rem)' : 'clamp(3.2rem, 9.5vw, 10.5rem)'}
+          fontSize={phoneLayout ? 'clamp(3.6rem, 15.8vw, 9.4rem)' : 'clamp(3.6rem, 10.2vw, 11.5rem)'}
           lines={[
-            { text: 'DARSHIL', variant: 'solid', delay: 0.22 },
-            { text: 'NATHWANI', variant: 'outline', delay: 0.36 },
+            { text: 'DARSHIL', variant: 'solid', delay: 0.22, mark: true },
+            { text: 'NATHWANI', variant: 'outline', delay: 0.36, mark: true },
           ]}
         />
 
@@ -438,7 +432,7 @@ export default function Hero() {
           <motion.div
             initial={{ y: '110%' }}
             animate={{ y: '0%' }}
-            transition={{ duration: 0.9, delay: 0.56, ease: E }}
+            transition={{ duration: 0.9, delay: 0.56 + lag, ease: E }}
             style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem' }}
           >
             {/* Lime hairline */}
@@ -451,10 +445,10 @@ export default function Hero() {
               }}
               initial={{ width: 0 }}
               animate={{ width: 44 }}
-              transition={{ duration: 0.65, delay: 0.82, ease: E }}
+              transition={{ duration: 0.65, delay: 0.82 + lag, ease: E }}
             />
             <DecryptText
-              delay={1.3}
+              delay={1.3 + lag}
               lines={[
                 [
                   { text: 'Building production-scale ' },
@@ -486,7 +480,7 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.78 }}
+        transition={{ duration: 1, delay: 0.78 + lag }}
         style={{
           position: 'relative',
           zIndex: 20,
@@ -494,6 +488,8 @@ export default function Hero() {
           borderTop: '1px solid rgba(255,255,255,0.055)',
           padding: '0.8rem 0',
           overflow: 'hidden',
+          // sits above the photo card, so give it a faint dark base to stay readable over it
+          background: 'rgba(12,12,14,0.5)',
         }}
       >
         <MarqueeTicker />
@@ -505,7 +501,7 @@ export default function Hero() {
       <motion.footer
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, delay: 0.92, ease: E }}
+        transition={{ duration: 0.9, delay: 0.92 + lag, ease: E }}
         style={{
           position: 'relative',
           zIndex: 20,

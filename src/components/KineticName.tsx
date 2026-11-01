@@ -35,6 +35,8 @@ interface Line {
   text: string;
   variant: 'solid' | 'outline';
   delay: number;
+  /** make the first letter lime, so the D and the N that the loading screen's panel lands on stand out */
+  mark?: boolean;
 }
 
 // Only opacity animates at rest (composited, cheap). Nothing animates a filter
@@ -78,6 +80,12 @@ function flickerLetter(el: HTMLElement, live: Set<Animation>) {
 const TORCH = 'var(--torch-r)';
 const POS = 'calc(var(--mx, -9999px) - var(--lx, 0px)) calc(var(--my, -9999px) - var(--ly, 0px))';
 
+// The first letter of a line: plain lime (the accent colour), and white where the torch passes.
+const MARK_STYLE: React.CSSProperties = {
+  backgroundImage: `radial-gradient(circle ${TORCH} at ${POS}, #F8FAFC 0%, rgba(248,250,252,0.9) 35%, rgba(248,250,252,0) 100%), linear-gradient(#A3E635, #A3E635)`,
+  WebkitTextStroke: '0',
+};
+
 const VARIANT_STYLE: Record<Line['variant'], React.CSSProperties> = {
   solid: {
     backgroundImage: `radial-gradient(circle ${TORCH} at ${POS}, #A3E635 0%, rgba(190,242,100,0.85) 35%, rgba(163,230,53,0) 100%), linear-gradient(#F8FAFC, #F8FAFC)`,
@@ -96,6 +104,7 @@ function Letter({
   centers,
   lift,
   setRef,
+  mark,
 }: {
   char: string;
   index: number;
@@ -104,6 +113,7 @@ function Letter({
   centers: React.MutableRefObject<number[]>;
   lift: boolean;
   setRef: (i: number, el: HTMLSpanElement | null) => void;
+  mark?: boolean;
 }) {
   // 0 → 1 as the cursor gets closer to this letter's centre (horizontal).
   const near = useTransform(mx, (v) => {
@@ -119,6 +129,7 @@ function Letter({
   return (
     <motion.span
       ref={(el) => setRef(index, el)}
+      data-mark={mark ? '1' : undefined}
       style={{
         ['--i' as string]: index,
         position: 'relative',
@@ -133,7 +144,7 @@ function Letter({
       {/* This letter's own tube glow: a blurred lime copy underneath. It dims
           with the letter when the letter flickers. Solid letters only: outline
           letters are see-through, so the glow would tint their insides. */}
-      {variant === 'solid' && (
+      {variant === 'solid' && !mark && (
       <span
         aria-hidden
         className="kn-glow"
@@ -151,7 +162,7 @@ function Letter({
       </span>
       )}
       <span
-        className={variant === 'outline' ? 'kn-outline-text' : undefined}
+        className={variant === 'outline' && !mark ? 'kn-outline-text' : undefined}
         style={{
           position: 'relative',
           display: 'inline-block',
@@ -161,6 +172,7 @@ function Letter({
           WebkitBackgroundClip: 'text',
           backgroundClip: 'text',
           ...VARIANT_STYLE[variant],
+          ...(mark ? MARK_STYLE : null),
         }}
       >
         {char}
@@ -250,7 +262,7 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
     const tick = () => {
       const b = box.current;
       if (b && b.getAttribute('data-active') === 'false' && !document.hidden && visible.current) {
-        const els = letters.current.filter((el): el is HTMLSpanElement => !!el);
+        const els = letters.current.filter((el): el is HTMLSpanElement => !!el && el.dataset.mark !== '1');
         const n = Math.random() < 0.25 ? 2 : 1;
         for (let k = 0; k < n && els.length; k++) {
           flickerLetter(els[Math.floor(Math.random() * els.length)], live.current);
@@ -393,9 +405,10 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
         />
       )}
 
-      {lines.map((line) => (
+      {lines.map((line, li) => (
         <div
           key={line.text}
+          data-kn-line={li}
           style={{
             position: 'relative',
             zIndex: 1,
@@ -412,7 +425,7 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
             transition={{ duration: 1.05, delay: line.delay, ease: E }}
             aria-hidden
           >
-            {line.text.split('').map((ch) => {
+            {line.text.split('').map((ch, k) => {
               const i = counter++;
               return (
                 <Letter
@@ -424,6 +437,7 @@ export default function KineticName({ lines, fontSize }: { lines: Line[]; fontSi
                   centers={centers}
                   lift={!reduce}
                   setRef={setRef}
+                  mark={!!line.mark && k === 0}
                 />
               );
             })}
