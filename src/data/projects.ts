@@ -136,6 +136,36 @@ export const projects: Project[] = [
     accentColor: 'from-purple-500/20 to-indigo-600/10'
   },
   {
+    title: "Retro Computer Portfolio",
+    shortTitle: "Retro Portfolio",
+    description: "Interactive 3D portfolio for Aman Kumar Singh, built around a vintage computer. Scroll to lift the lid, and each floppy disk loads a section on a live CRT screen.",
+    detailedDescription: "Designed and built end to end as a side project for a friend. The portfolio is a vintage computer on a desk: scrolling lifts the lid, six floppy disks pop out, and each disk slides into the drive, flickers the CRT on and flies the camera into the screen to show a section. The computer, disks, desk and lighting are all procedural, with no model files, and the CRT picture is a canvas texture painted live.",
+    techStack: ["React", "Vite", "Three.js", "React Three Fiber", "Framer Motion"],
+    features: [
+      "Live at aman-ks.vercel.app",
+      "Fully procedural 3D scene with no imported models",
+      "Scroll-driven hero: lid opens and disks pop out",
+      "CRT screen painted live on a canvas texture",
+      "Signature section designs: timeline, patent plates, apothecary skills cabinet, switchboard contact",
+      "Content-driven: every section is edited through data files",
+      "Build-time SEO: sitemap, llms.txt, Open Graph and JSON-LD",
+      "Ambient audio and reduced-motion support"
+    ],
+    challenges: [
+      "Building a convincing 3D scene entirely in code",
+      "Syncing scroll, camera moves and disk animations smoothly",
+      "Keeping a heavy WebGL scene performant on slower GPUs"
+    ],
+    learnings: [
+      "Procedural 3D modelling and lighting with React Three Fiber",
+      "Scroll-driven choreography and camera animation",
+      "Designing a cohesive visual concept from scratch"
+    ],
+    liveDemo: "https://aman-ks.vercel.app/",
+    category: 'web',
+    accentColor: 'from-amber-500/20 to-yellow-600/10'
+  },
+  {
     title: "Raahi: Smart Tourist Safety",
     shortTitle: "Raahi",
     description: "Digital ecosystem for tourist safety in Northeast India. Blockchain-verified ID, NFC wristbands, emergency SMS fallback, and real-time dashboard.",
