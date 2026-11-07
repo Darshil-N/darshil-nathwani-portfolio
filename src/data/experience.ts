@@ -8,7 +8,7 @@ export interface Experience {
   type: string;
   summary: string;
   highlights: string[];
-  links?: { label: string; url: string; isPlayStore?: boolean }[];
+  links?: { label: string; url: string; isPlayStore?: boolean; isAppStore?: boolean }[];
   current?: boolean;
   featured?: boolean;
   /** Runs alongside the other roles instead of in sequence (e.g. freelance). */
@@ -25,9 +25,9 @@ export const experiences: Experience[] = [
     current: true,
     featured: true,
     summary:
-      'Leading mobile and web development initiatives for flagship products. Shipped Crickraft AMS (web + Android on Play Store), StrengthKraft platform (web + Android on Play Store), and the official Vina EduTech corporate platform.',
+      'Leading mobile and web development initiatives for flagship products. Shipped Crickraft AMS (web + Android on Play Store), StrengthKraft platform (web + Android on Play Store + iOS on App Store), and the official Vina EduTech corporate platform.',
     highlights: [
-      'Crickraft & StrengthKraft • Dual platform (Web + Play Store)',
+      'Crickraft & StrengthKraft • Multi-platform (Web + Play Store + App Store)',
       'React Native • Cross-platform mobile development',
       'Professional CI/CD • Code reviews • API routing',
       'Full stack deployment • Cloud infrastructure',
@@ -37,12 +37,13 @@ export const experiences: Experience[] = [
       { label: 'Crickraft App', url: 'https://play.google.com/store/apps/details?id=com.crickraft.ams', isPlayStore: true },
       { label: 'StrengthKraft Web', url: 'https://strengthkraft.vinaedutech.com/' },
       { label: 'StrengthKraft App', url: 'https://play.google.com/store/apps/details?id=com.vinaedutech.strengthkraft', isPlayStore: true },
+      { label: 'StrengthKraft iOS App', url: 'https://apps.apple.com/in/app/strengthkraft/id6826823126', isAppStore: true },
     ],
   },
   {
     role: 'Full Stack Development Intern',
     company: 'Indian Chess Academy',
-    period: 'Jan 2026 – Jun 2026',
+    period: 'March 2026 – Jun 2026',
     year: '26',
     type: 'Internship',
     featured: true,

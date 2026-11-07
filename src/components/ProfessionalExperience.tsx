@@ -178,7 +178,7 @@ function Links({ exp }: { exp: Experience }) {
           }}
           className="hover:!border-[#A3E635] hover:!text-[#0C0C0E] hover:!bg-[#A3E635]"
         >
-          {link.isPlayStore ? <Smartphone size={14} /> : <Globe size={14} />}
+          {link.isPlayStore || link.isAppStore ? <Smartphone size={14} /> : <Globe size={14} />}
           <span>{link.label}</span>
           <ArrowUpRight size={12} />
         </a>
@@ -483,7 +483,7 @@ function WorkRow({ link, index }: { link: NonNullable<Experience['links']>[numbe
             className="sm:hidden block"
             style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 400, fontSize: 9, letterSpacing: '0.22em', lineHeight: 1.4, opacity: 0.6, marginTop: 8 }}
           >
-            {link.isPlayStore ? 'Google Play' : 'Live site'}
+            {link.isPlayStore ? 'Google Play' : link.isAppStore ? 'App Store' : 'Live site'}
           </span>
         </span>
       </span>
@@ -492,7 +492,7 @@ function WorkRow({ link, index }: { link: NonNullable<Experience['links']>[numbe
           className="hidden sm:inline"
           style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', opacity: 0.6 }}
         >
-          {link.isPlayStore ? 'Google Play' : 'Live site'}
+          {link.isPlayStore ? 'Google Play' : link.isAppStore ? 'App Store' : 'Live site'}
         </span>
         <span
           className="flex items-center justify-center w-[32px] h-[32px] sm:w-[38px] sm:h-[38px] transition-transform duration-500 group-hover:rotate-45"

@@ -98,16 +98,16 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
     num: '04',
     title: 'StrengthKraft Mobile App',
     category: 'VINA EDUTECH - REACT NATIVE',
-    badge: 'LIVE ON PLAY STORE',
+    badge: 'LIVE ON PLAY STORE & APP STORE',
     description:
-      'React Native Android application for StrengthKraft published on Google Play Store at Vina EduTech. Mobile companion for athletes with workout tracking, video playback, and progress logging on the go.',
+      'React Native application for StrengthKraft published on both Google Play Store (Android) and the Apple App Store (iOS) at Vina EduTech. Mobile companion for athletes with workout tracking, video playback, and progress logging on the go.',
     architecture:
       'Crafted with React Native for cross-platform mobile featuring workout logging, video playback, progress tracking, and seamless synchronization with web platform.',
-    techStack: ['React Native', 'Android', 'Google Play', 'Video Playback', 'Offline Caching'],
-    metrics: ['Published on Play Store', 'Cross-Platform Mobile', 'Offline Video Caching'],
+    techStack: ['React Native', 'Android', 'iOS', 'Google Play', 'App Store', 'Video Playback', 'Offline Caching'],
+    metrics: ['Published on Play Store & App Store', 'Cross-Platform Mobile', 'Offline Video Caching'],
     challenges: [
       'Native bridge performance optimization for smooth video playback',
-      'Managing continuous integration and app store submission pipelines',
+      'Managing continuous integration and Play Store and App Store submission pipelines',
       'Offline video caching and playback without connectivity',
     ],
     learnings: [
@@ -115,6 +115,7 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
       'Native module integration for performance-critical features',
       'Mobile video playback optimization',
     ],
+    liveDemo: 'https://apps.apple.com/in/app/strengthkraft/id6826823126',
     highlightColor: 'from-sky-600/20 via-cyan-600/10 to-transparent',
   },
   {
