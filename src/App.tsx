@@ -13,6 +13,8 @@ import './styles/optimizations.css';
 const Index = lazy(() => import('./pages/Index'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
+// the home page's hero carries its own loading screen, so the site-wide one stays out of the way there
+const IS_HOME = window.location.pathname === '/';
 
 const queryClient = new QueryClient();
 
@@ -75,9 +77,14 @@ function ScrollToTop() {
 }
 
 const App = () => {
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(!IS_HOME);
 
   useEffect(() => {
+    // on the home page the hero runs its own loader; sections waiting on the signal can start straight away
+    if (IS_HOME) {
+      markSiteReady();
+      return;
+    }
     // Show loading screen on EVERY page load/refresh
     // The loader hands over to the hero's own lime panel at LOADING_MS - 700, so it can go a moment later.
     const id = setTimeout(() => setInitialLoad(false), LOADING_MS - 550);
@@ -94,7 +101,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <TouchFeedback />
-        {initialLoad && <LoadingScreen />}
+        {initialLoad && !IS_HOME && <LoadingScreen />}
         <Toaster />
         <Sonner />
         <BrowserRouter>

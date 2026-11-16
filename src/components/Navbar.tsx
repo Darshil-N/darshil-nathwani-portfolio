@@ -16,6 +16,9 @@ import {
   useSpring,
   useMotionValue,
   useReducedMotion,
+  useTransform,
+  useMotionValueEvent,
+  type MotionValue,
 } from 'framer-motion';
 import { Download, Terminal, ArrowUpRight } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -33,6 +36,7 @@ const NAV_ITEMS = [
   { label: 'Experience', id: 'experience' },
   { label: 'Honors', id: 'achievements' },
   { label: 'Skills', id: 'skills' },
+  { label: 'Gallery', id: 'moments' },
   { label: 'Contact', id: 'contact' },
 ];
 const SECTION_IDS = ['home', ...NAV_ITEMS.map((i) => i.id)];
@@ -62,7 +66,17 @@ function Magnetic({ children, strength = 0.35 }: { children: React.ReactNode; st
   );
 }
 
-export default function Navbar() {
+/**
+ * `handoff` (0 → 1, optional): when the hero's index is flying up into the bar, the bar fades in with it and each
+ * link only appears as its label lands. Without it the navbar behaves as it always has.
+ */
+export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = {}) {
+  const idle = useMotionValue(1);
+  const h = handoff ?? idle;
+  const barOpacity = useTransform(h, [0.35, 0.8], [0, 1]);
+  const linkOpacity = useTransform(h, [0.86, 1], [0, 1]);
+  const [live, setLive] = useState(!handoff);
+  useMotionValueEvent(h, 'change', (v) => setLive(v > 0.5));
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -185,7 +199,7 @@ export default function Navbar() {
 
       <motion.header
         className="fixed left-0 right-0 top-0 z-50 pointer-events-none"
-        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+        style={{ paddingTop: 'env(safe-area-inset-top, 0px)', opacity: barOpacity, visibility: live ? 'visible' : 'hidden' }}
       >
         <motion.nav
           className="pointer-events-auto mx-auto flex items-center justify-between"
@@ -245,7 +259,7 @@ export default function Navbar() {
                 }}
               />
             </span>
-            <span className="hidden sm:block text-[13px] uppercase tracking-[0.06em] font-extrabold text-white group-hover:text-[#A3E635] transition-colors">
+            <span className="hidden sm:block whitespace-nowrap text-[13px] uppercase tracking-[0.06em] font-extrabold text-white group-hover:text-[#A3E635] transition-colors">
               Darshil Nathwani
             </span>
           </button>
@@ -256,8 +270,9 @@ export default function Navbar() {
               const isCurrent = activeSection === item.id;
               const showPill = pillTarget === item.id;
               return (
-                <button
+                <motion.button
                   key={item.id}
+                  data-nav-link={item.id}
                   onClick={() => scrollTo(item.id)}
                   onMouseEnter={() => {
                     setHovered(item.id);
@@ -270,6 +285,7 @@ export default function Navbar() {
                   style={{
                     color: showPill ? LIME : isCurrent ? '#F8FAFC' : 'rgba(255,255,255,0.45)',
                     transition: 'color 0.25s',
+                    opacity: linkOpacity,
                   }}
                 >
                   {showPill && (
@@ -286,8 +302,8 @@ export default function Navbar() {
                       }}
                     />
                   )}
-                  <span className="relative">{item.label}</span>
-                </button>
+                  <span className="relative" data-nav-label>{item.label}</span>
+                </motion.button>
               );
             })}
           </div>
