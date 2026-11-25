@@ -265,7 +265,7 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
           </button>
 
           {/* Links with the sliding lime pill */}
-          <div className="hidden md:flex items-center gap-1" onMouseLeave={() => setHovered(null)}>
+          <div className="hidden lg:flex items-center gap-1" onMouseLeave={() => setHovered(null)}>
             {NAV_ITEMS.map((item) => {
               const isCurrent = activeSection === item.id;
               const showPill = pillTarget === item.id;
@@ -364,7 +364,7 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
               }}
               aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={isMenuOpen}
-              className="md:hidden relative w-10 h-10 rounded-full border border-white/15 cursor-pointer"
+              className="lg:hidden relative w-10 h-10 rounded-full border border-white/15 cursor-pointer"
             >
               <motion.span
                 aria-hidden
@@ -394,7 +394,7 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: reduce ? 0 : 0.7, ease: E }}
-            className="md:hidden fixed inset-0 z-40 flex flex-col"
+            className="lg:hidden fixed inset-0 z-40 flex flex-col"
             style={{ backgroundColor: '#0C0C0E', padding: 'calc(6.5rem + env(safe-area-inset-top, 0px)) 1.5rem calc(2rem + env(safe-area-inset-bottom, 0px))' }}
           >
             {/* Lime glow */}

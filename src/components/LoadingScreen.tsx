@@ -34,10 +34,11 @@ const COUNT_START = 0.7; // seconds
 const COUNT_DURATION = (WIPE_AT - 200) / 1000 - COUNT_START; // counter hits 100 just before the wipe
 
 const STEPS = [
-  { at: 0, text: 'BOOTING INTERFACE' },
-  { at: 25, text: 'LOADING PROJECTS' },
-  { at: 55, text: 'COMPILING EXPERIENCE' },
-  { at: 85, text: 'POLISHING PIXELS' },
+  // the parts of the site being got ready, same words as the home page's loader
+  { at: 0, text: 'LOADING PROJECTS' },
+  { at: 25, text: 'LOADING EXPERIENCE' },
+  { at: 55, text: 'LOADING RESEARCH' },
+  { at: 85, text: 'LOADING GALLERY' },
   { at: 100, text: 'READY' },
 ];
 

@@ -234,7 +234,7 @@ export default function Projects() {
     sound.playClick?.();
     setActiveTitle(null);
     setExpandedTitle(null);
-    navigate(category === 'all' ? '/projects' : `/projects?category=${category}`);
+    navigate(category === 'all' ? '/projects/list' : `/projects/list?category=${category}`);
   };
 
   const open = (p: Project) => {

@@ -40,14 +40,12 @@ html {
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
-  /* Reduce motion on mobile for better performance */
-  * {
-    animation-duration: 0.3s !important;
-    transition-duration: 0.3s !important;
-  }
+  /* (A blanket `* { animation-duration: .3s; transition-duration: .3s }` used to live here. On a phone it sped every keyframe
+     animation up to a flicker (the marquees, the pulses) and made every property change glide, which also threw off the
+     hero's measuring of its own type. People who want less motion are served by prefers-reduced-motion above.) */
   
   /* Better touch targets */
-  button, a {
+  button:not(.bk-root *), a:not(.bk-root *) {
     min-height: 44px;
   }
   
@@ -62,12 +60,12 @@ html {
   }
   
   /* Better text readability on mobile */
-  section p {
+  section:not(.bk-section) p {
     font-size: clamp(0.9rem, 3vw, 1rem) !important;
   }
   
   /* Reduce padding on mobile */
-  section {
+  section:not(.bk-section) {
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
   }
@@ -86,7 +84,7 @@ html {
   }
   
   /* Better spacing */
-  section {
+  section:not(.bk-section) {
     padding-left: 2.5rem !important;
     padding-right: 2.5rem !important;
   }
@@ -94,18 +92,19 @@ html {
 
 /* Reduce parallax on mobile to improve performance */
 @media (max-width: 768px) {
-  [style*="perspective"] {
+  /* (the project book, .bk-root, is the one thing that is built out of 3D, so it is left alone) */
+  [style*="perspective"]:not(.bk-root *):not(.bk-pop):not(.bk-pop *) {
     perspective: none !important;
   }
   
-  [style*="transform-style: preserve-3d"] {
+  [style*="transform-style: preserve-3d"]:not(.bk-root *):not(.bk-pop *) {
     transform-style: flat !important;
   }
   
   /* Disable 3D transforms on mobile */
-  [style*="rotateX"],
-  [style*="rotateY"],
-  [style*="rotateZ"] {
+  [style*="rotateX"]:not(.bk-root *):not(.bk-pop):not(.bk-pop *),
+  [style*="rotateY"]:not(.bk-root *):not(.bk-pop):not(.bk-pop *),
+  [style*="rotateZ"]:not(.bk-root *):not(.bk-pop):not(.bk-pop *) {
     transform: none !important;
   }
 }
@@ -132,3 +131,9 @@ html {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* pages with a heavy 3D scene turn the film-grain overlay off */
+html.no-grain::after { display: none !important; }
+
+/* light mode of the project book: flat paper, no texture image to decode and composite on every page */
+.bk-section.bk-lite [style*="paper-sheet"] { background-image: linear-gradient(180deg, #171613, #0F0E0C) !important; }

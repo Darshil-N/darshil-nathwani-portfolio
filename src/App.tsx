@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, lazy, Suspense, useState } from 'react';
 import LoadingScreen from './components/LoadingScreen';
@@ -13,6 +13,8 @@ import './styles/optimizations.css';
 const Index = lazy(() => import('./pages/Index'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
+// the project archive as a book is the main /projects page; the classic list lives on at /projects/list
+const ProjectsBookPage = lazy(() => import('./pages/ProjectsBookPage'));
 // the home page's hero carries its own loading screen, so the site-wide one stays out of the way there
 const IS_HOME = window.location.pathname === '/';
 
@@ -41,7 +43,7 @@ const RoutesWithTransition = () => {
             </motion.div>
           </Suspense>
         } />
-        <Route path="/projects" element={
+        <Route path="/projects/list" element={
           <Suspense fallback={<Fallback />}>
             <motion.div
               initial={{ opacity: 0 }}
@@ -53,6 +55,20 @@ const RoutesWithTransition = () => {
             </motion.div>
           </Suspense>
         } />
+        <Route path="/projects" element={
+          <Suspense fallback={<Fallback />}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <ProjectsBookPage />
+            </motion.div>
+          </Suspense>
+        } />
+        <Route path="/project2" element={<Navigate to="/projects" replace />} />
+        <Route path="/project" element={<Navigate to="/projects" replace />} />
         <Route path="*" element={
           <Suspense fallback={<Fallback />}>
             <motion.div
@@ -78,6 +94,15 @@ function ScrollToTop() {
 
 const App = () => {
   const [initialLoad, setInitialLoad] = useState(!IS_HOME);
+
+  // the easter eggs load once the page is idle, so they never compete with the first paint
+  useEffect(() => {
+    let stop: (() => void) | undefined;
+    const ric = (window as unknown as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+    const start = () => import('./lib/easter').then((m) => { stop = m.installEggs(); });
+    const id = ric ? ric(start, { timeout: 6000 }) : window.setTimeout(start, 4000);
+    return () => { stop?.(); if (!ric) window.clearTimeout(id); };
+  }, []);
 
   useEffect(() => {
     // on the home page the hero runs its own loader; sections waiting on the signal can start straight away

@@ -21,6 +21,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { sound } from '../lib/sound';
+import { SECRETS } from '../lib/easter';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -31,6 +32,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(sound.isEnabled());
+  const [query, setQuery] = useState('');
+  const secret = SECRETS[query.trim().toLowerCase()];
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -95,6 +98,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
           <div className="flex items-center gap-3 px-4 py-3.5 border-b border-white/10 bg-white/[0.02]">
             <Search className="w-5 h-5 text-lime-400" />
             <Command.Input 
+              value={query}
+              onValueChange={setQuery}
               placeholder="Search sections, actions, links... (or type 'email')"
               className="w-full bg-transparent text-sm text-white placeholder-zinc-500 outline-none"
               autoFocus
@@ -109,6 +114,18 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
             <Command.Empty className="px-4 py-8 text-center text-sm text-zinc-500">
               No matching commands found.
             </Command.Empty>
+
+            {secret && (
+              <Command.Item
+                forceMount
+                value={`secret ${query}`}
+                onSelect={() => { onClose(); secret.run((p) => navigate(p)); }}
+                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm text-lime-300 bg-white/[0.06] cursor-pointer"
+              >
+                <div className="flex items-center gap-3"><Terminal className="w-4 h-4 text-lime-400" /><span>Run <span className="font-mono">{secret.label}</span></span></div>
+                <span className="text-xs text-zinc-500">↵</span>
+              </Command.Item>
+            )}
 
             <Command.Group heading={<span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 px-3 py-1 block">Quick Actions</span>}>
               <Command.Item

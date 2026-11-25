@@ -22,6 +22,7 @@ import { AnimatePresence, motion, useAnimationFrame, useMotionValue, useScroll, 
 import { useNavigate } from 'react-router-dom';
 import PhotoWipe, { type GlassPhoto } from '../PhotoWipe';
 import Navbar from '../Navbar';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const BG = '#0B0B0C';
 const TXT = '#EDEBE6';
@@ -142,7 +143,7 @@ function Letters({ text, style, show, delay }: { text: string; style: React.CSSP
  * outline remains, like seeing the drawing under the type. The lens opens when the cursor arrives, trails it softly,
  * and closes when it leaves.
  */
-function Name({ show, nameRef, fs }: { show: boolean; nameRef: React.RefObject<HTMLDivElement>; fs: number }) {
+function Name({ show, nameRef, fs, stack }: { show: boolean; nameRef: React.RefObject<HTMLDivElement>; fs: number; stack: boolean }) {
   const wrap = useRef<HTMLDivElement>(null);
   const x = useSpring(-999, { stiffness: 110, damping: 20, mass: 0.7 });
   const y = useSpring(0, { stiffness: 110, damping: 20, mass: 0.7 });
@@ -153,7 +154,7 @@ function Name({ show, nameRef, fs }: { show: boolean; nameRef: React.RefObject<H
   const ringL = useTransform([x, rad], ([cx, r]) => (cx as number) - (r as number));
   const ringT = useTransform([y, rad], ([cy, r]) => (cy as number) - (r as number));
   const line = (hollow: boolean) => (
-    <div ref={hollow ? undefined : nameRef} style={{ display: 'inline-flex', alignItems: 'baseline', whiteSpace: 'nowrap', lineHeight: 0.92, fontSize: fs || 100 }}>
+    <div ref={hollow ? undefined : nameRef} style={{ display: 'inline-flex', alignItems: 'baseline', whiteSpace: 'nowrap', lineHeight: 0.92, fontSize: fs || 100, ...(hollow && stack ? { flexDirection: 'column', alignItems: 'flex-start' } : {}) }}>
       <Letters text="Darshil" show={show} delay={0.15} style={{ fontFamily: SANS, fontWeight: 500, letterSpacing: '-0.055em', color: hollow ? 'transparent' : TXT, WebkitTextStroke: hollow ? `1.2px ${LIME}` : undefined }} />
       <Letters text="Nathwani" show={show} delay={0.35} style={{ color: hollow ? 'transparent' : 'rgba(237,235,230,0.82)', WebkitTextStroke: hollow ? `1.2px ${LIME}` : undefined, fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: '1.08em', letterSpacing: '-0.035em', marginLeft: '0.04em' }} />
     </div>
@@ -194,109 +195,99 @@ const LOAD_MS = 3000;
  * a cascade that spreads out from the photo frame; the page is swapped in underneath; the lime then sweeps out of
  * every cell in the same order, revealing the hero piece by piece.
  */
-const XS = [0, 7, 50, 79, 100];
-const YS = [0, 15, 72, 100];
-const FRAME_C = { x: 64.5, y: 43.5 };
+// The page's own grid on a wide screen; on phones and portrait tablets a simpler one (a masthead strip over two rows).
+const GRIDS = {
+  wide: { xs: [0, 7, 50, 79, 100], ys: [0, 15, 72, 100], from: { x: 64.5, y: 43.5 }, word: '1-0', label: '3-0' },
+  compact: { xs: [0, 50, 100], ys: [0, 12, 60, 100], from: { x: 50, y: 70 }, word: '0-0', label: '1-0' },
+};
+// What the label says while it counts: the parts of the site that are being got ready.
+const loadingWhat = (n: number) => (n < 22 ? 'Projects' : n < 48 ? 'Experience' : n < 72 ? 'Research' : n < 100 ? 'Gallery' : 'Ready');
 type Stage = 'count' | 'cover' | 'reveal';
 
-function GridLoader({ n, stage, fs }: { n: number; stage: Stage; fs: number }) {
-  const [k, setK] = useState(0);
-  useEffect(() => {
-    if (stage !== 'count') return;
-    const id = setInterval(() => setK((v) => v + 1), 150);
-    return () => clearInterval(id);
-  }, [stage]);
-  const ph = (o: number) => PHOTOS[(k + o) % PHOTOS.length];
-  const photoIn: Record<string, number> = {};
+function GridLoader({ n, stage, fs, compact, stack, nameH }: { n: number; stage: Stage; fs: number; compact: boolean; stack: boolean; nameH: number }) {
+  const g = compact ? GRIDS.compact : GRIDS.wide;
   const cells = [];
-  for (let yi = 0; yi < 3; yi++)
-    for (let xi = 0; xi < 4; xi++) {
-      const x0 = XS[xi], x1 = XS[xi + 1], y0 = YS[yi], y1 = YS[yi + 1];
-      const d = Math.hypot((x0 + x1) / 2 - FRAME_C.x, ((y0 + y1) / 2 - FRAME_C.y) * 0.8) / 70; // 0 at the frame, ~1 far away
+  for (let yi = 0; yi < g.ys.length - 1; yi++)
+    for (let xi = 0; xi < g.xs.length - 1; xi++) {
+      const x0 = g.xs[xi], x1 = g.xs[xi + 1], y0 = g.ys[yi], y1 = g.ys[yi + 1];
+      const d = Math.hypot((x0 + x1) / 2 - g.from.x, ((y0 + y1) / 2 - g.from.y) * 0.8) / 70; // 0 at the frame, ~1 far away
       cells.push({ key: `${xi}-${yi}`, x0, x1, y0, y1, d });
     }
+  const nameBottom = 'clamp(44px, 6.5vh, 70px)';
+  const sideX = 'clamp(12px, 1.6vw, 28px)';
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 40, pointerEvents: stage === 'reveal' ? 'none' : 'auto' }}>
-      {cells.map((c) => {
-        const o = photoIn[c.key];
-        const p = o === undefined ? null : ph(o);
-        return (
-          <div
-            key={c.key}
-            style={{
-              position: 'absolute',
-              left: `${c.x0}%`,
-              top: `${c.y0}%`,
-              width: `${c.x1 - c.x0}%`,
-              height: `${c.y1 - c.y0}%`,
-              background: stage === 'reveal' ? 'transparent' : BG,
-              boxShadow: stage === 'reveal' ? 'none' : `inset -1px -1px 0 ${LINE}`,
-              overflow: 'hidden',
-            }}
-          >
-            {p && stage !== 'reveal' && (
-              <>
-                <img
-                  src={p.src}
-                  alt=""
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: `${p.focus.x * 100}% ${p.focus.y * 100}%`, filter: 'grayscale(1) contrast(1.2) brightness(0.5)', clipPath: `inset(${Math.max(0, 100 - n * 1.6)}% 0 0 0)` }}
-                />
-                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(90deg, rgba(0,0,0,0.5) 0px, rgba(0,0,0,0.1) 5px, rgba(255,255,255,0.03) 16px, rgba(255,255,255,0.08) 20px)' }} />
-                <span style={{ position: 'absolute', left: 10, bottom: 8, fontFamily: MONO, fontSize: 9.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: DIM, whiteSpace: 'nowrap' }}>
-                  {String(((k + o) % PHOTOS.length) + 1).padStart(2, '0')} · {p.where}
-                </span>
-              </>
-            )}
-            {c.key === '1-0' && stage === 'count' && (
-              <div style={{ position: 'absolute', left: 'clamp(16px, 2vw, 32px)', top: 0, bottom: 0, display: 'flex', alignItems: 'center', fontFamily: SANS, fontSize: 'clamp(1rem, 1.3vw, 1.3rem)', letterSpacing: '-0.02em' }}>
-                Darshil <span style={{ fontFamily: SERIF, fontStyle: 'italic', marginLeft: '0.25em' }}>Nathwani</span>
-              </div>
-            )}
-            {c.key === '3-0' && stage === 'count' && (
-              <div style={{ position: 'absolute', left: 'clamp(16px, 1.6vw, 28px)', top: 0, bottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', fontFamily: MONO, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', color: DIM, lineHeight: 1.9 }}>
-                Loading portfolio
-                
-                <span style={{ color: TXT }}>{n < 35 ? 'Drawing the grid' : n < 75 ? 'Setting the type' : n < 100 ? 'Drawing the name' : 'Ready'}</span>
-              </div>
-            )}
-            {/* the lime that sweeps in, then out */}
-            <motion.div
-              aria-hidden
-              initial={{ clipPath: 'inset(0 100% 0 0)' }}
-              animate={{ clipPath: stage === 'count' ? 'inset(0 100% 0 0)' : stage === 'cover' ? 'inset(0 0% 0 0)' : 'inset(0 0% 0 100%)' }}
-              transition={{ duration: stage === 'cover' ? 0.6 : 0.75, delay: stage === 'cover' ? c.d * 0.45 : 0.05 + c.d * 0.55, ease: EXPO }}
-              style={{ position: 'absolute', inset: 0, background: LIME }}
-            />
-          </div>
-        );
-      })}
-      {/* the name is drawn, outline first, exactly where it will sit, and fills as the count completes */}
+      {cells.map((c) => (
+        <div
+          key={c.key}
+          style={{
+            position: 'absolute',
+            left: `${c.x0}%`,
+            top: `${c.y0}%`,
+            width: `${c.x1 - c.x0}%`,
+            height: `${c.y1 - c.y0}%`,
+            background: stage === 'reveal' ? 'transparent' : BG,
+            boxShadow: stage === 'reveal' ? 'none' : `inset -1px -1px 0 ${LINE}`,
+            overflow: 'hidden',
+          }}
+        >
+          {c.key === g.word && stage === 'count' && (
+            <div style={{ position: 'absolute', left: 'clamp(16px, 2vw, 32px)', top: 0, bottom: 0, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', fontFamily: SANS, fontSize: 'clamp(1rem, 1.3vw, 1.3rem)', letterSpacing: '-0.02em' }}>
+              Darshil <span style={{ fontFamily: SERIF, fontStyle: 'italic', marginLeft: '0.25em' }}>Nathwani</span>
+            </div>
+          )}
+          {/* what is being got ready, in words that mean something: the parts of the site */}
+          {c.key === g.label && stage === 'count' && (
+            <div style={{ position: 'absolute', left: compact ? 'clamp(12px, 3vw, 24px)' : 'clamp(16px, 1.6vw, 28px)', top: 0, bottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', fontFamily: MONO, fontSize: compact ? 10 : 10.5, letterSpacing: compact ? '0.14em' : '0.18em', textTransform: 'uppercase', color: DIM, lineHeight: 1.9, whiteSpace: 'nowrap' }}>
+              <span>Loading</span>
+              <span style={{ color: TXT }}>{loadingWhat(n)}</span>
+            </div>
+          )}
+          {/* the lime that sweeps in, then out */}
+          <motion.div
+            aria-hidden
+            initial={{ clipPath: 'inset(0 100% 0 0)' }}
+            animate={{ clipPath: stage === 'count' ? 'inset(0 100% 0 0)' : stage === 'cover' ? 'inset(0 0% 0 0)' : 'inset(0 0% 0 100%)' }}
+            transition={{ duration: stage === 'cover' ? 0.6 : 0.75, delay: stage === 'cover' ? c.d * 0.45 : 0.05 + c.d * 0.55, ease: EXPO }}
+            style={{ position: 'absolute', inset: 0, background: LIME }}
+          />
+        </div>
+      ))}
+      {/* the name is drawn, outline first, exactly where it will sit, and fills as the count completes (two lines on a phone, like the real one) */}
       {fs > 0 && (
         <motion.svg
           aria-hidden
           animate={{ opacity: stage === 'count' ? 1 : 0 }}
           transition={{ duration: 0.3, delay: stage === 'count' ? 0 : 0.35 }}
-          style={{ position: 'absolute', left: 'clamp(12px, 1.6vw, 28px)', bottom: 'clamp(44px, 6.5vh, 70px)', width: '100%', height: fs * 1.15, overflow: 'visible' }}
+          style={{ position: 'absolute', left: sideX, bottom: nameBottom, width: '100%', height: stack ? fs * 2.14 : fs * 1.15, overflow: 'visible' }}
         >
-          <text
-            x="0"
-            y={fs * 0.92}
-            style={{ fontSize: fs, fontFamily: SANS, fontWeight: 500, letterSpacing: '-0.055em' }}
-            fill={`rgba(237,235,230,${n >= 100 ? 1 : 0})`}
-            stroke={LIME}
-            strokeWidth={1.2}
-            strokeDasharray={`${n * 9} 2000`}
-          >
-            Darshil
-            <tspan dx={fs * 0.04} style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, fontSize: fs * 1.08, letterSpacing: '-0.035em' }}>
-              Nathwani
-            </tspan>
-          </text>
+          {(() => {
+            const ink = { fill: `rgba(237,235,230,${n >= 100 ? 1 : 0})`, stroke: LIME, strokeWidth: 1.2, strokeDasharray: `${n * 9} 2000` };
+            const first = { fontSize: fs, fontFamily: SANS, fontWeight: 500, letterSpacing: '-0.055em' };
+            const second = { fontFamily: SERIF, fontStyle: 'italic' as const, fontWeight: 400, fontSize: fs * 1.08, letterSpacing: '-0.035em' };
+            return stack ? (
+              <>
+                <text x="0" y={fs * 0.92} style={first} {...ink}>Darshil</text>
+                <text x="0" y={fs * 1.91} style={second} {...ink}>Nathwani</text>
+              </>
+            ) : (
+              <text x="0" y={fs * 0.92} style={first} {...ink}>
+                Darshil
+                <tspan dx={fs * 0.04} style={second}>Nathwani</tspan>
+              </text>
+            );
+          })()}
         </motion.svg>
       )}
-      {/* the count itself: small, on the right rule */}
-      <div style={{ position: 'absolute', right: 'clamp(16px, 2.4vw, 36px)', top: 'calc(15% + 22px)', textAlign: 'right', fontFamily: MONO, fontSize: 11, letterSpacing: '0.18em', color: DIM, opacity: stage === 'count' ? 1 : 0, transition: 'opacity .3s' }}>
-        <span style={{ fontFamily: SANS, fontSize: 'clamp(2.4rem, 4vw, 3.6rem)', letterSpacing: '-0.04em', color: TXT }}>{String(n).padStart(2, '0')}</span>
+      {/* the count itself: small on the right rule on a wide screen; on a phone it sits above the name, bigger */}
+      <div
+        style={
+          compact
+            ? { position: 'absolute', left: 'clamp(16px, 3vw, 28px)', bottom: `calc(${nameBottom} + ${nameH}px + 18px)`, fontFamily: MONO, fontSize: 11, letterSpacing: '0.18em', color: DIM, opacity: stage === 'count' ? 1 : 0, transition: 'opacity .3s', lineHeight: 1 }
+            : { position: 'absolute', right: 'clamp(16px, 2.4vw, 36px)', top: 'calc(15% + 22px)', textAlign: 'right', fontFamily: MONO, fontSize: 11, letterSpacing: '0.18em', color: DIM, opacity: stage === 'count' ? 1 : 0, transition: 'opacity .3s' }
+        }
+      >
+        <span style={{ fontFamily: SANS, fontSize: compact ? 'clamp(4rem, 20vw, 8rem)' : 'clamp(2.4rem, 4vw, 3.6rem)', letterSpacing: '-0.04em', color: TXT, lineHeight: 0.9 }}>{String(n).padStart(2, '0')}</span>
         <span style={{ color: LIME }}> %</span>
       </div>
     </div>
@@ -309,7 +300,8 @@ const SWEEP = ['inset(0 100% 0 0)', 'inset(0 0% 0 0)', 'inset(0 0% 0 0)', 'inset
 /** A phrase that changes by rolling: old letters leave upward, new ones arrive from below through a blur, one after another. */
 function RollWord({ text, style }: { text: string; style?: React.CSSProperties }) {
   return (
-    <motion.span layout transition={{ layout: { duration: 0.7, ease: EXPO } }} style={{ display: 'inline-grid', overflow: 'hidden', verticalAlign: 'bottom', paddingBottom: '0.1em', marginBottom: '-0.1em', whiteSpace: 'nowrap', ...style }}>
+    // the right padding is for the italic's overhang (and its negative tracking), which the clip would otherwise shave off
+    <motion.span layout transition={{ layout: { duration: 0.7, ease: EXPO } }} style={{ display: 'inline-grid', overflow: 'hidden', verticalAlign: 'bottom', paddingBottom: '0.1em', marginBottom: '-0.1em', paddingRight: '0.16em', marginRight: '-0.16em', whiteSpace: 'nowrap', ...style }}>
       <AnimatePresence initial={false}>
         <motion.span key={text} style={{ gridArea: '1 / 1', display: 'inline-flex' }}>
           {text.split('').map((ch, k) => (
@@ -438,12 +430,12 @@ function Key({ w, on, onHover }: { w: string; on: boolean; onHover: (v: boolean)
   );
 }
 
-function Headline({ show, role, children }: { show: boolean; role: string; children?: React.ReactNode }) {
+function Headline({ show, role, compact, children }: { show: boolean; role: string; compact?: boolean; children?: React.ReactNode }) {
   const [key, setKey] = useState<string | null>(null);
   const hover = (w: string) => (v: boolean) => setKey((cur) => (v ? w : cur === w ? null : cur));
   return (
     <div>
-      <h1 style={{ margin: 0, fontFamily: SYNE, fontWeight: 800, fontSize: 'clamp(1.9rem, 4.4vw, 5.4rem)', lineHeight: 0.92, letterSpacing: '-0.02em', textTransform: 'uppercase', color: TXT }}>
+      <h1 style={{ margin: 0, fontFamily: SYNE, fontWeight: 800, fontSize: compact ? 'min(4.6rem, calc((100vw - 2 * var(--hero-pad)) / 11.2))' : 'clamp(1.9rem, 4.4vw, 5.4rem)', lineHeight: compact ? 0.95 : 0.92, letterSpacing: '-0.02em', textTransform: 'uppercase', color: TXT }}>
         {LINES_H.map((line, li) => (
           <Rise key={li} show={show} delay={0.55 + li * 0.08}>
             {line.map((w, k) => (
@@ -457,7 +449,7 @@ function Headline({ show, role, children }: { show: boolean; role: string; child
               </span>
             ))}
             {li === LINES_H.length - 1 && (
-              <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, textTransform: 'none', letterSpacing: '-0.02em', fontSize: '0.62em', marginLeft: '0.3em', color: LIME, opacity: key ? 0.18 : 1, transition: 'opacity .5s' }}>
+              <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, textTransform: 'none', letterSpacing: '-0.02em', fontSize: compact ? '0.7em' : '0.62em', ...(compact ? { display: 'block', marginTop: '0.45em' } : { marginLeft: '0.3em' }), color: LIME, opacity: key ? 0.18 : 1, transition: 'opacity .5s' }}>
                 <RollWord text={`as ${/^[AEIOU]/i.test(role) ? 'an' : 'a'} ${role}`} />
               </span>
             )}
@@ -465,7 +457,7 @@ function Headline({ show, role, children }: { show: boolean; role: string; child
         ))}
       </h1>
       {/* the one line underneath: default copy, or the work behind the hovered word */}
-      <div style={{ position: 'relative', marginTop: 'clamp(1.2rem, 2.2vw, 2rem)', minHeight: '1.6em' }}>
+      <div style={{ position: 'relative', marginTop: compact ? '1.1rem' : 'clamp(1.2rem, 2.2vw, 2rem)', minHeight: '1.6em' }}>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={key ?? 'base'} initial={{ y: 14, opacity: 0, filter: 'blur(6px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} exit={{ y: -10, opacity: 0, filter: 'blur(6px)' }} transition={{ duration: 0.4, ease: EASE }}>
             {key ? (
@@ -583,6 +575,11 @@ export default function HeroOrbit() {
   const time = useIST();
   const nameRef = useRef<HTMLDivElement>(null);
   const [fs, setFs] = useState(0);
+  const [nameH, setNameH] = useState(0);
+  // Phones and portrait tablets get their own composition: the desktop grid (index column, rules, masthead) has no room there.
+  const compact = useMediaQuery('(max-width: 1023px), (max-width: 1100px) and (orientation: portrait)');
+  // The name stacks onto two lines on a phone.
+  const stack = useMediaQuery('(max-width: 639px)');
   const [fontsReady, setFontsReady] = useState(false);
   const [phase, setPhase] = useState<'load' | 'cover' | 'reveal' | 'live'>('load');
   const [n, setN] = useState(0);
@@ -654,16 +651,25 @@ export default function HeroOrbit() {
       const el = nameRef.current;
       if (!el) return;
       const avail = el.parentElement!.clientWidth;
-      const stack = window.innerWidth < 640;
-      el.style.flexDirection = stack ? 'column' : 'row';
-      el.style.alignItems = stack ? 'flex-start' : 'baseline';
+      const stacked = window.innerWidth < 640;
+      el.style.flexDirection = stacked ? 'column' : 'row';
+      el.style.alignItems = stacked ? 'flex-start' : 'baseline';
       el.style.fontSize = '100px';
-      const w = Math.max(...Array.from(el.children).map((c) => (c as HTMLElement).getBoundingClientRect().width), stack ? 0 : el.scrollWidth);
-      const next = Math.floor(((100 * avail) / w) * (stack ? 0.86 : 0.985));
+      // Measure the words at their natural width: each is clipped to its own box (for the letter-by-letter rise), and the line
+      // itself is capped to its container, so neither box's width says how wide the type really is. scrollWidth does.
+      el.style.width = 'max-content';
+      const w = Math.max(...Array.from(el.children).map((c) => (c as HTMLElement).scrollWidth), stacked ? 0 : el.scrollWidth);
+      el.style.width = '';
+      const next = Math.floor(((100 * avail) / w) * (stacked ? 0.95 : 0.985));
       el.style.fontSize = `${next}px`;
       setFs(next);
+      setNameH(Math.round(el.getBoundingClientRect().height));
     };
     const ro = new ResizeObserver(() => fit());
+    // The serif and Syne arrive late (they come in by CSS), so the name is measured again whenever a font finishes loading;
+    // measuring only once used to size it from the fallback font, and on a phone the real one then ran off the edge.
+    const refit = () => alive && fit();
+    document.fonts.addEventListener('loadingdone', refit);
     Promise.all([document.fonts.load(`500 100px "Inter Tight"`), document.fonts.load(`italic 400 100px "DM Serif Display"`)])
       .catch(() => null)
       .then(() => document.fonts.ready)
@@ -676,6 +682,7 @@ export default function HeroOrbit() {
     return () => {
       alive = false;
       ro.disconnect();
+      document.fonts.removeEventListener('loadingdone', refit);
     };
   }, []);
 
@@ -690,7 +697,7 @@ export default function HeroOrbit() {
   useEffect(() => {
     if (phase !== 'live') return;
     const measure = () => {
-      if (window.innerWidth < 768 || !logoSlot.current) return setBoxes(null);
+      if (compact || !logoSlot.current) return setBoxes(null);
       const sy = window.scrollY;
       const box = (el: HTMLElement) => {
         const r = el.getBoundingClientRect();
@@ -701,7 +708,7 @@ export default function HeroOrbit() {
     measure();
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
-  }, [phase]);
+  }, [phase, compact]);
   const logoFade = useTransform(e, [0.2, 0.55], [1, 0]);
   const goTo = (id: string) => {
     const el = document.getElementById(id);
@@ -720,8 +727,8 @@ export default function HeroOrbit() {
   const em: React.CSSProperties = { fontFamily: SERIF, fontStyle: 'italic', fontWeight: 400, color: TXT, letterSpacing: '-0.02em' };
 
   return (
-    <section style={{ position: 'relative', height: '100svh', minHeight: 600, background: BG, color: TXT, overflow: 'hidden', fontFamily: SANS }}>
-      {phase !== 'live' && <GridLoader n={n} fs={fs} stage={phase === 'load' ? 'count' : phase === 'cover' ? 'cover' : 'reveal'} />}
+    <section style={{ position: 'relative', height: '100svh', minHeight: 600, background: BG, color: TXT, overflow: 'hidden', fontFamily: SANS, ['--hero-pad' as string]: compact ? 'clamp(16px, 3vw, 32px)' : 'clamp(12px, 1.6vw, 28px)' }}>
+      {phase !== 'live' && <GridLoader n={n} fs={fs} compact={compact} stack={stack} nameH={nameH} stage={phase === 'load' ? 'count' : phase === 'cover' ? 'cover' : 'reveal'} />}
 
       {/* the site's navbar, which the index turns into */}
       {phase === 'live' && <Navbar handoff={boxes ? e : undefined} />}
@@ -736,9 +743,12 @@ export default function HeroOrbit() {
       {/* grain */}
       <div aria-hidden style={{ position: 'absolute', inset: 0, opacity: 0.06, pointerEvents: 'none', zIndex: 30, backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }} />
 
-      {shown && LINES.map((l, k) => <Hair key={k} d={l.d} delay={0.3 + k * 0.12} style={l.style} />)}
-      {shown && CROSSES.map((c, k) => <Cross key={k} x={c.x} y={c.y} delay={1 + k * 0.1} />)}
+      {/* the grid's rules and crosses belong to the wide layout; on a phone they would just cut through the type */}
+      {shown && !compact && LINES.map((l, k) => <Hair key={k} d={l.d} delay={0.3 + k * 0.12} style={l.style} />)}
+      {shown && !compact && CROSSES.map((c, k) => <Cross key={k} x={c.x} y={c.y} delay={1 + k * 0.1} />)}
 
+      {!compact && (
+      <>
       {/* top band: a masthead. The name in the hero's pairing, the time beside the rule, the résumé as a solid lime block. */}
       <motion.div {...fade(0.2, -8)} className="!hidden md:!flex" style={{ position: 'absolute', top: 0, left: 'calc(7% + clamp(16px, 2vw, 32px))', right: 'calc(21% + clamp(16px, 2vw, 32px))', height: '15%', alignItems: 'center', justifyContent: 'space-between', zIndex: 3 }}>
         <motion.div ref={logoSlot} style={{ opacity: logoFade }}>
@@ -772,11 +782,40 @@ export default function HeroOrbit() {
       >
         Hover the <span style={{ color: LIME }}>outlined words</span>
       </motion.div>
+      </>
+      )}
       {/* left field: the headline */}
-      <div className="h6-head" style={{ position: 'absolute', zIndex: 3 }}>
-        <Headline show={shown} role={ROLES[role]} />
+      <div className={compact ? 'h6-head-c' : 'h6-head'} style={{ position: 'absolute', zIndex: 3 }}>
+        <Headline show={shown} role={ROLES[role]} compact={compact}>
+          {compact && (
+            <span style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: FAINT }}>
+              Tap the <span style={{ color: LIME }}>outlined words</span>
+            </span>
+          )}
+        </Headline>
       </div>
 
+      {/* phones: the time and a scroll cue sit just over the name, so the headline and the name read as one composition */}
+      {compact && (
+        <motion.div
+          {...fade(0.9, 6)}
+          style={{ position: 'absolute', left: 'var(--hero-pad)', right: 'var(--hero-pad)', bottom: `calc(clamp(44px, 6.5vh, 70px) + ${nameH}px + 14px)`, zIndex: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: MONO, fontSize: 10.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: FAINT }}
+        >
+          <span style={{ display: 'flex', alignItems: 'baseline', gap: 9 }}>
+            <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: 6, background: LIME, boxShadow: `0 0 10px ${LIME}`, animation: 'h6pulse 2s ease-in-out infinite', alignSelf: 'center' }} />
+            <span style={{ color: TXT }}>{time}</span> IST · Bengaluru
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            Scroll
+            <span style={{ position: 'relative', width: 26, height: 1, background: LINE, overflow: 'hidden' }}>
+              <span style={{ position: 'absolute', top: 0, height: 1, width: 10, background: LIME, animation: 'h6slide 1.8s cubic-bezier(0.87,0,0.13,1) infinite' }} />
+            </span>
+          </span>
+        </motion.div>
+      )}
+
+      {!compact && (
+      <>
       {/* right column: the index */}
       <div className="hidden md:block" style={{ position: 'absolute', left: 'calc(79% + clamp(16px, 1.6vw, 28px))', right: 'clamp(16px, 2.4vw, 36px)', top: 'calc(15% + 24px)', zIndex: 3 }}>
         <motion.div {...fade(0.6)} style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: FAINT, marginBottom: 10 }}>
@@ -794,6 +833,8 @@ export default function HeroOrbit() {
         </span>
         Scroll
       </motion.div>
+      </>
+      )}
 
       {/* layout */}
       <style>{`
@@ -802,27 +843,31 @@ export default function HeroOrbit() {
           .h6-head  { left: calc(7% + clamp(16px, 2vw, 32px)); right: auto; width: calc(72% - clamp(32px, 4vw, 64px)); top: calc(15% + clamp(16px, 2.2vw, 34px)); }
         }
         @keyframes h6pulse { 50% { opacity: .35 } }
+        .h6-head-c { left: var(--hero-pad); right: var(--hero-pad); top: calc(env(safe-area-inset-top, 0px) + clamp(88px, 13svh, 120px)); }
+        @keyframes h6slide { 0% { left: -10px } 100% { left: 26px } }
         @media (max-height: 820px) { .h6-scroll { display: none !important; } }
         @keyframes h6drop { 0% { top: -14px } 100% { top: 38px } }
       `}</style>
       {/* the name, edge to edge, letter by letter */}
-      <div style={{ position: 'absolute', left: 'clamp(12px, 1.6vw, 28px)', right: 'clamp(12px, 1.6vw, 28px)', bottom: 'clamp(44px, 6.5vh, 70px)', zIndex: 2 }}>
-        <Name show={shown} nameRef={nameRef} fs={fs} />
+      <div style={{ position: 'absolute', left: 'var(--hero-pad)', right: 'var(--hero-pad)', bottom: 'clamp(44px, 6.5vh, 70px)', zIndex: 2 }}>
+        <Name show={shown} nameRef={nameRef} fs={fs} stack={stack} />
       </div>
 
       {/* bottom row */}
       <motion.div
         {...fade(0.8, 6)}
-        style={{ position: 'absolute', left: 'clamp(12px, 1.6vw, 28px)', right: 'clamp(12px, 1.6vw, 28px)', bottom: 'clamp(14px, 2.4vh, 24px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, fontFamily: MONO, fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: DIM, zIndex: 3 }}
+        style={{ position: 'absolute', left: 'var(--hero-pad)', right: 'var(--hero-pad)', bottom: 'clamp(14px, 2.4vh, 24px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, fontFamily: MONO, fontSize: compact ? 10 : 11, letterSpacing: compact ? '0.12em' : '0.14em', textTransform: 'uppercase', color: DIM, zIndex: 3, whiteSpace: 'nowrap' }}
       >
         <span>Based in India</span>
-        <span className="hidden md:flex" style={{ gap: 22 }}>
-          <a className={link} href="https://github.com/Darshil-N" target="_blank" rel="noreferrer">GitHub ↗</a>
-          <a className={link} href="https://www.linkedin.com/in/darshil-nathwani-bba698307" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+        <span style={{ display: 'flex', gap: compact ? 16 : 22 }}>
+          <a className={link} style={{ minHeight: 0 }} href="https://github.com/Darshil-N" target="_blank" rel="noreferrer">GitHub ↗</a>
+          <a className={link} style={{ minHeight: 0 }} href="https://www.linkedin.com/in/darshil-nathwani-bba698307" target="_blank" rel="noreferrer">LinkedIn ↗</a>
         </span>
-        <a className={`${link} hidden md:inline`} href="mailto:darshilnathwani@gmail.com" style={{ color: TXT }}>
-          darshilnathwani@gmail.com
-        </a>
+        {!compact && (
+          <a className={link} href="mailto:darshilnathwani@gmail.com" style={{ color: TXT, minHeight: 0 }}>
+            darshilnathwani@gmail.com
+          </a>
+        )}
       </motion.div>
     </section>
   );
