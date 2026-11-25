@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, lazy, Suspense, useState } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import TouchFeedback from './components/TouchFeedback';
-import { markSiteReady, LOADING_MS } from './lib/siteReady';
+import { markSiteReady } from './lib/siteReady';
 import './styles/optimizations.css';
 
 const Index = lazy(() => import('./pages/Index'));
@@ -21,7 +21,7 @@ const IS_HOME = window.location.pathname === '/';
 const queryClient = new QueryClient();
 
 const Fallback = () => (
-  <div className="min-h-screen bg-[#080808] flex items-center justify-center">
+  <div className="min-h-screen bg-[#0B0B0C] flex items-center justify-center">
     <div className="w-8 h-8 rounded-full border border-white/20 border-t-[#A3E635] animate-spin" />
   </div>
 );
@@ -88,7 +88,9 @@ const RoutesWithTransition = () => {
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+  }, [pathname]);
   return null;
 }
 
@@ -108,25 +110,19 @@ const App = () => {
     // on the home page the hero runs its own loader; sections waiting on the signal can start straight away
     if (IS_HOME) {
       markSiteReady();
-      return;
     }
-    // Show loading screen on EVERY page load/refresh
-    // The loader hands over to the hero's own lime panel at LOADING_MS - 700, so it can go a moment later.
-    const id = setTimeout(() => setInitialLoad(false), LOADING_MS - 550);
-    // The hero's entrance starts as the lime panel begins to lift away (the loader's REVEAL_AT),
-    // not after it has gone, so the reveal and the name arriving are one motion with no empty beat.
-    const ready = setTimeout(markSiteReady, LOADING_MS - 700);
-    return () => {
-      clearTimeout(id);
-      clearTimeout(ready);
-    };
   }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <TouchFeedback />
-        {initialLoad && !IS_HOME && <LoadingScreen />}
+        {initialLoad && !IS_HOME && (
+          <LoadingScreen
+            onReveal={markSiteReady}
+            onComplete={() => setInitialLoad(false)}
+          />
+        )}
         <Toaster />
         <Sonner />
         <BrowserRouter>

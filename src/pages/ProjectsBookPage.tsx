@@ -275,29 +275,40 @@ export default function ProjectsBookPage() {
   const book = useRef<BookHandle>(null);
   const ready = useSiteReady();
   const single = !useMediaQuery('(min-width: 900px)');
-  // Weak machines get a lighter scene; strong ones get everything. A borderline machine starts light and moves up once it has
-  // shown it can hold a smooth frame rate; any machine that turns out slow in the full scene drops down (and stays there).
+  // Weak machines get a lighter scene; strong ones get everything. Wait until the loading screen has finished and the
+  // reveal has settled before measuring frame times so startup/loader jank never hides the desk props on refresh.
   const tier = useMemo(deviceTier, []);
   const [lite, setLite] = useState(tier !== 'none');
   const locked = useRef(tier === 'hard');
   useEffect(() => {
-    if (locked.current) return;
+    if (locked.current || !ready) return;
     let raf = 0, last = 0, slow = 0, n = 0;
-    const t0 = performance.now();
     const window_ = lite ? 3500 : 6000;
-    const tick = (t: number) => {
-      if (last && t - last > 30) slow++;
-      last = t; n++;
-      if (t - t0 > window_) {
-        if (lite && n > 40 && slow / n < 0.04) setLite(false); // smooth in the light scene: go full
-        else if (!lite && n > 30 && slow / n > 0.18) { locked.current = true; setLite(true); } // struggling: back to light, for good
-        return;
-      }
+    const start = window.setTimeout(() => {
+      const t0 = performance.now();
+      const tick = (t: number) => {
+        if (last && !document.hidden) {
+          const dt = t - last;
+          if (dt < 250) {
+            if (dt > 30) slow++;
+            n++;
+          }
+        }
+        last = t;
+        if (t - t0 > window_) {
+          if (lite && n > 40 && slow / n < 0.04) setLite(false); // smooth in the light scene: go full
+          else if (!lite && n > 30 && slow / n > 0.18) { locked.current = true; setLite(true); } // struggling: back to light, for good
+          return;
+        }
+        raf = requestAnimationFrame(tick);
+      };
       raf = requestAnimationFrame(tick);
+    }, 1600);
+    return () => {
+      clearTimeout(start);
+      cancelAnimationFrame(raf);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [lite]);
+  }, [lite, ready]);
   const [pop, setPop] = useState<number | null>(null); // index into ENTRIES
   // the site's film-grain overlay repaints the whole screen every few frames; under a 3D scene it is pure cost
   useEffect(() => {
