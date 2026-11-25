@@ -20,11 +20,12 @@ import {
   useMotionValueEvent,
   type MotionValue,
 } from 'framer-motion';
-import { Download, Terminal, ArrowUpRight } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Download, Terminal, ArrowUpRight, ArrowLeft } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { sound } from '../lib/sound';
 import { CommandPalette } from './CommandPalette';
 import { useISTClock } from '../hooks/useISTClock';
+import { usePageNavigate } from './PageTransition';
 
 const E = [0.76, 0, 0.24, 1] as const;
 const LIME = '#A3E635';
@@ -86,7 +87,7 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
   const reduce = useReducedMotion();
 
   const location = useLocation();
-  const navigate = useNavigate();
+  const pageNavigate = usePageNavigate();
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
@@ -152,7 +153,7 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
       const wasOpen = isMenuOpen;
       setIsMenuOpen(false);
       if (location.pathname !== '/') {
-        navigate('/', { state: { scrollTo: id } });
+        pageNavigate('/', id === 'home' ? undefined : { state: { scrollTo: id } });
         return;
       }
       // Let the overlay release the scroll lock before scrolling.
@@ -161,7 +162,7 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
         if (el) window.scrollTo({ top: id === 'home' ? 0 : el.offsetTop - 80, behavior: 'smooth' });
       }, wasOpen ? 80 : 0);
     },
-    [isMenuOpen, location.pathname, navigate]
+    [isMenuOpen, location.pathname, pageNavigate]
   );
 
   const handleResumeDownload = () => {
@@ -264,6 +265,43 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
             </span>
           </button>
 
+          {/* ── Back to Home — visible only on sub-pages ── */}
+          <AnimatePresence>
+            {location.pathname !== '/' && (
+              <motion.button
+                key="back-home"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: reduce ? 0 : 0.35, ease: E }}
+                onClick={() => {
+                  sound.playClick();
+                  pageNavigate('/');
+                }}
+                onMouseEnter={() => sound.playHover()}
+                aria-label="Back to home"
+                data-cursor-text="HOME"
+                className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#A3E635]/30 bg-[#A3E635]/[0.06] hover:bg-[#A3E635] hover:border-[#A3E635] text-[#A3E635] hover:text-[#0C0C0E] cursor-pointer group transition-colors duration-200"
+                style={{
+                  marginLeft: '0.75rem',
+                }}
+              >
+                <ArrowLeft size={13} className="transition-transform duration-200 group-hover:-translate-x-0.5" />
+                <span
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    letterSpacing: '0.16em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Home
+                </span>
+              </motion.button>
+            )}
+          </AnimatePresence>
+
           {/* Links with the sliding lime pill */}
           <div className="hidden lg:flex items-center gap-1" onMouseLeave={() => setHovered(null)}>
             {NAV_ITEMS.map((item) => {
@@ -357,6 +395,23 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
             </Magnetic>
 
             {/* Mobile menu toggle: two lines that cross into an X */}
+            {location.pathname !== '/' && (
+              <motion.button
+                key="back-mobile"
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={{ duration: reduce ? 0 : 0.3, ease: E }}
+                onClick={() => { sound.playClick(); pageNavigate('/'); }}
+                onMouseEnter={() => sound.playHover()}
+                aria-label="Back to home"
+                className="sm:hidden relative w-10 h-10 rounded-full border border-white/15 cursor-pointer flex items-center justify-center"
+                style={{ color: LIME }}
+              >
+                <ArrowLeft size={15} />
+              </motion.button>
+            )}
+            {/* Mobile menu toggle: two lines that cross into an X */}
             <button
               onClick={() => {
                 sound.playClick();
@@ -412,6 +467,32 @@ export default function Navbar({ handoff }: { handoff?: MotionValue<number> } = 
             />
 
             <nav aria-label="Mobile" className="relative flex-1 flex flex-col justify-center">
+              {location.pathname !== '/' && (
+                <div style={{ overflow: 'hidden', marginBottom: '0.5rem' }}>
+                  <motion.button
+                    initial={{ y: '110%' }}
+                    animate={{ y: '0%' }}
+                    exit={{ y: '110%' }}
+                    transition={{ duration: reduce ? 0 : 0.7, delay: reduce ? 0 : 0.1, ease: E }}
+                    onClick={() => {
+                      sound.playClick();
+                      setIsMenuOpen(false);
+                      pageNavigate('/');
+                    }}
+                    className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#A3E635]/40 bg-[#A3E635]/10 text-[#A3E635] cursor-pointer"
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      letterSpacing: '0.18em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    <ArrowLeft size={14} />
+                    <span>Back to Home</span>
+                  </motion.button>
+                </div>
+              )}
               {NAV_ITEMS.map((item, i) => (
                 <div key={item.id} style={{ overflow: 'hidden' }}>
                   <motion.button

@@ -4,7 +4,7 @@ import {
   ArrowRight,
   ArrowUpRight,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { TransitionLink } from './PageTransition';
 import { sound } from '../lib/sound';
 import { FEATURED_PROJECTS, type FeaturedProject } from '../data/featuredProjects';
 import ProjectModal from './ProjectModal';
@@ -273,7 +273,7 @@ export default function FeaturedProjects() {
               </div>
             </div>
 
-            <Link
+            <TransitionLink
               to="/projects"
               onMouseEnter={() => sound.playHover()}
               style={{
@@ -294,7 +294,7 @@ export default function FeaturedProjects() {
             >
               <span>Explore All 20+ Projects</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            </TransitionLink>
           </div>
 
           {/* Editorial Row List */}
@@ -312,7 +312,7 @@ export default function FeaturedProjects() {
             transition={{ duration: 0.7, ease: E }}
             className="mt-14 text-center"
           >
-            <Link
+            <TransitionLink
               to="/projects"
               onMouseEnter={() => sound.playHover()}
               style={{
@@ -332,7 +332,7 @@ export default function FeaturedProjects() {
             >
               <span>View Complete Engineering Portfolio</span>
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </TransitionLink>
           </motion.div>
         </div>
 

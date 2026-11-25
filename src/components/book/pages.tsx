@@ -9,6 +9,7 @@
  */
 import React from 'react';
 import { T, foilText, fs, hueOf, type Side } from './tokens';
+import { TransitionLink } from '../PageTransition';
 
 /* ───────────── small helpers ───────────── */
 
@@ -551,9 +552,9 @@ export function Colophon({ side, n }: { side: Side; n: number }) {
         {specimen({ fontFamily: T.serif, fontStyle: 'italic' }, 'DM Serif Display', 'The italic voice')}
         {specimen({ fontFamily: T.mono, fontSize: '8cqw' }, 'JetBrains Mono', 'Folios and small print')}
       </div>
-      <a href="/projects/list" className="bk-lnk bk-lnk-r" style={{ ...linkStyle(), marginTop: '5cqw', alignSelf: 'flex-start', color: T.dim, fontWeight: 500 }}>
+      <TransitionLink to="/projects/list" className="bk-lnk bk-lnk-r" style={{ ...linkStyle(), marginTop: '5cqw', alignSelf: 'flex-start', color: T.dim, fontWeight: 500 }}>
         Prefer a plain list? Open the projects page <span className="bk-arr">↗</span>
-      </a>
+      </TransitionLink>
     </PageShell>
   );
 }

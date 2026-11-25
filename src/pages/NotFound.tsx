@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { TransitionLink } from '../components/PageTransition';
 import { ArrowLeft } from 'lucide-react';
 
 const E = [0.76, 0, 0.24, 1] as const;
@@ -58,7 +59,7 @@ const NotFound = () => {
           {location.pathname}
         </p>
 
-        <Link
+        <TransitionLink
           to="/"
           className="group relative inline-flex items-center gap-3 overflow-hidden transition-colors"
           style={{
@@ -81,7 +82,7 @@ const NotFound = () => {
           />
           <ArrowLeft size={14} className="relative transition-colors group-hover:text-[#0C0C0E]" />
           <span className="relative transition-colors group-hover:text-[#0C0C0E]">Back to home</span>
-        </Link>
+        </TransitionLink>
       </div>
     </div>
   );

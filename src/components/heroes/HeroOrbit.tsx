@@ -24,6 +24,7 @@ import PhotoWipe, { type GlassPhoto } from '../PhotoWipe';
 import Navbar from '../Navbar';
 import GridLoader, { LOAD_MS } from '../GridLoader';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { hasHeroVisited, markHeroVisited } from '../../lib/siteReady';
 
 const BG = '#0B0B0C';
 const TXT = '#EDEBE6';
@@ -476,8 +477,12 @@ export default function HeroOrbit() {
   // The name stacks onto two lines on a phone.
   const stack = useMediaQuery('(max-width: 639px)');
   const [fontsReady, setFontsReady] = useState(false);
-  const [phase, setPhase] = useState<'load' | 'cover' | 'reveal' | 'live'>('load');
-  const [n, setN] = useState(0);
+  // On a SPA revisit (back-navigation) the initial loader has already played —
+  // skip the counter / cover / reveal sequence and go straight to live.
+  // On a fresh load or page refresh of `/`, `hasHeroVisited()` is false so the loader plays.
+  const skipLoader = useRef(hasHeroVisited()).current;
+  const [phase, setPhase] = useState<'load' | 'cover' | 'reveal' | 'live'>(skipLoader ? 'live' : 'load');
+  const [n, setN] = useState(skipLoader ? 100 : 0);
   const shown = phase === 'reveal' || phase === 'live';
   const [i, setI] = useState(0);
   const [over, setOver] = useState(false);
@@ -485,7 +490,7 @@ export default function HeroOrbit() {
 
   // count up; finish only once the first photos are in
   useEffect(() => {
-    if (!fontsReady) return;
+    if (!fontsReady || skipLoader) return;
     let ready = 0;
     PHOTOS.forEach((p) => {
       const im = new Image();
@@ -495,6 +500,8 @@ export default function HeroOrbit() {
     const t0 = performance.now();
     let raf = 0;
     let timer = 0;
+    let coverTimer = 0;
+    let liveTimer = 0;
     const tick = (now: number) => {
       const p = Math.min(1, (now - t0) / LOAD_MS);
       const v = Math.round((1 - Math.pow(1 - p, 3)) * 100);
@@ -502,8 +509,11 @@ export default function HeroOrbit() {
       if (v >= 100) {
         timer = window.setTimeout(() => {
           setPhase('cover');
-          window.setTimeout(() => setPhase('reveal'), 1050);
-          window.setTimeout(() => setPhase('live'), 1050 + 1400);
+          coverTimer = window.setTimeout(() => setPhase('reveal'), 1050);
+          liveTimer = window.setTimeout(() => {
+            markHeroVisited();
+            setPhase('live');
+          }, 1050 + 1400);
         }, 250);
         return;
       }
@@ -513,8 +523,10 @@ export default function HeroOrbit() {
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(timer);
+      clearTimeout(coverTimer);
+      clearTimeout(liveTimer);
     };
-  }, [fontsReady]);
+  }, [fontsReady, skipLoader]);
 
   useEffect(() => {
     if (phase !== 'live' || over) return;

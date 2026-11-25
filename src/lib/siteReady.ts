@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 export const LOADING_MS = 5000;
 
 let ready = false;
+let heroVisited = false;
 const waiting = new Set<() => void>();
 
 export function markSiteReady() {
@@ -14,6 +15,19 @@ export function markSiteReady() {
   ready = true;
   waiting.forEach((resolve) => resolve());
   waiting.clear();
+}
+
+/**
+ * Tracks whether the initial site/hero loading sequence has already played in
+ * this browser session so SPA back-navigation to `/` skips the loader while a
+ * full page refresh of `/` still plays it.
+ */
+export function markHeroVisited() {
+  heroVisited = true;
+}
+
+export function hasHeroVisited(): boolean {
+  return heroVisited;
 }
 
 export function whenSiteReady(): Promise<void> {

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { sound } from '../lib/sound';
 import { SECRETS } from '../lib/easter';
+import { usePageNavigate } from './PageTransition';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -30,6 +31,7 @@ interface CommandPaletteProps {
 
 export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const pageNavigate = usePageNavigate();
   const [copied, setCopied] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(sound.isEnabled());
   const [query, setQuery] = useState('');
@@ -50,7 +52,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     sound.playClick();
     onClose();
     if (window.location.pathname !== '/') {
-      navigate('/', { state: { scrollTo: id } });
+      pageNavigate('/', { state: { scrollTo: id } });
       return;
     }
     const el = document.getElementById(id);
